@@ -45,6 +45,9 @@ export class GetAuditLogsService {
     if (query.subject?.length) {
       q = q.whereIn('subject', query.subject);
     }
+    if (query.subjectId != null) {
+      q = q.where('subjectId', query.subjectId);
+    }
     if (query.action?.length) {
       q = q.whereIn('action', query.action);
     }

@@ -2,8 +2,7 @@ import { TabProps } from '@blueprintjs/core';
 import React from 'react';
 import { useBrandingState } from '../BrandingTemplates/_utils';
 import { ElementPreviewState } from '../BrandingTemplates/types';
-import { ElementCustomizeFields } from './ElementCustomizeFields';
-import { ElementCustomizePreview } from './ElementCustomizePreview';
+import { ElementCustomizeWorkspace } from './ElementCustomizeWorkspace';
 import { ElementCustomizeProvider } from './ElementCustomizeProvider';
 import {
   ElementCustomizeForm,
@@ -11,7 +10,6 @@ import {
 } from './ElementCustomizerForm';
 import { ElementCustomizeTabsControllerProvider } from './ElementCustomizeTabsController';
 import type { FormikValues } from 'formik';
-import { Group } from '@/components';
 import { extractChildren } from '@/utils/extract-children';
 
 export interface ElementCustomizeProps<T extends FormikValues, Y>
@@ -41,10 +39,7 @@ export function ElementCustomizeContent({
   return (
     <ElementCustomizeTabsControllerProvider>
       <ElementCustomizeProvider value={value}>
-        <Group spacing={0} align="stretch">
-          <ElementCustomizeFields />
-          <ElementCustomizePreview />
-        </Group>
+        <ElementCustomizeWorkspace />
       </ElementCustomizeProvider>
     </ElementCustomizeTabsControllerProvider>
   );

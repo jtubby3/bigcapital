@@ -14,7 +14,10 @@ const PdfPreviewDialogContent = lazy(() =>
 
 interface InvoicePdfPreviewDialogProps {
   dialogName: string;
-  payload: { invoiceId: number | null };
+  payload: {
+    invoiceId: number | null;
+    documentType?: 'invoice' | 'packing-slip';
+  };
   isOpen: boolean | undefined;
 }
 
@@ -29,7 +32,13 @@ function InvoicePdfPreviewDialog({
   return (
     <Dialog
       name={dialogName}
-      title={<T id={'invoice_preview.dialog.title'} />}
+      title={
+        payload?.documentType === 'packing-slip' ? (
+          'Packing slip'
+        ) : (
+          <T id={'invoice_preview.dialog.title'} />
+        )
+      }
       className={classNames(CLASSES.DIALOG_PDF_PREVIEW)}
       autoFocus={true}
       canEscapeKeyClose={true}
@@ -38,6 +47,7 @@ function InvoicePdfPreviewDialog({
     >
       <DialogSuspense>
         <PdfPreviewDialogContent
+          key={`${payload?.invoiceId}-${payload?.documentType || 'invoice'}`}
           dialogName={dialogName}
           subscriptionForm={payload}
         />

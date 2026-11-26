@@ -1,5 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { renderInvoicePaperTemplateHtml } from '@bigcapital/pdf-templates';
+import {
+  renderPackingSlipPaperTemplateHtml,
+  renderInvoicePaperTemplateHtml,
+} from '@bigcapital/pdf-templates';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { GetSaleInvoice } from './GetSaleInvoice.service';
 import { transformInvoiceToPdfTemplate } from '../utils';
@@ -31,6 +34,24 @@ export class SaleInvoicePdf {
    * @param {ISaleInvoice} saleInvoice -
    * @returns {Promise<string>}
    */
+  public async getPackingSlipHtml(invoiceId: number): Promise<string> {
+    const attributes = await this.getInvoiceBrandingAttributes(invoiceId);
+    return renderPackingSlipPaperTemplateHtml(attributes);
+  }
+
+  public async getPackingSlipPdf(invoiceId: number): Promise<[Buffer, string]> {
+    const filename = (await this.getInvoicePdfFilename(invoiceId)).replace(
+      /^Invoice-/,
+      'Packing-Slip-',
+    );
+    const html = await this.getPackingSlipHtml(invoiceId);
+    const pdf = await this.chromiumlyTenancy.convertHtmlContent(html, {
+      preferCssPageSize: true,
+      printBackground: true,
+    });
+    return [pdf, filename];
+  }
+
   public async getSaleInvoiceHtml(invoiceId: number): Promise<string> {
     const brandingAttributes =
       await this.getInvoiceBrandingAttributes(invoiceId);
@@ -50,7 +71,10 @@ export class SaleInvoicePdf {
     const htmlContent = await this.getSaleInvoiceHtml(invoiceId);
 
     // Converts the given html content to pdf document.
-    const buffer = await this.chromiumlyTenancy.convertHtmlContent(htmlContent);
+    const buffer = await this.chromiumlyTenancy.convertHtmlContent(
+      htmlContent,
+      { preferCssPageSize: true, printBackground: true },
+    );
     const eventPayload = { saleInvoiceId: invoiceId };
 
     // Triggers the `onSaleInvoicePdfViewed` event.
@@ -100,7 +124,10 @@ export class SaleInvoicePdf {
     // Merge the branding template attributes with the invoice.
     return {
       ...brandingTemplate.attributes,
-      ...transformInvoiceToPdfTemplate(invoice),
+      ...transformInvoiceToPdfTemplate(
+        invoice,
+        brandingTemplate.attributes.discountLabel,
+      ),
     };
   }
 }

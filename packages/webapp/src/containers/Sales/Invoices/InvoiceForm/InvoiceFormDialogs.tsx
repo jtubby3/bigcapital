@@ -1,4 +1,5 @@
 import { useFormikContext } from 'formik';
+import { index as InvoicePdfPreviewDialog } from '@/containers/Dialogs/InvoicePdfPreviewDialog';
 import type { InvoiceFormValues } from './utils';
 import { DialogsName } from '@/constants/dialogs';
 import { index as InvoiceNumberDialog } from '@/containers/Dialogs/InvoiceNumberDialog';
@@ -29,6 +30,7 @@ export function InvoiceFormDialogs() {
 
   return (
     <>
+      <InvoicePdfPreviewDialog dialogName={DialogsName.InvoicePdfForm} />
       <InvoiceNumberDialog
         dialogName={DialogsName.InvoiceNumberSettings}
         onConfirm={handleInvoiceNumberFormConfirm}

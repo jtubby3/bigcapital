@@ -6,6 +6,14 @@ import { SaleInvoiceTaxEntryTransformer } from './SaleInvoiceTaxEntry.transforme
 import { DiscountType } from '@/common/types/Discount';
 
 export class SaleInvoiceTransformer extends Transformer {
+  protected shippingChargeFormatted = (invoice: SaleInvoice): string =>
+    this.formatNumber(Number(invoice.shippingCharge) || 0, {
+      currencyCode: invoice.currencyCode,
+      money: true,
+    });
+  protected shippingDateFormatted = (invoice: SaleInvoice): string =>
+    invoice.shippingDate ? this.formatDate(invoice.shippingDate) : '';
+
   /**
    * Include these attributes to sale invoice object.
    * @returns {Array}
@@ -29,6 +37,8 @@ export class SaleInvoiceTransformer extends Transformer {
       'discountAmountFormatted',
       'discountPercentageFormatted',
       'adjustmentFormatted',
+      'shippingChargeFormatted',
+      'shippingDateFormatted',
       'taxes',
       'entries',
       'attachments',

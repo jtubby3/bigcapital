@@ -1,6 +1,7 @@
 import { Navbar } from '@blueprintjs/core';
 import clsx from 'classnames';
 import React from 'react';
+import { usePhoneLayout } from '@/hooks/usePhoneLayout';
 
 interface DashboardActionsBarProps {
   children?: React.ReactNode;
@@ -13,7 +14,8 @@ export function DashboardActionsBar({
   children,
   name,
 }: DashboardActionsBarProps) {
-  return (
+  const isPhone = usePhoneLayout();
+  const actions = (
     <div
       className={clsx(
         {
@@ -25,5 +27,13 @@ export function DashboardActionsBar({
     >
       <Navbar className="navbar--dashboard-actions-bar">{children}</Navbar>
     </div>
+  );
+  return isPhone ? (
+    <details className="mobile-page-actions">
+      <summary>Page actions</summary>
+      {actions}
+    </details>
+  ) : (
+    actions
   );
 }

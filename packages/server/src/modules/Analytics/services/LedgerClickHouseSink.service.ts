@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { ClsService } from 'nestjs-cls';
+import { ConfigService } from '@nestjs/config';
 import {
   ILedgerDelta,
   ILedgerAnalyticsSyncJobPayload,
@@ -18,6 +19,7 @@ export class LedgerClickHouseSink {
     private readonly syncQueue: Queue,
     private readonly dirtySet: LedgerAnalyticsDirtySet,
     private readonly cls: ClsService,
+    private readonly configService: ConfigService,
   ) {}
 
   /**
@@ -96,6 +98,11 @@ export class LedgerClickHouseSink {
    */
   private enqueue(payload: ILedgerAnalyticsSyncJobPayload): void {
     if (payload.deltas.length === 0) return;
+    if (this.configService.get<boolean>('clickhouse.enabled') !== true) {
+      // Rebuild missed deltas if analytics is enabled again later.
+      void this.dirtySet.mark(payload.organizationId);
+      return;
+    }
 
     this.syncQueue
       .add('sync-ledger', payload, {

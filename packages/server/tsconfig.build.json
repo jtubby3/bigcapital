@@ -11,7 +11,7 @@
     "./src/modules/DynamicListing",
     "./src/modules/DynamicListing/**/*.ts",
     "./src/modules/FinancialStatements/**/*.ts",
-   "./src/modules/StripePayment/**/*.ts", 
+    "./src/modules/StripePayment/**/*.ts",
     "./src/modules/FinancialStatements/modules/BalanceSheet/**.ts",
     "./src/modules/FinancialStatements/modules/ProfitLossSheet/**.ts",
     "./src/modules/Views",
@@ -19,5 +19,9 @@
     "./src/modules/TenantDBManager/**.ts",
     "./src/modules/Organization",
     "./src/modules/Organization/**.ts"
-  ]
+  ],
+  "compilerOptions": {
+    "rootDir": "./src",
+    "incremental": false
+  }
 }

@@ -5,8 +5,8 @@ import { AppModule } from '../src/modules/App/App.module';
 
 let app: INestApplication;
 
-const email = 'kk@kk.com';
-const password = '1231231230';
+const email = process.env.TEST_USER_EMAIL || 'kk@kk.com';
+const password = process.env.TEST_USER_PASSWORD || '1231231230';
 
 let orgainzationId = '';
 let authenticationToken = '';
@@ -23,7 +23,8 @@ beforeAll(async () => {
 
   const signinResponse = await request(app.getHttpServer())
     .post('/auth/signin')
-    .send({ email, password });
+    .send({ email, password })
+    .expect(201);
 
   authenticationToken = signinResponse.body.access_token;
   AuthorizationHeader = `Bearer ${authenticationToken}`;

@@ -1,3 +1,4 @@
+import { QuickBooksReportPdfCss } from '../../common/QuickBooksReportPdfCss';
 import { TableSheetPdf } from '../../common/TableSheetPdf';
 import { IProfitLossSheetQuery } from './ProfitLossSheet.types';
 import { ProfitLossSheetTableInjectable } from './ProfitLossSheetTableInjectable';
@@ -22,9 +23,9 @@ export class ProfitLossTablePdfInjectable {
     return this.tableSheetPdf.convertToPdf(
       table.table,
       table.meta.organizationName,
-      table.meta.sheetName,
-      table.meta.formattedDateRange,
-      HtmlTableCustomCss,
+      'Profit and Loss',
+      `${table.meta.formattedDateRange} · ${table.query.basis === 'cash' ? 'Cash' : 'Accrual'} basis`,
+      [HtmlTableCustomCss, QuickBooksReportPdfCss].join('\n'),
       query.numberFormat?.showInRed,
     );
   }

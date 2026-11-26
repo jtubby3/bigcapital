@@ -1,9 +1,9 @@
-import { Button, Divider, Intent } from '@blueprintjs/core';
-import { Form, useFormikContext } from 'formik';
-import React from 'react';
-import { useHistory } from 'react-router-dom';
-import styled from 'styled-components';
-import { useItemPreferencesFormContext } from './ItemPreferencesFormProvider';
+import { Button, Divider, Intent } from "@blueprintjs/core";
+import { Form, useFormikContext } from "formik";
+import React from "react";
+import { useHistory } from "react-router-dom";
+import styled from "styled-components";
+import { useItemPreferencesFormContext } from "./ItemPreferencesFormProvider";
 import {
   AccountsSelect,
   CardFooterActions,
@@ -12,10 +12,11 @@ import {
   FSelect,
   FSwitch,
   FormattedMessage as T,
-} from '@/components';
-import { ACCOUNT_PARENT_TYPE, ACCOUNT_TYPE } from '@/constants/accountTypes';
+} from "@/components";
+import { ACCOUNT_PARENT_TYPE, ACCOUNT_TYPE } from "@/constants/accountTypes";
 
 export interface ItemPreferencesFormValues {
+  autoIncreaseSellPrice: boolean;
   preferredSellAccount: string | number;
   preferredCostAccount: string | number;
   preferredInventoryAccount: string | number;
@@ -37,7 +38,7 @@ export function ItemForm(): React.ReactElement {
       value: user.email,
       label: `${[user.firstName, user.lastName]
         .filter(Boolean)
-        .join(' ')} (${user.email})`,
+        .join(" ")} (${user.email})`,
     }));
 
   if (
@@ -59,16 +60,16 @@ export function ItemForm(): React.ReactElement {
   return (
     <Form>
       <ItemFormGroup
-        name={'preferredSellAccount'}
+        name={"preferredSellAccount"}
         label={
           <strong>
-            <T id={'preferred_sell_account'} />
+            <T id={"preferred_sell_account"} />
           </strong>
         }
         helperText={
           <T
             id={
-              'select_a_preferred_account_to_deposit_into_it_after_customer_make_payment'
+              "select_a_preferred_account_to_deposit_into_it_after_customer_make_payment"
             }
           />
         }
@@ -76,24 +77,24 @@ export function ItemForm(): React.ReactElement {
         fastField={true}
       >
         <AccountsSelect
-          name={'preferredSellAccount'}
+          name={"preferredSellAccount"}
           items={accounts}
-          placeholder={<T id={'select_payment_account'} />}
+          placeholder={<T id={"select_payment_account"} />}
           filterByParentTypes={[ACCOUNT_PARENT_TYPE.INCOME]}
         />
       </ItemFormGroup>
 
       <ItemFormGroup
-        name={'preferredCostAccount'}
+        name={"preferredCostAccount"}
         label={
           <strong>
-            <T id={'preferred_cost_account'} />
+            <T id={"preferred_cost_account"} />
           </strong>
         }
         helperText={
           <T
             id={
-              'select_a_preferred_account_to_deposit_into_it_after_customer_make_payment'
+              "select_a_preferred_account_to_deposit_into_it_after_customer_make_payment"
             }
           />
         }
@@ -101,24 +102,24 @@ export function ItemForm(): React.ReactElement {
         fastField={true}
       >
         <AccountsSelect
-          name={'preferredCostAccount'}
+          name={"preferredCostAccount"}
           items={accounts}
-          placeholder={<T id={'select_payment_account'} />}
+          placeholder={<T id={"select_payment_account"} />}
           filterByParentTypes={[ACCOUNT_PARENT_TYPE.EXPENSE]}
         />
       </ItemFormGroup>
 
       <ItemFormGroup
-        name={'preferredInventoryAccount'}
+        name={"preferredInventoryAccount"}
         label={
           <strong>
-            <T id={'preferred_inventory_account'} />
+            <T id={"preferred_inventory_account"} />
           </strong>
         }
         helperText={
           <T
             id={
-              'select_a_preferred_account_to_deposit_into_it_vendor_advanced_deposits'
+              "select_a_preferred_account_to_deposit_into_it_vendor_advanced_deposits"
             }
           />
         }
@@ -126,57 +127,68 @@ export function ItemForm(): React.ReactElement {
         fastField={true}
       >
         <AccountsSelect
-          name={'preferredInventoryAccount'}
+          name={"preferredInventoryAccount"}
           items={accounts}
-          placeholder={<T id={'select_payment_account'} />}
+          placeholder={<T id={"select_payment_account"} />}
           filterByTypes={[ACCOUNT_TYPE.INVENTORY]}
         />
       </ItemFormGroup>
 
-      <Divider style={{ margin: '20px 0' }} />
+      <Divider style={{ margin: "20px 0" }} />
+
+      <ItemFormGroup
+        name="autoIncreaseSellPrice"
+        helperText="Allow items with automatic pricing enabled to keep their saved markup when purchase costs rise. Turn this off to pause automatic selling-price increases across all items."
+      >
+        <FSwitch
+          name="autoIncreaseSellPrice"
+          label="Enable automatic selling-price increases"
+          large
+        />
+      </ItemFormGroup>
 
       {/* ----------- Reorder point notifications ----------- */}
       <ItemFormGroup
-        name={'reorderPointNotifications'}
-        helperText={<T id={'reorder_point_notifications_hint'} />}
+        name={"reorderPointNotifications"}
+        helperText={<T id={"reorder_point_notifications_hint"} />}
         inline={true}
       >
         <FSwitch
-          name={'reorderPointNotifications'}
-          labelElement={<T id={'reorder_point_notifications'} />}
+          name={"reorderPointNotifications"}
+          labelElement={<T id={"reorder_point_notifications"} />}
           large={true}
         />
       </ItemFormGroup>
 
       {/* ----------- Prevent stock from going below zero ----------- */}
       <ItemFormGroup
-        name={'preventStockFromGoingBelowZero'}
-        helperText={<T id={'prevent_stock_from_going_below_zero_hint'} />}
+        name={"preventStockFromGoingBelowZero"}
+        helperText={<T id={"prevent_stock_from_going_below_zero_hint"} />}
         inline={true}
       >
         <FSwitch
-          name={'preventStockFromGoingBelowZero'}
-          labelElement={<T id={'prevent_stock_from_going_below_zero'} />}
+          name={"preventStockFromGoingBelowZero"}
+          labelElement={<T id={"prevent_stock_from_going_below_zero"} />}
         />
       </ItemFormGroup>
 
       {/* ----------- Notify to ----------- */}
       <ItemFormGroup
-        name={'reorderPointNotificationEmail'}
+        name={"reorderPointNotificationEmail"}
         label={
           <strong>
-            <T id={'reorder_point_notification_email'} />
+            <T id={"reorder_point_notification_email"} />
           </strong>
         }
-        helperText={<T id={'reorder_point_notification_email_hint'} />}
+        helperText={<T id={"reorder_point_notification_email_hint"} />}
         inline={true}
       >
         <FSelect
-          name={'reorderPointNotificationEmail'}
+          name={"reorderPointNotificationEmail"}
           items={userOptions}
-          valueAccessor={'value'}
-          textAccessor={'label'}
-          placeholder={<T id={'select_user'} />}
+          valueAccessor={"value"}
+          textAccessor={"label"}
+          placeholder={<T id={"select_user"} />}
           disabled={!values.reorderPointNotifications}
           popoverProps={{ minimal: true, captureDismiss: true }}
           fill={true}
@@ -185,10 +197,10 @@ export function ItemForm(): React.ReactElement {
 
       <CardFooterActions>
         <Button intent={Intent.PRIMARY} loading={isSubmitting} type="submit">
-          <T id={'save'} />
+          <T id={"save"} />
         </Button>
         <Button onClick={handleCloseClick} disabled={isSubmitting}>
-          <T id={'close'} />
+          <T id={"close"} />
         </Button>
       </CardFooterActions>
     </Form>

@@ -33,6 +33,7 @@ interface InvoiceActionsPayload {
   onQuick: (invoice: InvoiceTableRow) => void;
   onViewDetails: (invoice: InvoiceTableRow) => void;
   onPrint: (invoice: InvoiceTableRow) => void;
+  onPackingSlip: (invoice: InvoiceTableRow) => void;
   onSendMail: (invoice: InvoiceTableRow) => void;
 }
 
@@ -76,7 +77,7 @@ export function InvoiceStatus({ invoice }: { invoice: InvoiceTableRow }) {
 
       <Choose.Otherwise>
         <Tag round minimal>
-          <T id={'draft'} />
+          <T id={'sales.status.unfinished'} />
         </Tag>
       </Choose.Otherwise>
     </Choose>
@@ -141,6 +142,7 @@ export function ActionsMenu({
     onQuick,
     onViewDetails,
     onPrint,
+    onPackingSlip,
     onSendMail,
   },
   row: { original },
@@ -191,6 +193,11 @@ export function ActionsMenu({
           icon={<Icon icon={'print-16'} iconSize={16} />}
           text={intl.get('print')}
           onClick={safeCallback(onPrint, original)}
+        />
+        <MenuItem
+          icon="box"
+          text="Packing slip"
+          onClick={safeCallback(onPackingSlip, original)}
         />
       </Can>
       <Can I={SaleInvoiceAction.Delete} a={AbilitySubject.Invoice}>

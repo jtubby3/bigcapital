@@ -22,6 +22,7 @@ export class PaymentReceivedCashGL {
   private taxPayableAccountId: number;
   private discountAccountId: number;
   private otherChargesAccountId: number;
+  private shippingIncomeAccountId: number;
 
   /**
    * Constructor method.
@@ -58,6 +59,11 @@ export class PaymentReceivedCashGL {
    */
   setOtherChargesAccountId(otherChargesAccountId: number) {
     this.otherChargesAccountId = otherChargesAccountId;
+    return this;
+  }
+
+  setShippingIncomeAccountId(shippingIncomeAccountId: number) {
+    this.shippingIncomeAccountId = shippingIncomeAccountId;
     return this;
   }
 
@@ -257,6 +263,18 @@ export class PaymentReceivedCashGL {
       ...this.getPaymentEntryTaxEntries(invoice, ratio),
       ...this.getPaymentEntryDiscountEntry(invoice, ratio),
       ...this.getPaymentEntryAdjustmentEntry(invoice, ratio),
+      ...(invoice.shippingChargeLocal > 0
+        ? [
+            {
+              ...this.cashEntriesCommonEntry,
+              credit: invoice.shippingChargeLocal * ratio,
+              accountId: this.shippingIncomeAccountId,
+              accountNormal: AccountNormal.CREDIT,
+              note: 'Shipping',
+              index: 2,
+            },
+          ]
+        : []),
     ];
   };
 

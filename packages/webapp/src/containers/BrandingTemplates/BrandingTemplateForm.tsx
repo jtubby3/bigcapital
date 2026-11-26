@@ -103,6 +103,20 @@ export function BrandingTemplateForm<
         return;
       }
     }
+    const footerFile = (values as T & { _footerImageFile?: File | null })
+      ._footerImageFile;
+    if (footerFile) {
+      const formData = new FormData();
+      formData.append('file', footerFile);
+      formData.append('internalKey', `footer-${Date.now()}`);
+      try {
+        const attachment = await uploadAttachments(formData);
+        _values['footerImageKey'] = attachment?.key;
+      } catch {
+        handleError('An error occurred while uploading the footer image.');
+        return;
+      }
+    }
     // Exclude all the private props that starts with _.
     const excludedPrivateValues = excludePrivateProps(_values);
 

@@ -1,6 +1,7 @@
+import { isStagingEnvironment } from '@/common/config/deployment-environment';
 import { Transporter } from 'nodemailer';
 import { Mail } from './Mail';
-import { Inject, Injectable } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { MAIL_TRANSPORTER_PROVIDER } from './Mail.constants';
 
 @Injectable()
@@ -10,7 +11,11 @@ export class MailTransporter {
     private readonly transporter: Transporter,
   ) {}
 
-  send(mail: Mail) {
+  async send(mail: Mail) {
+    if (isStagingEnvironment())
+      throw new ForbiddenException(
+        'External email delivery is disabled in staging.',
+      );
     return this.transporter.sendMail(mail.mailOptions);
   }
 }

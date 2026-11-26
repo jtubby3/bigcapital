@@ -29,6 +29,7 @@ const commonInvalidateQueries = (
   queryClient: ReturnType<typeof useQueryClient>,
 ) => {
   queryClient.invalidateQueries({ queryKey: customersKeys.all() });
+  queryClient.invalidateQueries({ queryKey: ['customers-workspace'] });
 };
 
 export function useCustomers(

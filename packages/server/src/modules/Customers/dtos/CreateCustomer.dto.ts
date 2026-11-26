@@ -8,9 +8,18 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, ToNumber } from '@/common/decorators/Validators';
+import { Type } from 'class-transformer';
+import { ValidateNested } from 'class-validator';
+import { CustomerProfileDto } from './CustomerProfile.dto';
 import { ContactAddressDto } from './ContactAddress.dto';
 
 export class CreateCustomerDto extends ContactAddressDto {
+  @ApiProperty({ required: false, type: CustomerProfileDto })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => CustomerProfileDto)
+  customerProfile?: CustomerProfileDto;
+
   @ApiProperty({
     required: true,
     description: 'Customer type',

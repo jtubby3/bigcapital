@@ -1,3 +1,8 @@
+import {
+  CustomerCategoriesFields,
+  CustomerSavedAddresses,
+  CustomerAttachmentsFields,
+} from './CustomerProfileFields';
 import { Divider } from '@blueprintjs/core';
 import { css } from '@emotion/css';
 import { CustomerBillingAddress } from './CustomerBillingAddress';
@@ -26,7 +31,13 @@ export function CustomerFormSections() {
       <CustomerShippingAddress />
       <Divider className={customerFormSectionDividerClass} />
 
+      <CustomerSavedAddresses />
+      <Divider className={customerFormSectionDividerClass} />
       <CustomerFormNotesSection />
+      <Divider className={customerFormSectionDividerClass} />
+      <CustomerAttachmentsFields />
+      <Divider className={customerFormSectionDividerClass} />
+      <CustomerCategoriesFields />
     </Box>
   );
 }

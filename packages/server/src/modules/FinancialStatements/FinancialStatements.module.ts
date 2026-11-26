@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { CustomerSalesModule } from './modules/CustomerSales/CustomerSales.module';
 import { PurchasesByItemsModule } from './modules/PurchasesByItems/PurchasesByItems.module';
 import { CustomerBalanceSummaryModule } from './modules/CustomerBalanceSummary/CustomerBalanceSummary.module';
 import { SalesByItemsModule } from './modules/SalesByItems/SalesByItems.module';
@@ -21,6 +22,7 @@ import { BalanceSheetModule } from './modules/BalanceSheet/BalanceSheet.module';
 
 @Module({
   imports: [
+    CustomerSalesModule,
     BalanceSheetModule,
     PurchasesByItemsModule,
     CustomerBalanceSummaryModule,

@@ -1,15 +1,16 @@
-import { Knex } from 'knex';
-import { defaultTo } from 'lodash';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Inject, Injectable, Scope } from '@nestjs/common';
-import { IItemEventCreatedPayload } from '@/interfaces/Item';
-import { events } from '@/common/events/events';
-import { ItemsValidators } from './ItemValidator.service';
-import { Item } from './models/Item';
-import { UnitOfWork } from '../Tenancy/TenancyDB/UnitOfWork.service';
-import { TenantModelProxy } from '../System/models/TenantBaseModel';
-import { CreateItemDto } from './dtos/Item.dto';
-import { DEFAULT_ITEM_UNIT } from './Items.constants';
+import { Knex } from "knex";
+import { deriveItemMarkup } from "@bigcapital/utils";
+import { defaultTo } from "lodash";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { Inject, Injectable, Scope } from "@nestjs/common";
+import { IItemEventCreatedPayload } from "@/interfaces/Item";
+import { events } from "@/common/events/events";
+import { ItemsValidators } from "./ItemValidator.service";
+import { Item } from "./models/Item";
+import { UnitOfWork } from "../Tenancy/TenancyDB/UnitOfWork.service";
+import { TenantModelProxy } from "../System/models/TenantBaseModel";
+import { CreateItemDto } from "./dtos/Item.dto";
+import { DEFAULT_ITEM_UNIT } from "./Items.constants";
 
 @Injectable({ scope: Scope.REQUEST })
 export class CreateItemService {
@@ -84,11 +85,15 @@ export class CreateItemService {
   private transformNewItemDTOToModel(itemDTO: CreateItemDto) {
     return {
       ...itemDTO,
+      autoIncreaseSellPrice: itemDTO.autoIncreaseSellPrice ?? true,
+      markupPercentage:
+        itemDTO.markupPercentage ??
+        deriveItemMarkup(itemDTO.costPrice, itemDTO.sellPrice),
       unit: defaultTo(itemDTO.unit, DEFAULT_ITEM_UNIT),
       active: Boolean(defaultTo(itemDTO.active, true)),
-      quantityOnHand: itemDTO.type === 'inventory' ? 0 : null,
+      quantityOnHand: itemDTO.type === "inventory" ? 0 : null,
       reorderPoint:
-        itemDTO.type === 'inventory' ? (itemDTO.reorderPoint ?? null) : null,
+        itemDTO.type === "inventory" ? (itemDTO.reorderPoint ?? null) : null,
       reorderPointNotified: false,
     };
   }

@@ -26,9 +26,28 @@ export function sanitizePdfTemplateAttributes(
   attributes: Record<string, unknown>,
 ): Record<string, unknown> {
   const sanitized: Record<string, unknown> = {};
+  // Labels and custom text are escaped by React; HTML encoding them here
+  // would print entities such as &amp; literally on the invoice.
   for (const [key, value] of Object.entries(attributes)) {
     sanitized[key] =
-      typeof value === 'string' ? sanitizeHtml(value, SANITIZE_OPTIONS) : value;
+      typeof value === 'string' &&
+      !key.endsWith('Label') &&
+      ![
+        'invoiceTitle',
+        'headerText',
+        'footerText',
+        'companyAddressOverride',
+        'footerImageCaption',
+        'defaultInvoiceMessage',
+        'defaultPaymentInstructions',
+        'emailSubject',
+        'emailMessage',
+        'lineDescriptionLabel',
+        'billToAddressFormat',
+        'shipToAddressFormat',
+      ].includes(key)
+        ? sanitizeHtml(value, SANITIZE_OPTIONS)
+        : value;
   }
   return sanitized;
 }

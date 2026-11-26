@@ -1,5 +1,6 @@
-import { Overlay, OverlayProps } from '@blueprintjs/core';
+import { Button, Overlay, OverlayProps } from '@blueprintjs/core';
 import React from 'react';
+import { usePhoneLayout } from '@/hooks/usePhoneLayout';
 import { Link } from 'react-router-dom';
 import { ISidebarMenuItem, ISidebarMenuItemType } from '../Sidebar/interfaces';
 import { SidebarOverlayContainer } from './SidebarOverlayContainer';
@@ -124,18 +125,37 @@ export interface SidebarOverlayProps extends OverlayProps {
  * @returns {JSX.Element}
  */
 export function SidebarOverlay({ items, label, ...rest }: SidebarOverlayProps) {
+  const isPhone = usePhoneLayout();
   return (
     <Overlay
       portalContainer={
-        (document.querySelector('.Pane.vertical.Pane2') as HTMLElement) ||
-        document.body
+        (document.querySelector(
+          isPhone ? '.mobile-navigation' : '.Pane.vertical.Pane2',
+        ) as HTMLElement) || document.body
       }
       transitionDuration={100}
       backdropClassName={'sidebar-overlay-backdrop'}
       {...rest}
+      onClosed={
+        isPhone
+          ? (node) => {
+              rest.onClosed?.(node);
+              document
+                .querySelector<HTMLElement>(
+                  '.mobile-navigation .bp4-drawer-header .bp4-button',
+                )
+                ?.focus();
+            }
+          : rest.onClosed
+      }
     >
       <div className="sidebar-overlay sidebar-overlay-transition">
         <SidebarOverlayContainer>
+          {isPhone && (
+            <Button minimal icon="arrow-left" onClick={rest.onClose}>
+              Back to navigation
+            </Button>
+          )}
           {label && <SidebarOverlayLabel text={label} />}
 
           <SidebarOverlayMenu items={items} />

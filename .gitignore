@@ -14,3 +14,11 @@ e2e/.auth/
 
 
 .pnpm-store
+# Machine-local development runtime and logs
+.local-dev/
+
+# Local Python tooling and deployment secrets
+__pycache__/
+*.pyc
+deployment/staging/.env
+deployment/staging/data/

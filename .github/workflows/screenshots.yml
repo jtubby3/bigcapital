@@ -12,6 +12,7 @@ concurrency:
 
 jobs:
   capture_screenshots:
+    if: github.repository == 'bigcapitalhq/bigcapital'
     runs-on: ubuntu-latest
     name: Capture app screenshots
     timeout-minutes: 30

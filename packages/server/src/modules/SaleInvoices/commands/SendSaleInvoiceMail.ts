@@ -1,3 +1,5 @@
+import { PackingSlipsService } from '@/modules/PackingSlips/PackingSlips.service';
+import { assertMailSize } from '@/modules/PackingSlips/packingSlipValidation';
 import { Injectable } from '@nestjs/common';
 import { JobsOptions, Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
@@ -33,6 +35,7 @@ export class SendSaleInvoiceMail {
     private readonly tenancyContect: TenancyContext,
 
     @InjectQueue(SendSaleInvoiceQueue) private readonly sendInvoiceQueue: Queue,
+    private readonly packingSlips: PackingSlipsService,
   ) {}
 
   /**
@@ -45,6 +48,24 @@ export class SendSaleInvoiceMail {
     messageOptions: SendInvoiceMailDTO,
     jobOptions?: JobsOptions,
   ) {
+    const selected = await this.packingSlips.snapshotForMail(
+      saleInvoiceId,
+      messageOptions.packingSlips,
+    );
+    const fixedOptions = {
+      ...messageOptions,
+      packingSlips: selected.map((s) => ({ ...s })),
+    };
+    const attachments = await this.packingSlips.mailAttachments(
+      saleInvoiceId,
+      selected,
+    );
+    const defaults =
+      await this.invoiceMail.getInvoiceMailOptions(saleInvoiceId);
+    if (fixedOptions.attachInvoice ?? defaults.attachInvoice) {
+      const [invoice] = await this.invoicePdf.getSaleInvoicePdf(saleInvoiceId);
+      assertMailSize([invoice, ...attachments.map((a) => a.content)]);
+    } else assertMailSize(attachments.map((a) => a.content));
     const tenant = await this.tenancyContect.getTenant();
     const user = await this.tenancyContect.getSystemUser();
 
@@ -53,12 +74,12 @@ export class SendSaleInvoiceMail {
 
     const payload = {
       saleInvoiceId,
-      messageOptions,
+      messageOptions: fixedOptions,
       userId,
       organizationId,
     } as SendSaleInvoiceMailJobPayload;
 
-    await this.sendInvoiceQueue.add(
+    const job = await this.sendInvoiceQueue.add(
       SendSaleInvoiceMailJob,
       payload,
       jobOptions,
@@ -69,6 +90,7 @@ export class SendSaleInvoiceMail {
       saleInvoiceId,
       messageOptions,
     } as ISaleInvoiceMailSend);
+    return { status: 'queued', jobId: String(job.id) };
   }
 
   /**
@@ -105,6 +127,7 @@ export class SendSaleInvoiceMail {
     saleInvoiceId: number,
     messageOptions: SendInvoiceMailDTO,
   ) {
+    const selected = messageOptions.packingSlips ?? [];
     const formattedMessageOptions = await this.getFormattedMailOptions(
       saleInvoiceId,
       messageOptions,
@@ -115,37 +138,31 @@ export class SendSaleInvoiceMail {
       .setCC(formattedMessageOptions.cc)
       .setBCC(formattedMessageOptions.bcc)
       .setContent(formattedMessageOptions.message);
-
-    // Attach invoice document.
+    const attachments = await this.packingSlips.mailAttachments(
+      saleInvoiceId,
+      selected,
+    );
     if (formattedMessageOptions.attachInvoice) {
-      // Retrieves document buffer of the invoice pdf document.
-      const [invoicePdfBuffer, invoiceFilename] =
+      const [content, filename] =
         await this.invoicePdf.getSaleInvoicePdf(saleInvoiceId);
-
-      mail.setAttachments([
-        { filename: `${invoiceFilename}.pdf`, content: invoicePdfBuffer },
-      ]);
+      attachments.unshift({ filename: `${filename}.pdf`, content });
     }
+    assertMailSize(attachments.map((a) => a.content));
+    mail.setAttachments(attachments);
     const eventPayload = {
       saleInvoiceId,
       messageOptions,
       formattedMessageOptions,
     } as ISaleInvoiceMailSend;
-
-    // Triggers the event `onSaleInvoiceSend`.
     await this.eventEmitter.emitAsync(
       events.saleInvoice.onMailSend,
       eventPayload,
     );
-
-    try {
+    // Rendering and storage reads finish before taking the send locks.
+    await this.packingSlips.withMailLock(saleInvoiceId, selected, async () => {
       await this.mailTransporter.send(mail);
-    } catch (error) {
-      console.error('Failed to send invoice mail:', error);
-      throw error;
-    }
-
-    // Triggers the event `onSaleInvoiceSend`.
+    });
+    // Status subscribers acquire their own invoice lock after transport has finished.
     await this.eventEmitter.emitAsync(
       events.saleInvoice.onMailSent,
       eventPayload,

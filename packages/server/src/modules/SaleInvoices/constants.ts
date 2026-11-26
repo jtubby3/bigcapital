@@ -1,3 +1,4 @@
+import { invoiceCustomizationDefaults } from '@bigcapital/pdf-templates';
 export const SendSaleInvoiceQueue = 'SendSaleInvoiceQueue';
 export const SendSaleInvoiceMailJob = 'SendSaleInvoiceMailJob';
 
@@ -164,6 +165,7 @@ export const SaleInvoicesSampleData = [
 ];
 
 export const defaultInvoicePdfTemplateAttributes = {
+  ...invoiceCustomizationDefaults,
   primaryColor: 'red',
   secondaryColor: 'red',
 

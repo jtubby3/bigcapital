@@ -6,10 +6,13 @@ import {
   Intent,
   Switch,
   Alignment,
+  InputGroup,
 } from '@blueprintjs/core';
 import * as FF from 'fp-ts/function';
 import { isEmpty } from 'lodash';
+import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { CustomerTypesButton } from '../CustomerTypes/CustomerTypesButton';
 import { useCustomersListContext } from './CustomersListProvider';
 import { useBulkDeleteCustomersDialog } from './hooks/use-bulk-delete-customers-dialog';
 import { withCustomers } from './withCustomers';
@@ -27,7 +30,11 @@ import {
   DashboardRowsHeightButton,
   DashboardActionsBar,
 } from '@/components';
-import { CustomerAction, AbilitySubject } from '@/constants/abilityOption';
+import {
+  CustomerAction,
+  AbilitySubject,
+  ReportsAction,
+} from '@/constants/abilityOption';
 import { DialogsName } from '@/constants/dialogs';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
 import { useSaveSettings } from '@/hooks/query';
@@ -57,6 +64,7 @@ function CustomerActionsBar({
   // #withDialogActions
   openDialog,
 }: CustomerActionsBarInnerProps) {
+  const [search, setSearch] = useState('');
   const { mutateAsync: saveSettings } = useSaveSettings();
 
   const bulkDelete = useBulkDeleteCustomersDialog();
@@ -133,6 +141,23 @@ function CustomerActionsBar({
     return (
       <DashboardActionsBar>
         <NavbarGroup>
+          <Can
+            I={ReportsAction.READ_CUSTOMERS_TRANSACTIONS}
+            a={AbilitySubject.Report}
+          >
+            <Button
+              minimal
+              icon="document"
+              onClick={() =>
+                history.push(
+                  `/customers/statements/new${customersSelectedRows.length ? `?customerIds=${customersSelectedRows.join(',')}` : ''}`,
+                  { statementReturnTo: { pathname: '/customers' } },
+                )
+              }
+            >
+              Create statements
+            </Button>
+          </Can>
           <Button
             className={Classes.MINIMAL}
             icon={<Icon icon="trash-16" iconSize={16} />}
@@ -149,6 +174,58 @@ function CustomerActionsBar({
   return (
     <DashboardActionsBar>
       <NavbarGroup>
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            setCustomersTableState({
+              pageIndex: 0,
+              filterRoles: [
+                ...customersFilterConditions.filter(
+                  (role) => !(role as any)._customerSearch,
+                ),
+                ...(search.trim()
+                  ? [
+                      {
+                        fieldKey: 'display_name',
+                        comparator: 'contains',
+                        condition: 'and',
+                        value: search.trim(),
+                        _customerSearch: true,
+                      },
+                    ]
+                  : []),
+              ] as IFilterRole[],
+            });
+          }}
+          style={{ marginRight: 12, maxWidth: 240 }}
+        >
+          <InputGroup
+            aria-label="Search customers"
+            placeholder="Search customers…"
+            leftIcon="search"
+            value={search}
+            onChange={(event) => {
+              const value = event.target.value;
+              setSearch(value);
+              if (!value)
+                setCustomersTableState({
+                  pageIndex: 0,
+                  filterRoles: customersFilterConditions.filter(
+                    (role) => !(role as any)._customerSearch,
+                  ),
+                });
+            }}
+            rightElement={
+              <Button
+                minimal
+                small
+                type="submit"
+                aria-label="Apply customer search"
+                icon="arrow-right"
+              />
+            }
+          />
+        </form>
         <DashboardActionViewsList
           resourceName={'customers'}
           views={customersViews}
@@ -164,6 +241,27 @@ function CustomerActionsBar({
             text={<T id={'new_customer'} />}
             onClick={onClickNewCustomer}
           />
+          <NavbarDivider />
+        </Can>
+        <Can I={CustomerAction.View} a={AbilitySubject.Customer}>
+          <CustomerTypesButton />
+          <Can
+            I={ReportsAction.READ_CUSTOMERS_TRANSACTIONS}
+            a={AbilitySubject.Report}
+          >
+            <Button
+              minimal
+              icon="document"
+              onClick={() =>
+                history.push(
+                  `/customers/statements/new${customersSelectedRows.length ? `?customerIds=${customersSelectedRows.join(',')}` : ''}`,
+                  { statementReturnTo: { pathname: '/customers' } },
+                )
+              }
+            >
+              Create statements
+            </Button>
+          </Can>
           <NavbarDivider />
         </Can>
         <AdvancedFilterPopover

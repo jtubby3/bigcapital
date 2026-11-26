@@ -1,7 +1,9 @@
 import * as FF from 'fp-ts/function';
 import { debounce } from 'lodash';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, type CSSProperties } from 'react';
 import SplitPane from 'react-split-pane';
+import { DashboardMobileLayout } from './DashboardMobileLayout';
+import { usePhoneLayout } from '@/hooks/usePhoneLayout';
 import { withDashboard } from '@/containers/Dashboard/withDashboard';
 
 interface DashboardSplitPaneProps {
@@ -18,6 +20,7 @@ interface SplitPaneWithChildrenProps {
   size?: number | string;
   onChange?: (size: number) => void;
   className?: string;
+  style?: CSSProperties;
   children?: React.ReactNode;
 }
 
@@ -28,6 +31,7 @@ function DashboardSplitPane({
   sidebarExpended,
   children,
 }: DashboardSplitPaneProps) {
+  const isPhone = usePhoneLayout();
   const initialSize = 220;
 
   const [defaultSize, setDefaultSize] = useState(
@@ -42,6 +46,8 @@ function DashboardSplitPane({
     debounceSaveSize.current(size);
     setDefaultSize(size);
   };
+  if (isPhone) return <DashboardMobileLayout>{children}</DashboardMobileLayout>;
+
   return (
     <SplitPaneComponent
       allowResize={sidebarExpended}
@@ -52,6 +58,11 @@ function DashboardSplitPane({
       size={sidebarExpended ? defaultSize : 50}
       onChange={handleChange}
       className="primary"
+      style={
+        {
+          '--main-sidebar-width': `${sidebarExpended ? defaultSize : 50}px`,
+        } as CSSProperties
+      }
     >
       {children}
     </SplitPaneComponent>

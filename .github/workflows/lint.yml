@@ -37,6 +37,7 @@ defaults:
 
 jobs:
   lint:
+    if: github.repository == 'bigcapitalhq/bigcapital'
     name: ESLint Check
     runs-on: ubuntu-latest
     timeout-minutes: 10

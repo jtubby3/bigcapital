@@ -1,9 +1,18 @@
 import { IsBoolean, IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { ValidateNested } from 'class-validator';
+import { CustomerProfileDto } from './CustomerProfile.dto';
 import { ContactAddressDto } from './ContactAddress.dto';
 import { IsOptional } from '@/common/decorators/Validators';
 
 export class EditCustomerDto extends ContactAddressDto {
+  @ApiProperty({ required: false, type: CustomerProfileDto })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => CustomerProfileDto)
+  customerProfile?: CustomerProfileDto;
+
   @ApiProperty({ required: true, description: 'Customer type' })
   @IsString()
   @IsNotEmpty()

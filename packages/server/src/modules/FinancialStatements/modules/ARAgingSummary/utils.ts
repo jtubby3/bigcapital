@@ -4,7 +4,7 @@ export const getARAgingSummaryDefaultQuery = () => {
   return {
     asDate: moment().format('YYYY-MM-DD'),
     agingDaysBefore: 30,
-    agingPeriods: 3,
+    agingPeriods: 4,
     numberFormat: {
       divideOn1000: false,
       negativeFormat: 'mines',

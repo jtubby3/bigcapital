@@ -1,4 +1,5 @@
 export const AbilitySubject = {
+  Attachment: 'Attachment',
   Item: 'Item',
   InventoryAdjustment: 'InventoryAdjustment',
   Estimate: 'SaleEstimate',

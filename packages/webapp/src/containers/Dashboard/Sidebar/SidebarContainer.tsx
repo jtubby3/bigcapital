@@ -1,14 +1,18 @@
+import { Button } from '@blueprintjs/core';
 import classNames from 'classnames';
 import * as FF from 'fp-ts/function';
 import React, { useEffect } from 'react';
 import { Scrollbar } from 'react-scrollbars-custom';
+import { withDashboardActions } from '@/containers/Dashboard/withDashboardActions';
+import type { WithDashboardActionsProps } from '@/containers/Dashboard/withDashboardActions';
 import { useObserveSidebarExpendedBodyclass } from './hooks';
 import {
   withDashboard,
   WithDashboardProps,
 } from '@/containers/Dashboard/withDashboard';
 
-interface SidebarContainerProps {
+interface SidebarContainerProps
+  extends Pick<WithDashboardActionsProps, 'toggleSidebarExpand'> {
   children: React.ReactNode;
   sidebarExpended: boolean;
 }
@@ -23,6 +27,7 @@ function SidebarContainerJSX({
 
   // #withDashboard
   sidebarExpended,
+  toggleSidebarExpand,
 }: SidebarContainerProps) {
   const sidebarScrollerRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -56,6 +61,16 @@ function SidebarContainerJSX({
       id="sidebar"
       onMouseLeave={handleSidebarMouseLeave}
     >
+      {!sidebarExpended && (
+        <Button
+          className="sidebar__expand-button"
+          minimal
+          icon="menu"
+          aria-label="Open main menu"
+          title="Open main menu"
+          onClick={() => toggleSidebarExpand(true)}
+        />
+      )}
       <div className={'sidebar__scroll-wrapper'}>
         <Scrollbar
           noDefaultStyles={true}
@@ -73,4 +88,5 @@ export const SidebarContainer = FF.pipe(
   withDashboard(({ sidebarExpended }: WithDashboardProps) => ({
     sidebarExpended,
   })),
+  withDashboardActions,
 );

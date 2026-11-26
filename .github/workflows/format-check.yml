@@ -39,6 +39,7 @@ defaults:
 
 jobs:
   format-check:
+    if: github.repository == 'bigcapitalhq/bigcapital'
     name: Prettier Format Check
     runs-on: ubuntu-latest
     timeout-minutes: 10

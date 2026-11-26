@@ -212,7 +212,7 @@ export function InvoiceDetailsStatus({ invoice }: InvoiceDetailsStatusProps) {
       </Choose.When>
       <Choose.Otherwise>
         <StatusTag round={true} minimal={true}>
-          <T id={'draft'} />
+          <T id={'sales.status.unfinished'} />
         </StatusTag>
       </Choose.Otherwise>
     </Choose>

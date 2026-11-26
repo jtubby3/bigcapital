@@ -1,5 +1,13 @@
+import { useMobileSearch } from '@/hooks/useMobileSearch';
+import { Button, Callout } from '@blueprintjs/core';
 import { isEmpty } from 'lodash';
-import React, { createContext } from 'react';
+import React, { createContext, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import {
+  salesOverviewQueryPath,
+  toggleSalesOverviewMetric as nextSalesOverviewMetric,
+} from '../CustomerWorkspace/salesOverview';
+import { useWorkspaceQuery } from '../CustomerWorkspace/useCustomerWorkspace';
 import { transformCustomersStateToQuery } from './utils';
 import type { TableQuery } from '@/store/store.types';
 import type { SettingsGroup } from '@bigcapital/sdk-ts';
@@ -10,6 +18,10 @@ import {
   useCustomers,
   useSettingsCustomers,
 } from '@/hooks/query';
+import {
+  setCustomersTableState,
+  resetCustomersSelectedRows,
+} from '@/store/customers/customers.actions';
 import { getFieldsFromResourceMeta } from '@/utils';
 
 type UseCustomersResult = ReturnType<typeof useCustomers>;
@@ -31,6 +43,10 @@ type CustomersListContextValue = {
   isResourceMetaFetching: boolean;
 
   isEmptyStatus: boolean;
+  mobileError: boolean;
+  retryMobile: () => void;
+  salesOverviewMetric: string | undefined;
+  toggleSalesOverviewMetric: (metric: string) => void;
 
   customersSettings: SettingsGroup | undefined;
 };
@@ -50,8 +66,22 @@ function CustomersListProvider({
   tableStateChanged,
   children,
 }: CustomersListProviderProps) {
+  const dispatch = useDispatch();
+  const [salesOverviewMetric, setSalesOverviewMetric] = useState<string>();
+  const toggleSalesOverviewMetric = (metric: string) => {
+    setSalesOverviewMetric((current) =>
+      nextSalesOverviewMetric(current, metric),
+    );
+    dispatch(setCustomersTableState({ pageIndex: 0 }));
+    dispatch(resetCustomersSelectedRows());
+  };
+
   // Transformes the table state to fetch query.
-  const tableQuery = transformCustomersStateToQuery(tableState);
+  const { query: mobileSearch, isPhone } = useMobileSearch();
+  const tableQuery = {
+    ...transformCustomersStateToQuery(tableState),
+    ...(mobileSearch ? { search_keyword: mobileSearch } : {}),
+  };
 
   // Customers settings.
   const { data: customersSettings } = useSettingsCustomers();
@@ -69,16 +99,46 @@ function CustomersListProvider({
 
   // Fetches customers data with pagination meta.
   const {
-    data: customersData,
-    isLoading: isCustomersLoading,
-    isFetching: isCustomersFetching,
-  } = useCustomers(tableQuery);
+    data: unfilteredCustomersData,
+    isLoading: isUnfilteredCustomersLoading,
+    isFetching: isUnfilteredCustomersFetching,
+    isError: queryError,
+    refetch: retryCustomers,
+  } = useCustomers(tableQuery, { enabled: !salesOverviewMetric });
+  const overviewCustomers = useWorkspaceQuery<
+    NonNullable<UseCustomersResult['data']>
+  >(
+    salesOverviewQueryPath(tableQuery, salesOverviewMetric || ''),
+    !!salesOverviewMetric,
+  );
+  const customersData = salesOverviewMetric
+    ? overviewCustomers.data
+    : unfilteredCustomersData;
+  const isCustomersLoading = salesOverviewMetric
+    ? overviewCustomers.isLoading
+    : isUnfilteredCustomersLoading;
+  const isCustomersFetching = salesOverviewMetric
+    ? overviewCustomers.isFetching
+    : isUnfilteredCustomersFetching;
 
   // Detarmines the datatable empty status.
+  const mobileError =
+    isPhone && (salesOverviewMetric ? overviewCustomers.isError : queryError);
+  const retryMobile = () => {
+    if (salesOverviewMetric) overviewCustomers.refetch();
+    else retryCustomers();
+  };
   const isEmptyStatus =
-    isEmpty(customersData?.data) && !isCustomersLoading && !tableStateChanged;
+    isEmpty(customersData?.data) &&
+    !mobileSearch &&
+    !mobileError &&
+    !isCustomersLoading &&
+    !tableStateChanged &&
+    !salesOverviewMetric;
 
   const state: CustomersListContextValue = {
+    mobileError,
+    retryMobile,
     customersViews,
     customers: customersData?.data,
     pagination: customersData?.pagination,
@@ -95,6 +155,8 @@ function CustomersListProvider({
     isCustomersFetching,
 
     isEmptyStatus,
+    salesOverviewMetric,
+    toggleSalesOverviewMetric,
 
     customersSettings,
   };
@@ -105,6 +167,14 @@ function CustomersListProvider({
       name={'customers-list'}
     >
       <CustomersListContext.Provider value={state}>
+        {salesOverviewMetric && overviewCustomers.isError && (
+          <Callout intent="warning">
+            Could not load customers for this sales metric.{' '}
+            <Button small onClick={() => overviewCustomers.refetch()}>
+              Try again
+            </Button>
+          </Callout>
+        )}
         {children}
       </CustomersListContext.Provider>
     </DashboardInsider>

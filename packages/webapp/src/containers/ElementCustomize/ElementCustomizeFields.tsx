@@ -12,9 +12,16 @@ import { Box, Group, Stack } from '@/components';
 import { useDrawerContext } from '@/components/Drawer/DrawerProvider';
 import { withDrawerActions } from '@/containers/Drawer/withDrawerActions';
 
-export function ElementCustomizeFields() {
+export function ElementCustomizeFields({ id }: { id?: string }) {
   return (
-    <Group spacing={0} align={'stretch'} className={styles.root}>
+    <Group
+      id={id}
+      spacing={0}
+      align={'stretch'}
+      noWrap
+      className={`${styles.root} ${styles.controls}`}
+      data-testId="customize-controls"
+    >
       <ElementCustomizeTabs />
       <ElementCustomizeFieldsMain />
     </Group>
@@ -40,8 +47,12 @@ export function ElementCustomizeFieldsMain() {
     <Stack spacing={0} className={styles.mainFields}>
       <ElementCustomizeHeader label={'Customize'} />
 
-      <Stack spacing={0} flex="1 1 auto" overflow="auto">
-        <Box flex={'1 1'} overflow="auto">
+      <Stack spacing={0} flex="1 1 auto" className={styles.fieldsBody}>
+        <Box
+          flex={'1 1'}
+          className={styles.fieldsScroll}
+          data-testId="customize-fields-scroll"
+        >
           {CustomizeTabPanel}
         </Box>
         <ElementCustomizeFooterActions />

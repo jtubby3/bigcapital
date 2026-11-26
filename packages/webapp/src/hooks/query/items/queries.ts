@@ -1,5 +1,6 @@
 import {
   fetchItems,
+  fetchItemPriceHistory,
   fetchItem,
   fetchItemInvoices,
   fetchItemBills,
@@ -28,6 +29,7 @@ import { itemsKeys } from './query-keys';
 import type {
   Item,
   CreateItemBody,
+  CreateItemResponse,
   EditItemBody,
   BulkDeleteItemsBody,
   ValidateBulkDeleteItemsResponse,
@@ -51,7 +53,7 @@ const commonInvalidateQueries = (
 };
 
 export function useCreateItem(
-  props?: UseMutationOptions<void, Error, CreateItemBody>,
+  props?: UseMutationOptions<CreateItemResponse, Error, CreateItemBody>,
 ) {
   const queryClient = useQueryClient();
   const fetcher = useApiFetcher();
@@ -296,5 +298,14 @@ export function useItemInventoryCost(
         fetcher,
         query as GetInventoryItemsCostQuery,
       ).then((res: GetInventoryItemsCostResponse) => res.costs ?? []),
+  });
+}
+
+export function useItemPriceHistory(itemId: number | undefined, limit = 6) {
+  const fetcher = useApiFetcher({ enableCamelCaseTransform: true });
+  return useQuery({
+    queryKey: [...itemsKeys.detail(itemId), 'price-history', limit],
+    queryFn: () => fetchItemPriceHistory(fetcher, itemId!, limit),
+    enabled: !!itemId,
   });
 }

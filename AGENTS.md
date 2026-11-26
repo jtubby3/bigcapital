@@ -1,5 +1,19 @@
 # AGENTS.md
 
+## Default skills for this project
+
+Apply these installed skills automatically whenever working on this Big Capital local project. The user does not need to request them again.
+
+- **Superpowers**: Start with `using-superpowers` and follow the relevant workflow skills for the task, including brainstorming and planning for new features, systematic debugging for bugs, and verification before claiming completion.
+- **Ponytail**: Keep `ponytail` active in **full** mode by default. Make the smallest complete change, reuse existing project patterns, and avoid unrequested abstractions and dependencies.
+- **Caveman**: Keep `caveman` active by default for concise, clear chat replies. Preserve technical accuracy, exact commands, paths, numbers, and essential explanations. Use normal prose in code, comments, documentation, and other saved content.
+
+Read the applicable `SKILL.md` files from `$CODEX_HOME/skills` (default: `~/.codex/skills`). The entry points are `using-superpowers/SKILL.md`, `ponytail/SKILL.md`, and `caveman/SKILL.md`.
+
+Load supporting skills when relevant; do not run every installed skill on every task. Use optional modes such as `ultracave`, `megacave`, and Ponytail ultra only when explicitly requested.
+
+Follow the user's task-specific overrides, including requests to disable a mode or provide more detail. These defaults apply to this project and its subdirectories.
+
 ## Repo overview
 
 Bigcapital is a multi-tenant accounting SaaS. pnpm + Lerna monorepo (independent versioning).

@@ -70,7 +70,7 @@ function InvoiceStatus({ customer }: InvoiceStatusProps) {
       </Choose.When>
       <Choose.Otherwise>
         <TextStatus intent={Intent.NONE}>
-          <T id={'draft'} />
+          <T id={'sales.status.unfinished'} />
         </TextStatus>
       </Choose.Otherwise>
     </Choose>

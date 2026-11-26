@@ -9,10 +9,8 @@ export enum ElementCustomizeTabsEnum {
 const DEFAULT_TAB_ID = ElementCustomizeTabsEnum.General;
 
 interface ElementCustomizeTabsControllerValue {
-  currentTabId: ElementCustomizeTabsEnum;
-  setCurrentTabId: React.Dispatch<
-    React.SetStateAction<ElementCustomizeTabsEnum>
-  >;
+  currentTabId: string;
+  setCurrentTabId: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const ElementCustomizeTabsController = createContext(
@@ -30,8 +28,7 @@ interface ElementCustomizeTabsControllerProps {
 export const ElementCustomizeTabsControllerProvider = ({
   children,
 }: ElementCustomizeTabsControllerProps) => {
-  const [currentTabId, setCurrentTabId] =
-    useState<ElementCustomizeTabsEnum>(DEFAULT_TAB_ID);
+  const [currentTabId, setCurrentTabId] = useState<string>(DEFAULT_TAB_ID);
 
   const value = {
     currentTabId,

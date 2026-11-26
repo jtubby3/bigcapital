@@ -1,3 +1,5 @@
+import { ItemPriceHistory } from '@/containers/Items/ItemPriceHistory';
+import { useItemDetailDrawerContext } from './ItemDetailDrawerProvider';
 import { Tab } from '@blueprintjs/core';
 import React from 'react';
 import { ItemDetailHeader } from './ItemDetailHeader';
@@ -9,6 +11,7 @@ import { useFeatureCan } from '@/hooks/state';
 
 export function ItemDetailTab() {
   const { featureCan } = useFeatureCan();
+  const { itemId } = useItemDetailDrawerContext();
 
   return (
     <DrawerMainTabs renderActiveTabPanelOnly={true}>
@@ -21,6 +24,15 @@ export function ItemDetailTab() {
         id={'transactions'}
         title={<T id={'transactions'} />}
         panel={<ItemPaymentTransactions />}
+      />
+      <Tab
+        id="price-history"
+        title="Price history"
+        panel={
+          <div style={{ padding: 20 }}>
+            <ItemPriceHistory itemId={itemId} />
+          </div>
+        }
       />
       {featureCan(Features.Warehouses) && (
         <Tab

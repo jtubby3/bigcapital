@@ -1,0 +1,43 @@
+/* Runtime configuration keeps the same image promotable to production. */
+.App--staging {
+  --environment-banner-height: 48px;
+  box-sizing: border-box;
+  padding-top: var(--environment-banner-height);
+  .dashboard-layout,
+  .dashboard {
+    height: calc(100dvh - var(--environment-banner-height));
+  }
+}
+.deployment-environment-banner {
+  position: fixed;
+  inset: 0 0 auto;
+  height: var(--environment-banner-height);
+  z-index: 2147483000;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  gap: 3px;
+  background: #ffc66d;
+  color: #3c2100;
+  border-bottom: 2px solid #a44e00;
+  font: 12px/1.2 sans-serif;
+  strong {
+    font-size: 13px;
+  }
+  span {
+    text-align: center;
+  }
+}
+@media (max-width: 480px) {
+  .App--staging {
+    --environment-banner-height: 64px;
+  }
+}
+@media print {
+  .deployment-environment-banner {
+    position: fixed;
+  }
+}

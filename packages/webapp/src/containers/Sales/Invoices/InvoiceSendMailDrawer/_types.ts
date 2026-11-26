@@ -1,3 +1,5 @@
+import type { PackingSlipSelection } from '@/hooks/query/invoices';
+
 export interface InvoiceSendMailFormValues {
   subject: string;
   message: string;
@@ -5,4 +7,5 @@ export interface InvoiceSendMailFormValues {
   cc: string[];
   bcc: string[];
   attachPdf: boolean;
+  packingSlips: PackingSlipSelection[];
 }

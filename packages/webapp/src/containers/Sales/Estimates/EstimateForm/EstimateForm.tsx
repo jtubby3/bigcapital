@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom';
 import { Intent } from '@blueprintjs/core';
 import { css } from '@emotion/css';
 import { Formik, Form, FormikHelpers } from 'formik';
@@ -44,6 +45,7 @@ function EstimateFormInner({}: EstimateFormRootProps) {
   const {
     estimate,
     isNewMode,
+    customers,
     submitPayload,
     createEstimateMutate,
     editEstimateMutate,
@@ -74,17 +76,23 @@ function EstimateFormInner({}: EstimateFormRootProps) {
   // Form initial values.
   const isEditMode = !isEmpty(estimate) && !!estimate;
   // Initial values in create and edit mode.
+  const { state: customerLocation } = useLocation<{ customerId?: number }>();
   const initialValues: EstimateFormValues = isEditMode
     ? transformToEditForm(estimate)
     : {
         ...defaultEstimate,
+        customerId: customerLocation?.customerId || defaultEstimate.customerId,
         // If the auto-increment mode is enabled, take the next estimate
         // number from the settings.
         ...(estimateAutoIncrementMode && {
           estimateNumber,
         }),
         entries: orderingLinesIndexes(defaultEstimate.entries),
-        currencyCode: baseCurrency ?? '',
+        currencyCode:
+          customers.find((c) => c.id === customerLocation?.customerId)
+            ?.currencyCode ||
+          baseCurrency ||
+          '',
         termsConditions: defaultTo(estimateTermsConditions, ''),
         note: defaultTo(estimateCustomerNotes, ''),
         pdfTemplateId: saleEstimateState?.defaultTemplateId ?? '',

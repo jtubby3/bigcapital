@@ -1,5 +1,5 @@
 import * as FF from 'fp-ts/function';
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { ActionsMenu, useCustomersTableColumns } from './components';
 import { CustomersEmptyStatus } from './CustomersEmptyStatus';
@@ -18,7 +18,6 @@ import {
   TableSkeletonRows,
   TableSkeletonHeader,
 } from '@/components';
-import { DRAWERS } from '@/constants/drawers';
 import { TABLES } from '@/constants/tables';
 import { withAlertActions } from '@/containers/Alert/withAlertActions';
 import { withDialogActions } from '@/containers/Dialog/withDialogActions';
@@ -72,6 +71,9 @@ function CustomersTableInner({
     isCustomersLoading,
     isCustomersFetching,
     customersSettings,
+    mobileError,
+    retryMobile,
+    salesOverviewMetric,
   } = useCustomersListContext();
   const customersTableSize = customersSettings?.tableSize as string | undefined;
 
@@ -133,7 +135,7 @@ function CustomersTableInner({
 
   // Handle view detail contact.
   const handleViewDetailCustomer = ({ id }: CustomerRow) => {
-    openDrawer(DRAWERS.CUSTOMER_DETAILS, { customerId: id });
+    history.push(`/customers/${id}`);
   };
 
   // Handle cell click.
@@ -141,9 +143,7 @@ function CustomersTableInner({
     cell: { row: { original: CustomerRow } },
     _event: React.MouseEvent,
   ) => {
-    openDrawer(DRAWERS.CUSTOMER_DETAILS, {
-      customerId: cell.row.original.id,
-    });
+    history.push(`/customers/${cell.row.original.id}`);
   };
 
   if (isEmptyStatus) {
@@ -153,6 +153,21 @@ function CustomersTableInner({
   return (
     <DashboardContentTable>
       <DataTable
+        mobileError={mobileError}
+        onMobileRetry={retryMobile}
+        mobileCardColumns={[
+          'display_name',
+          'company_name',
+          'work_phone',
+          'balance',
+        ]}
+        key={JSON.stringify([
+          salesOverviewMetric,
+          customersTableState.filterRoles,
+          customersTableState.inactiveMode,
+          customersTableState.viewSlug,
+          customersTableState.customViewId,
+        ])}
         noInitialFetch={true}
         columns={columns}
         data={customers ?? []}
@@ -166,7 +181,9 @@ function CustomersTableInner({
         spinnerProps={{ size: 30 }}
         pagination={true}
         rowTestId={'customer-row'}
-        initialPageSize={customersTableState?.pageSize ?? 10}
+        initialPageIndex={customersTableState?.pageIndex ?? 0}
+        initialPageSize={customersTableState?.pageSize ?? 20}
+        initialSortBy={customersTableState?.sortBy ?? []}
         manualSortBy={true}
         manualPagination={true}
         rowsCount={pagination?.total ?? 0}

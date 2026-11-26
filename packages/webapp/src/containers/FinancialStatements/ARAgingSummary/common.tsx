@@ -13,7 +13,7 @@ export const getDefaultARAgingSummaryQuery = () => {
   return {
     asDate: moment().endOf('day').format('YYYY-MM-DD'),
     agingDaysBefore: 30,
-    agingPeriods: 3,
+    agingPeriods: 4,
     filterByOption: 'without-zero-balance',
     customersIds: [] as string[],
     branchesIds: [] as string[],

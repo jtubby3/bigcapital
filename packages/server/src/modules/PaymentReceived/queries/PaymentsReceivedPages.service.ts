@@ -30,7 +30,7 @@ export class PaymentsReceivedPagesService {
       entryType: 'invoice',
       invoiceId: invoice.id,
       invoiceNo: invoice.invoiceNo,
-      amount: invoice.balance,
+      amount: invoice.total,
       dueAmount: invoice.dueAmount,
       paymentAmount: invoice.paymentAmount,
       totalPaymentAmount: invoice.paymentAmount,

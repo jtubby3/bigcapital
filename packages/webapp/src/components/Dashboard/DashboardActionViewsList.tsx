@@ -39,7 +39,16 @@ export function DashboardActionViewsList({
   };
 
   const viewsMenuItems = (views as DashboardViewItem[]).map((view) => (
-    <MenuItem onClick={() => handleClickViewItem(view)} text={view.name} />
+    <MenuItem
+      key={String(view.slug)}
+      onClick={() => handleClickViewItem(view)}
+      text={
+        (resourceName === 'invoices' || resourceName === 'estimates') &&
+        view.slug === 'draft'
+          ? <T id="sales.status.unfinished" />
+          : view.name
+      }
+    />
   ));
 
   const handleAllTabClick = () => {

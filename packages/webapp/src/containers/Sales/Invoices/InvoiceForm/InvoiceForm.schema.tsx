@@ -21,17 +21,31 @@ const getSchema = () =>
     invoiceNo: Yup.string()
       .max(DATATYPES_LENGTH.STRING)
       .label(intl.get('invoice_no_')),
-    referenceNo: Yup.string().min(1).max(DATATYPES_LENGTH.STRING),
+    referenceNo: Yup.string().max(DATATYPES_LENGTH.STRING),
     delivered: Yup.boolean(),
+    billingAddressText: Yup.string().nullable().max(4000),
+    shippingAddressText: Yup.string().nullable().max(4000),
+    recipientEmail: Yup.string().email('Enter a valid customer email').max(254),
+    shippingMethod: Yup.string().max(255),
+    shippingDate: Yup.date()
+      .nullable()
+      .transform((value, original) => (original === '' ? null : value)),
+    trackingNo: Yup.string().max(255),
+    paymentTermsDays: Yup.string(),
+    paymentInstructions: Yup.string().max(4000),
+    internalNotes: Yup.string().max(4000),
+    statementMemo: Yup.string().max(4000),
+    shippingCharge: Yup.number()
+      .transform((value, original) => (original === '' ? 0 : value))
+      .min(0)
+      .max(1000000000),
     fromEstimateId: Yup.string(),
     invoiceMessage: Yup.string()
       .trim()
-      .min(1)
       .max(DATATYPES_LENGTH.TEXT)
       .label(intl.get('note')),
     termsConditions: Yup.string()
       .trim()
-      .min(1)
       .max(DATATYPES_LENGTH.TEXT)
       .label(intl.get('note')),
     exchangeRate: Yup.number(),

@@ -28,6 +28,7 @@ function buildAuditLogsQuery(page: number, filters: Record<string, any>) {
     page,
     pageSize: filters.pageSize ?? 20,
     subject: auditLogStringListParam(filters.subject) as any,
+    subjectId: filters.subjectId ?? undefined,
     action: auditLogStringListParam(filters.action) as any,
     userId: filters.userId || undefined,
     from: filters.from || undefined,

@@ -90,6 +90,13 @@ describe('Inventory negative stock (e2e)', () => {
       quantity: 5,
     }).expect(201);
 
+    const before = await request(app.getHttpServer())
+      .get('/inventory-adjustments')
+      .set('organization-id', orgainzationId)
+      .set('Authorization', AuthorizationHeader)
+      .expect(200);
+    expect(before.body.pagination).toHaveProperty('total');
+
     const response = await createQuickAdjustment({
       itemId,
       type: 'decrement',
@@ -102,6 +109,13 @@ describe('Inventory negative stock (e2e)', () => {
 
     const item = await getItem(itemId);
     expect(Number(item.quantity_on_hand)).toBe(5);
+
+    const after = await request(app.getHttpServer())
+      .get('/inventory-adjustments')
+      .set('organization-id', orgainzationId)
+      .set('Authorization', AuthorizationHeader)
+      .expect(200);
+    expect(after.body.pagination.total).toBe(before.body.pagination.total);
   });
 
   it('allows a transaction within the available stock', async () => {

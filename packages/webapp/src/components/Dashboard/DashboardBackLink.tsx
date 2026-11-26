@@ -1,6 +1,7 @@
 import * as FF from 'fp-ts/function';
 import React from 'react';
 import withBreadcrumbs from 'react-router-breadcrumbs-hoc';
+import { useCustomerReturnTo } from '@/hooks/useCustomerReturnTo';
 import { useHistory } from 'react-router-dom';
 import type { DashboardBreadcrumbItem } from './DashboardBreadcrumbs';
 import { If, Icon } from '@/components';
@@ -17,13 +18,15 @@ function DashboardBackLink({
   breadcrumbs,
 }: DashboardBackLinkProps) {
   const history = useHistory();
+  const customerReturnTo = useCustomerReturnTo();
   const crumb = breadcrumbs[breadcrumbs.length - 2];
 
   const handleClick = (event: React.MouseEvent) => {
     const url =
-      typeof dashboardBackLink === 'string'
+      customerReturnTo ||
+      (typeof dashboardBackLink === 'string'
         ? dashboardBackLink
-        : crumb?.match.url;
+        : crumb?.match.url);
     if (url) {
       history.push(url);
     }
@@ -31,10 +34,11 @@ function DashboardBackLink({
   };
 
   return (
-    <If condition={!!(dashboardBackLink && crumb)}>
+    <If condition={!!(dashboardBackLink && (crumb || customerReturnTo))}>
       <div className="dashboard__back-link">
         <a href="#no-link" onClick={handleClick}>
-          <Icon icon={'arrow-left'} iconSize={18} /> <T id={'back_to_list'} />
+          <Icon icon={'arrow-left'} iconSize={18} />{' '}
+          {customerReturnTo ? 'Back to customer' : <T id={'back_to_list'} />}
         </a>
       </div>
     </If>

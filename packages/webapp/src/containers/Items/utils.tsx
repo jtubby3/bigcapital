@@ -1,20 +1,24 @@
-import { Intent } from '@blueprintjs/core';
-import { defaultTo, includes } from 'lodash';
-import { useMemo } from 'react';
-import intl from 'react-intl-universal';
-import { useHistory } from 'react-router-dom';
-import { DEFAULT_ITEM_UNIT } from './constants';
-import { transformItemFormData } from './ItemForm.schema';
-import type { ItemFormValues } from './types';
-import type { Item } from '@bigcapital/sdk-ts';
-import { AppToaster } from '@/components';
-import { useSettingsItems } from '@/hooks/query';
-import { useWatch } from '@/hooks/utils';
+import { Intent } from "@blueprintjs/core";
+import { defaultTo, includes } from "lodash";
+import { useMemo } from "react";
+import intl from "react-intl-universal";
+import { useHistory } from "react-router-dom";
+import { DEFAULT_ITEM_UNIT } from "./constants";
+import { transformItemFormData } from "./ItemForm.schema";
+import type { ItemFormValues } from "./types";
+import type {
+  Item,
+  AccountsList,
+  TaxRatesListResponse,
+} from "@bigcapital/sdk-ts";
+import { AppToaster } from "@/components";
+import { useSettingsItems } from "@/hooks/query";
+import { useWatch } from "@/hooks/utils";
 import {
   transformToForm,
   transformTableStateToQuery,
   defaultFastFieldShouldUpdate,
-} from '@/utils';
+} from "@/utils";
 
 type ItemError = { type: string };
 
@@ -22,35 +26,38 @@ type ItemError = { type: string };
  * Error types for item operations.
  */
 export const ItemErrorType = {
-  ItemNameExists: 'ITEM_NAME_EXISTS',
-  InventoryAccountCannotModified: 'INVENTORY_ACCOUNT_CANNOT_MODIFIED',
+  ItemNameExists: "ITEM_NAME_EXISTS",
+  InventoryAccountCannotModified: "INVENTORY_ACCOUNT_CANNOT_MODIFIED",
   TypeCannotChangeWithItemHasTransactions:
-    'TYPE_CANNOT_CHANGE_WITH_ITEM_HAS_TRANSACTIONS',
-  ItemHasAssociatedTransactions: 'ITEM_HAS_ASSOCIATED_TRANSACTINS',
+    "TYPE_CANNOT_CHANGE_WITH_ITEM_HAS_TRANSACTIONS",
+  ItemHasAssociatedTransactions: "ITEM_HAS_ASSOCIATED_TRANSACTINS",
   ItemHasAssociatedInventoryAdjustment:
-    'ITEM_HAS_ASSOCIATED_INVENTORY_ADJUSTMENT',
-  ItemHasAssociatedTransactionsPlural: 'ITEM_HAS_ASSOCIATED_TRANSACTIONS',
+    "ITEM_HAS_ASSOCIATED_INVENTORY_ADJUSTMENT",
+  ItemHasAssociatedTransactionsPlural: "ITEM_HAS_ASSOCIATED_TRANSACTIONS",
 } as const;
 
 const defaultInitialValues: ItemFormValues = {
   active: true,
-  name: '',
-  type: 'service',
-  code: '',
-  reorderPoint: '',
+  name: "",
+  type: "inventory",
+  code: "",
+  reorderPoint: "",
   unit: DEFAULT_ITEM_UNIT,
-  costPrice: '',
-  sellPrice: '',
-  costAccountId: '',
-  sellAccountId: '',
-  sellTaxRateId: '',
-  inventoryAccountId: '',
-  categoryId: '',
+  autoIncreaseSellPrice: true,
+  markupPercentage: null,
+  pricingEditedManually: false,
+  costPrice: "",
+  sellPrice: "",
+  costAccountId: "",
+  sellAccountId: "",
+  sellTaxRateId: "",
+  inventoryAccountId: "",
+  categoryId: "",
   sellable: true,
   purchasable: true,
-  sellDescription: '',
-  purchaseDescription: '',
-  purchaseTaxRateId: '',
+  sellDescription: "",
+  purchaseDescription: "",
+  purchaseTaxRateId: "",
 };
 
 type ItemsSettings = {
@@ -64,42 +71,67 @@ type ItemsSettings = {
  */
 export const useItemFormInitialValues = (
   item: Item | undefined,
-  initialValues?: Partial<ItemFormValues>,
+  initialValues: Partial<ItemFormValues> | undefined,
+  accounts: AccountsList,
+  taxRates: TaxRatesListResponse,
 ): ItemFormValues => {
   const { data: itemsSettings } = useSettingsItems() as {
     data?: ItemsSettings;
   };
 
-  return useMemo(
-    () => ({
+  return useMemo(() => {
+    const taxExempt = taxRates.find(
+      (tax) =>
+        tax.active && tax.code === "TAX-EXEMPT" && Number(tax.rate) === 0,
+    );
+    const defaults: ItemFormValues = {
       ...defaultInitialValues,
-      costAccountId: defaultTo(itemsSettings?.preferredCostAccount, ''),
-      sellAccountId: defaultTo(itemsSettings?.preferredSellAccount, ''),
-      inventoryAccountId: defaultTo(
-        itemsSettings?.preferredInventoryAccount,
-        '',
-      ),
+      ...(!item && {
+        costAccountId:
+          itemsSettings?.preferredCostAccount ||
+          accounts.find(
+            (account) =>
+              account.active && account.slug === "cost-of-goods-sold",
+          )?.id ||
+          "",
+        sellAccountId:
+          itemsSettings?.preferredSellAccount ||
+          accounts.find(
+            (account) =>
+              account.active && account.slug === "sales-of-product-income",
+          )?.id ||
+          "",
+        inventoryAccountId: defaultTo(
+          itemsSettings?.preferredInventoryAccount,
+          "",
+        ),
+        sellTaxRateId: taxExempt?.id ?? "",
+        purchaseTaxRateId: taxExempt?.id ?? "",
+      }),
+    };
+
+    return {
+      ...defaults,
       /**
        * We only care about the fields in the form. Previously unfilled optional
        * values such as `notes` come back from the API as null, so remove those
        * as well.
        */
       ...(transformToForm(
-        transformItemFormData(item, defaultInitialValues),
-        defaultInitialValues,
+        transformItemFormData(item, defaults),
+        defaults,
       ) as Partial<ItemFormValues>),
       ...(initialValues ?? {}),
-    }),
-    [item, itemsSettings, initialValues],
-  );
+    };
+  }, [item, itemsSettings, initialValues, accounts, taxRates]);
 };
 
 export const transitionItemTypeKeyToLabel = (itemTypeKey: string): string => {
   const table: Record<string, string> = {
-    service: intl.get('service'),
-    inventory: intl.get('inventory'),
+    service: intl.get("service"),
+    inventory: intl.get("inventory"),
   };
-  return typeof table[itemTypeKey] === 'string' ? table[itemTypeKey] : '';
+  return typeof table[itemTypeKey] === "string" ? table[itemTypeKey] : "";
 };
 
 // handle delete errors.
@@ -110,7 +142,7 @@ export const handleDeleteErrors = (errors: ItemError[]): void => {
     )
   ) {
     AppToaster.show({
-      message: intl.get('the_item_has_associated_transactions'),
+      message: intl.get("the_item_has_associated_transactions"),
       intent: Intent.DANGER,
     });
   }
@@ -123,7 +155,7 @@ export const handleDeleteErrors = (errors: ItemError[]): void => {
   ) {
     AppToaster.show({
       message: intl.get(
-        'you_could_not_delete_item_that_has_associated_inventory_adjustments_transacions',
+        "you_could_not_delete_item_that_has_associated_inventory_adjustments_transacions",
       ),
       intent: Intent.DANGER,
     });
@@ -136,7 +168,7 @@ export const handleDeleteErrors = (errors: ItemError[]): void => {
   ) {
     AppToaster.show({
       message: intl.get(
-        'cannot_change_item_type_to_inventory_with_item_has_associated_transactions',
+        "cannot_change_item_type_to_inventory_with_item_has_associated_transactions",
       ),
       intent: Intent.DANGER,
     });
@@ -148,7 +180,7 @@ export const handleDeleteErrors = (errors: ItemError[]): void => {
     )
   ) {
     AppToaster.show({
-      message: intl.get('item.error.you_could_not_delete_item_has_associated'),
+      message: intl.get("item.error.you_could_not_delete_item_has_associated"),
       intent: Intent.DANGER,
     });
   }
@@ -284,13 +316,13 @@ export const transformSubmitRequestErrors = (error: {
   const fields: Record<string, string> = {};
 
   if (errors.find((e) => e.type === ItemErrorType.ItemNameExists)) {
-    fields.name = intl.get('the_name_used_before');
+    fields.name = intl.get("the_name_used_before");
   }
   if (
     errors.find((e) => e.type === ItemErrorType.InventoryAccountCannotModified)
   ) {
     AppToaster.show({
-      message: intl.get('cannot_change_item_inventory_account'),
+      message: intl.get("cannot_change_item_inventory_account"),
       intent: Intent.DANGER,
     });
   }
@@ -301,7 +333,7 @@ export const transformSubmitRequestErrors = (error: {
   ) {
     AppToaster.show({
       message: intl.get(
-        'item.error.type_cannot_change_with_item_has_transactions',
+        "item.error.type_cannot_change_with_item_has_transactions",
       ),
       intent: Intent.DANGER,
     });
@@ -329,10 +361,10 @@ export function useWatchItemError(itemQuery: ItemQuery): void {
       ?.response?.status;
     if (isError && includes([400, 404], status)) {
       AppToaster.show({
-        message: 'The given item not found.',
+        message: "The given item not found.",
         intent: Intent.DANGER,
       });
-      history.push('/items');
+      history.push("/items");
     }
   }, isError);
 }

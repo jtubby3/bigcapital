@@ -1,3 +1,4 @@
+import '@/style/pages/FinancialStatements/QuickBooksReport.scss';
 import classNames from 'classnames';
 import React from 'react';
 import styled from 'styled-components';

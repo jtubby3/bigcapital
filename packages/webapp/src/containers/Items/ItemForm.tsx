@@ -66,7 +66,7 @@ export function ItemForm({ itemId }: ItemFormProps) {
       <ItemFormDashboardTitle />
 
       <ItemFormPageLoading>
-        <Box mx={'auto'} maxWidth={800}>
+        <Box mx={'auto'} maxWidth={800} style={{ width: '100%', minWidth: 0 }}>
           <ItemFormFormik onSubmitSuccess={handleSubmitSuccess} />
         </Box>
       </ItemFormPageLoading>

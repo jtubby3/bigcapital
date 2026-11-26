@@ -1,3 +1,4 @@
+import { GetPdfTemplateService } from '@/modules/PdfTemplate/queries/GetPdfTemplate.service';
 import { GetSaleInvoice } from '../queries/GetSaleInvoice.service';
 import {
   DEFAULT_INVOICE_MAIL_CONTENT,
@@ -14,6 +15,7 @@ import { SaleInvoiceMailOptions } from '../SaleInvoice.types';
 export class SendSaleInvoiceMailCommon {
   constructor(
     private getSaleInvoiceService: GetSaleInvoice,
+    private getPdfTemplateService: GetPdfTemplateService,
     private contactMailNotification: ContactMailNotification,
     private getInvoicePaymentMail: GetInvoicePaymentMail,
     private generatePaymentLinkService: GenerateShareLink,
@@ -44,12 +46,24 @@ export class SendSaleInvoiceMailCommon {
         saleInvoice.customerId,
       );
     const formatArgs = await this.getInvoiceFormatterArgs(invoiceId);
+    const template = saleInvoice.pdfTemplateId
+      ? await this.getPdfTemplateService.getPdfTemplate(
+          saleInvoice.pdfTemplateId,
+        )
+      : null;
+    const defaults =
+      defaultSubject === DEFAULT_INVOICE_MAIL_SUBJECT
+        ? (template?.attributes ?? {})
+        : {};
 
     return {
       ...contactMailDefaultOptions,
-      subject: defaultSubject,
-      message: defaultMessage,
-      attachInvoice: true,
+      ...(saleInvoice.recipientEmail
+        ? { to: [saleInvoice.recipientEmail] }
+        : {}),
+      subject: defaults.emailSubject || defaultSubject,
+      message: defaults.emailMessage || defaultMessage,
+      attachInvoice: defaults.attachInvoicePdf ?? true,
       formatArgs,
     };
   }

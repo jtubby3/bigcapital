@@ -1,3 +1,9 @@
+import { CustomerTypesController } from './CustomerTypes.controller';
+import { CustomerTypesService } from './CustomerTypes.service';
+import {
+  CustomerWorkspaceController,
+  CustomerWorkspaceService,
+} from './queries/CustomerWorkspace';
 import { Module } from '@nestjs/common';
 import { TenancyModule } from '../Tenancy/Tenancy.module';
 import { TenancyDatabaseModule } from '../Tenancy/TenancyDB/TenancyDB.module';
@@ -31,8 +37,14 @@ import { CustomerWriteGLOpeningBalanceSubscriber } from './subscribers/CustomerG
     LedgerModule,
     AccountsModule,
   ],
-  controllers: [CustomersController],
+  controllers: [
+    CustomersController,
+    CustomerWorkspaceController,
+    CustomerTypesController,
+  ],
   providers: [
+    CustomerTypesService,
+    CustomerWorkspaceService,
     ActivateCustomer,
     CreateCustomer,
     CustomerValidators,

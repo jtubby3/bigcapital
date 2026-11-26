@@ -76,7 +76,7 @@ test.describe('estimates', () => {
     await page.getByRole('button', { name: 'New Estimate' }).first().click();
     await waitForEstimateForm(page, 'New Estimate');
 
-    await page.getByRole('button', { name: 'Save as Draft' }).click();
+    await page.getByRole('button', { name: 'Save for later' }).click();
 
     await expect(
       page.getByText('Customer name is a required field'),
@@ -97,7 +97,7 @@ test.describe('estimates', () => {
     await selectEntryItem(page, ITEM_NAME);
     await setEstimateExpirationDateBeforeEstimateDate(page);
 
-    await page.getByRole('button', { name: 'Save as Draft' }).click();
+    await page.getByRole('button', { name: 'Save for later' }).click();
 
     await expect(page.getByText(/field must be later than/)).toBeVisible({
       timeout: 15_000,
@@ -134,7 +134,7 @@ test.describe('estimates', () => {
     );
 
     await page.getByTestId('estimate-reference-input').fill(newReference);
-    await page.getByRole('button', { name: 'Save as Draft' }).click();
+    await page.getByRole('button', { name: 'Save for later' }).click();
 
     await waitForEstimatesList(page);
 

@@ -2,6 +2,7 @@
   "name": "@bigcapital/pdf-templates",
   "version": "0.0.0",
   "scripts": {
+    "test:invoices": "node --test test/*.test.cjs",
     "build": "webpack --config webpack.config.js && npm run build:esm",
     "build:esm": "tsc -p tsconfig.esm.json",
     "dev": "npm run build",

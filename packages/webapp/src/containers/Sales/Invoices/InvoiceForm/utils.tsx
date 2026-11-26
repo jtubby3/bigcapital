@@ -21,7 +21,6 @@ import {
 import {
   aggregateItemEntriesTaxRates,
   assignEntriesTaxAmount,
-  getEntriesTotal,
 } from '@/containers/Entries/utils';
 import { useCurrentOrganizationBaseCurrency } from '@/hooks/query';
 import { TaxType } from '@/interfaces/TaxRates';
@@ -51,6 +50,17 @@ export type InvoiceEntry = {
 export type PaymentMethodFormValue = { enable: boolean };
 
 export type InvoiceFormValues = {
+  billingAddressText: string | null;
+  shippingAddressText: string | null;
+  recipientEmail: string;
+  shippingMethod: string;
+  shippingDate: string;
+  trackingNo: string;
+  paymentTermsDays: string;
+  paymentInstructions: string;
+  internalNotes: string;
+  statementMemo: string;
+  shippingCharge: string;
   customerId: string | number;
   invoiceDate: string;
   dueDate: string;
@@ -99,6 +109,17 @@ export const defaultInvoiceEntry: InvoiceEntry = {
 
 // Default invoice object.
 export const defaultInvoice: InvoiceFormValues = {
+  billingAddressText: null,
+  shippingAddressText: null,
+  recipientEmail: '',
+  shippingMethod: '',
+  shippingDate: '',
+  trackingNo: '',
+  paymentTermsDays: '0',
+  paymentInstructions: '',
+  internalNotes: '',
+  statementMemo: '',
+  shippingCharge: '',
   customerId: '',
   invoiceDate: moment(new Date()).format('YYYY-MM-DD'),
   dueDate: moment().format('YYYY-MM-DD'),
@@ -162,6 +183,8 @@ export function transformToEditForm(
   return {
     ...defaultInvoice,
     ...(transformToForm(invoice, defaultInvoice) as Partial<InvoiceFormValues>),
+    paymentTermsDays:
+      invoice.paymentTermsDays == null ? '' : String(invoice.paymentTermsDays),
     inclusiveExclusiveTax: invoice.isInclusiveTax
       ? TaxType.Inclusive
       : TaxType.Exclusive,
@@ -307,6 +330,11 @@ export function transformValueToRequest(
     isInclusiveTax: values.inclusiveExclusiveTax === TaxType.Inclusive,
     entries: transformEntriesToRequest(values.entries),
     delivered: false,
+    shippingCharge: toSafeNumber(values.shippingCharge),
+    paymentTermsDays:
+      values.paymentTermsDays === '' ? null : Number(values.paymentTermsDays),
+    shippingDate: values.shippingDate || null,
+    recipientEmail: values.recipientEmail || null,
     attachments: transformAttachmentsToRequest(values),
     paymentMethods: transformPaymentMethodsToRequest(values?.paymentMethods),
   } as unknown as CreateSaleInvoiceBody;
@@ -387,7 +415,10 @@ export const useInvoiceSubtotal = () => {
   } = useFormikContext<InvoiceFormValues>();
 
   // Calculate the total due amount of invoice entries.
-  return React.useMemo(() => getEntriesTotal(entries), [entries]);
+  return React.useMemo(
+    () => sumBy(entries, (entry) => toSafeNumber(entry.amount)),
+    [entries],
+  );
 };
 
 /**
@@ -529,7 +560,7 @@ export const useInvoiceTotalTaxAmount = () => {
 
   return React.useMemo(() => {
     const filteredEntries = values.entries.filter((entry) => entry.taxAmount);
-    return sumBy(filteredEntries, 'taxAmount');
+    return sumBy(filteredEntries, (entry) => toSafeNumber(entry.taxAmount));
   }, [values.entries]);
 };
 
@@ -544,7 +575,12 @@ export const useInvoiceTotal = () => {
   const discountAmount = useInvoiceDiscountAmount();
   const adjustmentAmount = useInvoiceAdjustmentAmount();
 
-  const total = subtotal + adjustmentAmount - discountAmount;
+  const { values } = useFormikContext<InvoiceFormValues>();
+  const total =
+    subtotal +
+    adjustmentAmount -
+    discountAmount +
+    toSafeNumber(values.shippingCharge);
   return isExclusiveTax ? total + totalTaxAmount : total;
 };
 

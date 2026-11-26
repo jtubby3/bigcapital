@@ -8,6 +8,7 @@ import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import {
   DiscountExpenseAccount,
   OtherChargesAccount,
+  ShippingIncomeAccount,
   OtherExpensesAccount,
   PrepardExpenses,
   PurchaseDiscountAccount,
@@ -360,6 +361,29 @@ export class AccountRepository extends TenantRepository {
     if (!result) {
       result = await this.model.query(trx).insertAndFetch({
         ...OtherChargesAccount,
+        ..._extraAttrs,
+      });
+    }
+    return result;
+  }
+
+  public async findOrCreateShippingIncomeAccount(
+    extraAttrs: Record<string, string> = {},
+    trx?: Knex.Transaction,
+  ) {
+    const tenantMeta = await this.tenancyContext.getTenantMetadata();
+    const _extraAttrs = {
+      currencyCode: tenantMeta.baseCurrency,
+      ...extraAttrs,
+    };
+
+    let result = await this.model
+      .query(trx)
+      .findOne({ slug: ShippingIncomeAccount.slug, ..._extraAttrs });
+
+    if (!result) {
+      result = await this.model.query(trx).insertAndFetch({
+        ...ShippingIncomeAccount,
         ..._extraAttrs,
       });
     }

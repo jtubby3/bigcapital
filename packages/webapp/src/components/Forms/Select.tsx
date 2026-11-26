@@ -1,13 +1,23 @@
 // @ts-nocheck
 import { Button } from '@blueprintjs/core';
-import { FormikSelect, Select } from '@blueprintjs-formik/select';
+import { Select } from '@blueprintjs-formik/select';
+import { useField } from 'formik';
 import clsx from 'classnames';
 import React from 'react';
 import styled from 'styled-components';
 
 export function FSelect<T extends SelectOptionProps = SelectOptionProps>({
+  fastField,
+  shouldUpdate,
   ...props
+}: {
+  fastField?: boolean;
+  shouldUpdate?: unknown;
+  [key: string]: any;
 }) {
+  // Keep the select mounted when Formik validates other fields, so its popup
+  // remains open as focus moves from a text field into the menu.
+  const [field, , helpers] = useField(props.name);
   const input = ({ activeItem, text, label, value }) => (
     <SelectButton
       text={text || props.placeholder || 'Select an item ...'}
@@ -16,7 +26,15 @@ export function FSelect<T extends SelectOptionProps = SelectOptionProps>({
       className={clsx({ 'is-selected': !!text }, props.className)}
     />
   );
-  return <FormikSelect<T> input={input} fill={true} {...props} />;
+  return (
+    <Select<T>
+      selectedValue={field.value}
+      onValueChange={(value) => helpers.setValue(value)}
+      input={input}
+      fill={true}
+      {...props}
+    />
+  );
 }
 
 export function BPSelect<T extends SelectOptionProps = SelectOptionProps>({

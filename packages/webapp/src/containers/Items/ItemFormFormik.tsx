@@ -1,27 +1,32 @@
-import { Intent } from '@blueprintjs/core';
-import classNames from 'classnames';
-import { Formik, Form, type FormikHelpers } from 'formik';
-import intl from 'react-intl-universal';
-import styled from 'styled-components';
-import '@/style/pages/Items/Form.scss';
-import { CreateItemFormSchema, EditItemFormSchema } from './ItemForm.schema';
-import { ItemFormContent } from './ItemFormContent';
-import { useItemFormContext } from './ItemFormProvider';
+import { Intent } from "@blueprintjs/core";
+import type { ReactNode } from "react";
+import classNames from "classnames";
+import { Formik, Form, type FormikHelpers } from "formik";
+import intl from "react-intl-universal";
+import styled from "styled-components";
+import "@/style/pages/Items/Form.scss";
+import { CreateItemFormSchema, EditItemFormSchema } from "./ItemForm.schema";
+import { ItemFormContent } from "./ItemFormContent";
+import { useItemFormContext } from "./ItemFormProvider";
 import {
   transformSubmitRequestErrors,
   useItemFormInitialValues,
-} from './utils';
-import type { ItemFormValues, ItemFormSubmitPayload } from './types';
-import type { CreateItemBody, EditItemBody } from '@bigcapital/sdk-ts';
-import { AppToaster } from '@/components';
-import { CLASSES } from '@/constants/classes';
-import { safeInvoke } from '@/utils';
+} from "./utils";
+import type { ItemFormValues, ItemFormSubmitPayload } from "./types";
+import type {
+  CreateItemBody,
+  CreateItemResponse,
+  EditItemBody,
+} from "@bigcapital/sdk-ts";
+import { AppToaster } from "@/components";
+import { CLASSES } from "@/constants/classes";
+import { safeInvoke } from "@/utils";
 
 type SubmitSuccessHandler = (
   values: ItemFormValues,
   form: FormikHelpers<ItemFormValues>,
   submitPayload: ItemFormSubmitPayload,
-  response: void,
+  response: CreateItemResponse | void,
 ) => void;
 
 type SubmitErrorHandler = (
@@ -36,6 +41,7 @@ interface ItemFormFormikProps {
   onSubmitSuccess?: SubmitSuccessHandler;
   onSubmitError?: SubmitErrorHandler;
   className?: string;
+  footerActions?: ReactNode;
 }
 
 /**
@@ -46,11 +52,14 @@ export function ItemFormFormik({
   onSubmitSuccess,
   onSubmitError,
   className,
+  footerActions,
 }: ItemFormFormikProps) {
   // Item form context.
   const {
     itemId,
     item,
+    accounts,
+    taxRates,
     createItemMutate,
     editItemMutate,
     submitPayload,
@@ -58,7 +67,12 @@ export function ItemFormFormik({
   } = useItemFormContext();
 
   // Initial values in create and edit mode.
-  const initialValues = useItemFormInitialValues(item, initialValuesComponent);
+  const initialValues = useItemFormInitialValues(
+    item,
+    initialValuesComponent,
+    accounts,
+    taxRates,
+  );
 
   // Handles the form submit.
   const handleFormSubmit = (
@@ -66,17 +80,23 @@ export function ItemFormFormik({
     form: FormikHelpers<ItemFormValues>,
   ) => {
     const { setSubmitting, resetForm, setErrors } = form;
-    const formValues = { ...values };
+    const { pricingEditedManually, ...submittedValues } = values;
+    const formValues: Partial<ItemFormValues> = submittedValues;
+    if (!isNewMode && !pricingEditedManually) {
+      // The server calculates automatic prices using the latest master setting and locked item.
+      delete formValues.sellPrice;
+      delete formValues.markupPercentage;
+    }
 
     setSubmitting(true);
 
     // Handle response succes.
-    const onSuccess = (response: void) => {
+    const onSuccess = (response: CreateItemResponse | void) => {
       AppToaster.show({
         message: intl.get(
           isNewMode
-            ? 'the_item_has_been_created_successfully'
-            : 'the_item_has_been_edited_successfully',
+            ? "the_item_has_been_created_successfully"
+            : "the_item_has_been_edited_successfully",
           {
             number: itemId,
           },
@@ -127,7 +147,7 @@ export function ItemFormFormik({
       >
         <Form>
           <ItemFormFields>
-            <ItemFormContent />
+            <ItemFormContent footerActions={footerActions} />
           </ItemFormFields>
         </Form>
       </Formik>

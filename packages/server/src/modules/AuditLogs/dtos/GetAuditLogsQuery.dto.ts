@@ -57,6 +57,13 @@ export class GetAuditLogsQueryDto {
   @IsString({ each: true })
   action?: string[];
 
+  @ApiPropertyOptional({ description: 'Subject record id', minimum: 1 })
+  @IsOptional()
+  @ToNumber()
+  @IsInt()
+  @Min(1)
+  subjectId?: number;
+
   @ApiPropertyOptional({ description: 'System user id' })
   @IsOptional()
   @ToNumber()

@@ -73,7 +73,7 @@ test.describe('invoices', () => {
     await page.getByRole('button', { name: 'New Invoice' }).first().click();
     await waitForInvoiceForm(page, 'New Invoice');
 
-    await page.getByRole('button', { name: 'Save as Draft' }).click();
+    await page.getByRole('button', { name: 'Save for later' }).click();
 
     await expect(
       page.getByText('Customer name is a required field'),
@@ -110,7 +110,7 @@ test.describe('invoices', () => {
     );
 
     await page.getByTestId('invoice-reference-input').fill(newReference);
-    await page.getByRole('button', { name: 'Save as Draft' }).click();
+    await page.getByRole('button', { name: 'Save for later' }).click();
 
     await waitForInvoicesList(page);
 

@@ -1,4 +1,6 @@
+import { ItemPriceHistoryModule } from '../Items/ItemPriceHistory.module';
 import { Module } from '@nestjs/common';
+import { BillItemPricingSubscriber } from './subscribers/BillItemPricingSubscriber';
 import { BillsApplication } from './Bills.application';
 import { CreateBill } from './commands/CreateBill.service';
 import { DeleteBill } from './commands/DeleteBill.service';
@@ -35,6 +37,7 @@ import { ValidateBulkDeleteBillsService } from './ValidateBulkDeleteBills.servic
 
 @Module({
   imports: [
+    ItemPriceHistoryModule,
     TenancyModule,
     FeaturesModule,
     BillLandedCostsIntegrationModule,
@@ -64,6 +67,7 @@ import { ValidateBulkDeleteBillsService } from './ValidateBulkDeleteBills.servic
     BillGLEntriesSubscriber,
     BillInventoryTransactions,
     BillWriteInventoryTransactionsSubscriber,
+    BillItemPricingSubscriber,
     BillsExportable,
     BillsImportable,
     GetBillPaymentTransactionsService,
@@ -71,6 +75,6 @@ import { ValidateBulkDeleteBillsService } from './ValidateBulkDeleteBills.servic
     ValidateBulkDeleteBillsService,
   ],
   controllers: [BillsController],
-  exports: [BillsExportable, BillsImportable],
+  exports: [BillsExportable, BillsImportable, CreateBill],
 })
 export class BillsModule {}

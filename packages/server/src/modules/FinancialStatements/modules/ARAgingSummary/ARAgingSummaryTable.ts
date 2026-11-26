@@ -1,7 +1,15 @@
 import { IARAgingSummaryData } from './ARAgingSummary.types';
 import { AgingSummaryTable } from '../AgingSummary/AgingSummaryTable';
-import { IAgingSummaryQuery } from '../AgingSummary/AgingSummary.types';
-import { ITableColumnAccessor, ITableRow } from '../../types/Table.types';
+import {
+  IAgingSummaryQuery,
+  IAgingSummaryTotal,
+} from '../AgingSummary/AgingSummary.types';
+import {
+  IColumnMapperMeta,
+  ITableColumn,
+  ITableColumnAccessor,
+  ITableRow,
+} from '../../types/Table.types';
 
 export class ARAgingSummaryTable extends AgingSummaryTable {
   readonly report: IARAgingSummaryData;
@@ -31,4 +39,22 @@ export class ARAgingSummaryTable extends AgingSummaryTable {
   get contactNameNodeAccessor(): ITableColumnAccessor {
     return { key: 'customer_name', accessor: 'customerName' };
   }
+
+  protected agingTableColumns = (): ITableColumn[] =>
+    this.agingPeriods.map((period) => ({
+      key: 'aging_period',
+      // Due-today invoices are Current; overdue data starts at one day.
+      label: period.toDays
+        ? `${Math.max(1, period.beforeDays)}–${period.toDays}`
+        : `${Math.max(1, period.beforeDays)} ${this.i18n.t('aging_summary.and_over')}`,
+    }));
+
+  protected totalNodeAccessors = (
+    node: IAgingSummaryTotal,
+  ): IColumnMapperMeta[] => [
+    { key: 'customer_name', value: 'TOTAL' },
+    { key: 'current', accessor: 'current.formattedAmount' },
+    ...this.agingNodeAccessors(node),
+    { key: 'total', accessor: 'total.formattedAmount' },
+  ];
 }

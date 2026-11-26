@@ -1,3 +1,4 @@
+import styles from './ElementCustomize.module.scss';
 import { useElementCustomizeContext } from './ElementCustomizeProvider';
 import { Stack } from '@/components';
 
@@ -10,6 +11,7 @@ export function ElementCustomizePreviewContent() {
       overflow="auto"
       flex="1 1 0%"
       spacing={0}
+      className={styles.previewContent}
     >
       {PaperTemplate}
     </Stack>

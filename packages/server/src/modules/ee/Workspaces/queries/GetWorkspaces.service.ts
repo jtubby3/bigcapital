@@ -7,7 +7,7 @@ import { SystemUser } from '@/modules/System/models/SystemUser';
 import { WorkspaceDto } from '../dtos/WorkspaceResponse.dto';
 import { WorkspaceTransformer } from '../transformers/WorkspaceTransformer';
 import { TransformerInjectable } from '@/modules/Transformer/TransformerInjectable.service';
-import { S3_CLIENT } from '@/modules/S3/S3.module';
+import { S3_SIGNING_CLIENT } from '@/modules/S3/S3.module';
 import { WorkspacesFinancialsService } from './WorkspacesFinancials.service';
 import { OrgFinancialTotalsMap } from '@/modules/Analytics/Analytics.constants';
 
@@ -22,8 +22,8 @@ export class GetWorkspacesService {
 
     private readonly transformer: TransformerInjectable,
 
-    @Inject(S3_CLIENT)
-    private readonly s3Client: S3Client,
+    @Inject(S3_SIGNING_CLIENT)
+    private readonly s3SigningClient: S3Client,
 
     private readonly configService: ConfigService,
 
@@ -39,7 +39,7 @@ export class GetWorkspacesService {
       Bucket: config.bucket,
       Key: key,
     });
-    return getSignedUrl(this.s3Client, command, { expiresIn: 300 });
+    return getSignedUrl(this.s3SigningClient, command, { expiresIn: 300 });
   }
 
   /**

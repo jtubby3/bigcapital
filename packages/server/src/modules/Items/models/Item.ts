@@ -1,13 +1,13 @@
-import { Warehouse } from '@/modules/Warehouses/models/Warehouse.model';
-import { TenantBaseModel } from '@/modules/System/models/TenantBaseModel';
-import { Model } from 'objection';
-import { ExportableModel } from '@/modules/Export/decorators/ExportableModel.decorator';
-import { InjectModelMeta } from '@/modules/Tenancy/TenancyModels/decorators/InjectModelMeta.decorator';
-import { ItemMeta } from './Item.meta';
-import { ImportableModel } from '@/modules/Import/decorators/Import.decorator';
-import { PreventMutateBaseCurrency } from '@/common/decorators/LockMutateBaseCurrency.decorator';
-import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
-import { ItemDefaultViews } from '../Items.constants';
+import { Warehouse } from "@/modules/Warehouses/models/Warehouse.model";
+import { TenantBaseModel } from "@/modules/System/models/TenantBaseModel";
+import { Model } from "objection";
+import { ExportableModel } from "@/modules/Export/decorators/ExportableModel.decorator";
+import { InjectModelMeta } from "@/modules/Tenancy/TenancyModels/decorators/InjectModelMeta.decorator";
+import { ItemMeta } from "./Item.meta";
+import { ImportableModel } from "@/modules/Import/decorators/Import.decorator";
+import { PreventMutateBaseCurrency } from "@/common/decorators/LockMutateBaseCurrency.decorator";
+import { InjectModelDefaultViews } from "@/modules/Views/decorators/InjectModelDefaultViews.decorator";
+import { ItemDefaultViews } from "../Items.constants";
 
 @ExportableModel()
 @ImportableModel()
@@ -25,6 +25,10 @@ export class Item extends TenantBaseModel {
   public readonly unit: string;
   public readonly sellable: boolean;
   public readonly purchasable: boolean;
+  public readonly purchaseCostDate: string | Date | null;
+  public readonly purchaseCostBillId: number | null;
+  public readonly autoIncreaseSellPrice: boolean;
+  public readonly markupPercentage: number | null;
   public readonly costPrice: number;
   public readonly sellPrice: number;
   public readonly currencyCode: string;
@@ -44,14 +48,14 @@ export class Item extends TenantBaseModel {
   public readonly warehouse!: Warehouse;
 
   static get tableName() {
-    return 'items';
+    return "items";
   }
 
   /**
    * Timestamps columns.
    */
   get timestamps() {
-    return ['createdAt', 'updatedAt'];
+    return ["createdAt", "updatedAt"];
   }
 
   /**
@@ -60,13 +64,13 @@ export class Item extends TenantBaseModel {
   static get modifiers() {
     return {
       updateQuantityOnHand(query, value: number) {
-        const q = query.where('type', 'inventory');
+        const q = query.where("type", "inventory");
 
         if (value > 0) {
-          q.increment('quantityOnHand', value);
+          q.increment("quantityOnHand", value);
         }
         if (value < 0) {
-          q.decrement('quantityOnHand', Math.abs(value));
+          q.decrement("quantityOnHand", Math.abs(value));
         }
         return q;
       },
@@ -75,7 +79,7 @@ export class Item extends TenantBaseModel {
        * Inactive/Active mode.
        */
       inactiveMode(query, active = false) {
-        query.where('items.active', !active);
+        query.where("items.active", !active);
       },
     };
   }
@@ -85,8 +89,8 @@ export class Item extends TenantBaseModel {
    */
   static get searchRoles() {
     return [
-      { condition: 'or', fieldKey: 'name', comparator: 'contains' },
-      { condition: 'or', fieldKey: 'code', comparator: 'like' },
+      { condition: "or", fieldKey: "name", comparator: "contains" },
+      { condition: "or", fieldKey: "code", comparator: "like" },
     ];
   }
 
@@ -95,21 +99,21 @@ export class Item extends TenantBaseModel {
    */
   static get relationMappings() {
     // const { Media } = require('../../Media/models/Media.model');
-    const { Account } = require('../../Accounts/models/Account.model');
+    const { Account } = require("../../Accounts/models/Account.model");
     const {
       ItemCategory,
-    } = require('../../ItemCategories/models/ItemCategory.model');
+    } = require("../../ItemCategories/models/ItemCategory.model");
     const {
       ItemWarehouseQuantity,
-    } = require('../../Warehouses/models/ItemWarehouseQuantity');
+    } = require("../../Warehouses/models/ItemWarehouseQuantity");
     const {
       ItemEntry,
-    } = require('../../TransactionItemEntry/models/ItemEntry');
+    } = require("../../TransactionItemEntry/models/ItemEntry");
     // const WarehouseTransferEntry = require('../../Warehouses/');
     const {
       InventoryAdjustmentEntry,
-    } = require('../../InventoryAdjutments/models/InventoryAdjustmentEntry');
-    const { TaxRateModel } = require('../../TaxRates/models/TaxRate.model');
+    } = require("../../InventoryAdjutments/models/InventoryAdjustmentEntry");
+    const { TaxRateModel } = require("../../TaxRates/models/TaxRate.model");
 
     return {
       /**
@@ -119,8 +123,8 @@ export class Item extends TenantBaseModel {
         relation: Model.BelongsToOneRelation,
         modelClass: ItemCategory,
         join: {
-          from: 'items.categoryId',
-          to: 'items_categories.id',
+          from: "items.categoryId",
+          to: "items_categories.id",
         },
       },
 
@@ -131,8 +135,8 @@ export class Item extends TenantBaseModel {
         relation: Model.BelongsToOneRelation,
         modelClass: Account,
         join: {
-          from: 'items.costAccountId',
-          to: 'accounts.id',
+          from: "items.costAccountId",
+          to: "accounts.id",
         },
       },
 
@@ -143,8 +147,8 @@ export class Item extends TenantBaseModel {
         relation: Model.BelongsToOneRelation,
         modelClass: Account,
         join: {
-          from: 'items.sellAccountId',
-          to: 'accounts.id',
+          from: "items.sellAccountId",
+          to: "accounts.id",
         },
       },
 
@@ -155,8 +159,8 @@ export class Item extends TenantBaseModel {
         relation: Model.BelongsToOneRelation,
         modelClass: Account,
         join: {
-          from: 'items.inventoryAccountId',
-          to: 'accounts.id',
+          from: "items.inventoryAccountId",
+          to: "accounts.id",
         },
       },
 
@@ -167,8 +171,8 @@ export class Item extends TenantBaseModel {
         relation: Model.HasManyRelation,
         modelClass: ItemWarehouseQuantity,
         join: {
-          from: 'items.id',
-          to: 'items_warehouses_quantity.itemId',
+          from: "items.id",
+          to: "items_warehouses_quantity.itemId",
         },
       },
 
@@ -179,8 +183,8 @@ export class Item extends TenantBaseModel {
         relation: Model.HasManyRelation,
         modelClass: ItemEntry,
         join: {
-          from: 'items.id',
-          to: 'items_entries.itemId',
+          from: "items.id",
+          to: "items_entries.itemId",
         },
       },
 
@@ -203,8 +207,8 @@ export class Item extends TenantBaseModel {
         relation: Model.HasManyRelation,
         modelClass: InventoryAdjustmentEntry,
         join: {
-          from: 'items.id',
-          to: 'inventory_adjustments_entries.itemId',
+          from: "items.id",
+          to: "inventory_adjustments_entries.itemId",
         },
       },
 
@@ -231,8 +235,8 @@ export class Item extends TenantBaseModel {
         relation: Model.BelongsToOneRelation,
         modelClass: TaxRateModel,
         join: {
-          from: 'items.sellTaxRateId',
-          to: 'tax_rates.id',
+          from: "items.sellTaxRateId",
+          to: "tax_rates.id",
         },
       },
 
@@ -243,8 +247,8 @@ export class Item extends TenantBaseModel {
         relation: Model.BelongsToOneRelation,
         modelClass: TaxRateModel,
         join: {
-          from: 'items.purchaseTaxRateId',
-          to: 'tax_rates.id',
+          from: "items.purchaseTaxRateId",
+          to: "tax_rates.id",
         },
       },
     };

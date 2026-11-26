@@ -59,7 +59,7 @@ export function EstimateDetailsStatus({
       </Choose.When>
       <Choose.Otherwise>
         <Tag round={true} minimal={true}>
-          <T id={'draft'} />
+          <T id={'sales.status.unfinished'} />
         </Tag>
       </Choose.Otherwise>
     </Choose>

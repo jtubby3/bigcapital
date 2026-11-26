@@ -1,0 +1,126 @@
+.summary {
+  margin: 20px 24px 8px;
+  padding: 16px 20px 18px;
+  border-radius: 8px;
+  border: 1px solid #dce7ed;
+  background: #f3f8fb;
+  color: #23394c;
+}
+.sectionHeading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  > span {
+    font-size: 12px;
+  }
+  strong {
+    display: flex;
+    flex-direction: column;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+  small {
+    font-size: 11px;
+    color: #6e8190;
+    line-height: 1.5;
+  }
+  &:hover {
+    background: #e6f0fa;
+  }
+  &[aria-pressed='true'] {
+    border-color: #397bc1;
+    background: #e6f0fa;
+  }
+  &:focus-visible {
+    outline: 2px solid #397bc1;
+    outline-offset: 2px;
+  }
+}
+.bar {
+  display: flex;
+  height: 8px;
+  border-radius: 4px;
+  margin: 14px 8px 0;
+  background: #e2eaf1;
+  button {
+    flex: 0 0 auto;
+    min-width: 0;
+    border: 0;
+    padding: 0;
+    background: #6eb1ed;
+    cursor: pointer;
+    &:focus-visible {
+      outline: 2px solid #23394c;
+      outline-offset: 2px;
+    }
+    &[aria-pressed='true'] {
+      box-shadow: inset 0 0 0 2px #23394c;
+    }
+    &[data-kind='unbilled'] {
+      background: #79a9e1;
+    }
+    &[data-kind='overdue'] {
+      background: #397bc1;
+    }
+    &[data-kind='open'] {
+      background: #9fc5e8;
+    }
+    &[data-kind='paid'] {
+      background: #5b99d7;
+    }
+  }
+}
+@media (max-width: 1150px) {
+  .metric strong {
+    font-size: 18px;
+  }
+}
+@media (max-width: 700px) {
+  .summary {
+    margin: 16px 12px 8px;
+    padding: 14px;
+  }
+  .metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+:global(.bp4-dark) {
+  .summary {
+    background: #263747;
+    border-color: #3b4b5b;
+    color: #e2ebf1;
+  }
+  .metric small {
+    color: #a8b8c8;
+  }
+  .metric:hover,
+  .metric[aria-pressed='true'] {
+    background: #314a62;
+  }
+  .bar {
+    background: #3b4b5b;
+  }
+}

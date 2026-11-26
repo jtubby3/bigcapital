@@ -1,19 +1,33 @@
 @import '../../_base.scss';
 
 // Dialog
-.#{$ns}-dialog{
+.#{$ns}-dialog {
   background: #fff;
 
-  &-header{
+  &-header {
     background: #ebf1f5;
   }
 
-  &-body{
-    &.is-loading{
-      .bp4-spinner{
+  &-body {
+    &.is-loading {
+      .bp4-spinner {
         padding-top: 10px;
         margin-bottom: -10px;
-      } 
+      }
     }
+  }
+}
+
+.bp4-dialog {
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 24px);
+  overflow: auto;
+  .bp4-dialog-header .bp4-heading {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .bp4-dialog-footer-actions {
+    flex-wrap: wrap;
+    gap: 8px;
   }
 }

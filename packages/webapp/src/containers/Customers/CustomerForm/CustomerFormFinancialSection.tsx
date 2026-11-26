@@ -1,3 +1,4 @@
+import { CustomerPaymentFields } from './CustomerProfileFields';
 import { Position, ControlGroup } from '@blueprintjs/core';
 import { ErrorMessage, useFormikContext } from 'formik';
 import React from 'react';
@@ -52,6 +53,7 @@ export function CustomerFormFinancialSection() {
         />
       </FFormGroup>
 
+      <CustomerPaymentFields />
       <CustomerOpeningBalanceField />
       <CustomerOpeningBalanceExchangeRateField />
       <CustomerOpeningBalanceAtField />

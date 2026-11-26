@@ -1,3 +1,4 @@
+import layout from '@/components/EntityFormLayout.module.scss';
 import { Tab, Tabs } from '@blueprintjs/core';
 import { css } from '@emotion/css';
 import { useState } from 'react';
@@ -24,11 +25,12 @@ export function VendorFormContent({
 
   return (
     <Card
-      className={css`
+      className={`${layout.root} ${css`
         padding-bottom: 0 !important;
-      `}
+      `}`}
     >
       <Group
+        className={layout.body}
         verticalAlign={'top'}
         alignItems={'flex-start'}
         flexWrap={'nowrap'}

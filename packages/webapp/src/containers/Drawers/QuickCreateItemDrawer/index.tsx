@@ -12,10 +12,11 @@ const QuickCretaeItemDrawerContent = lazy(() =>
 interface QuickCreateItemDrawerProps {
   name: string;
   isOpen: boolean;
-  payload: { name?: string; quickActionEvent?: unknown } & Record<
-    string,
-    unknown
-  >;
+  payload: {
+    name?: string;
+    autofillRef?: number;
+    quickActionEvent?: unknown;
+  } & Record<string, unknown>;
 }
 
 function QuickCreateItemDrawer({
@@ -27,12 +28,17 @@ function QuickCreateItemDrawer({
     <Drawer
       isOpen={isOpen}
       name={name}
+      canEscapeKeyClose={true}
+      canOutsideClickClose={false}
       style={{ minWidth: '800px', maxWidth: '1000px' }}
       size={'72%'}
       payload={payload}
     >
       <DrawerSuspense>
-        <QuickCretaeItemDrawerContent itemName={payload.name} />
+        <QuickCretaeItemDrawerContent
+          itemName={payload.name}
+          autofillRef={payload.autofillRef}
+        />
       </DrawerSuspense>
     </Drawer>
   );

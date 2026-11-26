@@ -1,3 +1,4 @@
+import { PackingSlipsModule } from '../PackingSlips/PackingSlips.module';
 import { forwardRef, Module } from '@nestjs/common';
 import { TenancyModule } from '../Tenancy/Tenancy.module';
 import { TenancyDatabaseModule } from '../Tenancy/TenancyDB/TenancyDB.module';
@@ -71,6 +72,7 @@ import { ValidateBulkDeleteSaleInvoicesService } from './ValidateBulkDeleteSaleI
 
 @Module({
   imports: [
+    PackingSlipsModule,
     TenancyModule,
     TenancyDatabaseModule,
     PdfTemplatesModule,

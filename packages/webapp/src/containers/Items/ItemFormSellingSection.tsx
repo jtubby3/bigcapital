@@ -1,15 +1,17 @@
-import { ControlGroup } from '@blueprintjs/core';
-import { useFormikContext } from 'formik';
-import React from 'react';
-import intl from 'react-intl-universal';
-import { useItemFormContext } from './ItemFormProvider';
-import { ItemFormSectionTitle } from './ItemFormSectionTitle';
+import { ControlGroup } from "@blueprintjs/core";
+import { deriveItemMarkup } from "@bigcapital/utils";
+import { useFormikContext } from "formik";
+import React from "react";
+import intl from "react-intl-universal";
+import { useItemFormContext } from "./ItemFormProvider";
+import { ItemFormSectionTitle } from "./ItemFormSectionTitle";
+import { ItemPriceMarkupSlider } from "./ItemPriceMarkupSlider";
 import {
   sellDescriptionFieldShouldUpdate,
   sellAccountFieldShouldUpdate,
   sellPriceFieldShouldUpdate,
-} from './utils';
-import type { ItemFormValues } from './types';
+} from "./utils";
+import type { ItemFormValues } from "./types";
 import {
   AccountsSelect,
   FCheckbox,
@@ -19,18 +21,18 @@ import {
   FFormGroup,
   FTextArea,
   Box,
-} from '@/components';
-import { FormattedMessage as T } from '@/components';
-import { TaxRatesSelect } from '@/components/TaxRates/TaxRatesSelect';
-import { Features } from '@/constants';
-import { ACCOUNT_PARENT_TYPE } from '@/constants/accountTypes';
-import { useCurrentOrganizationBaseCurrency } from '@/hooks/query';
-import { useFeatureCan } from '@/hooks/state';
+} from "@/components";
+import { FormattedMessage as T } from "@/components";
+import { TaxRatesSelect } from "@/components/TaxRates/TaxRatesSelect";
+import { Features } from "@/constants";
+import { ACCOUNT_PARENT_TYPE } from "@/constants/accountTypes";
+import { useCurrentOrganizationBaseCurrency } from "@/hooks/query";
+import { useFeatureCan } from "@/hooks/state";
 
 export function ItemFormSellingSection() {
   const { accounts, taxRates } = useItemFormContext();
   const baseCurrency = useCurrentOrganizationBaseCurrency();
-  const { values } = useFormikContext<ItemFormValues>();
+  const { values, setValues } = useFormikContext<ItemFormValues>();
 
   const { featureCan } = useFeatureCan();
   const isSalesTaxFeatureCan = featureCan(Features.SalesTax);
@@ -41,50 +43,74 @@ export function ItemFormSellingSection() {
 
       {/*------------- Sellable checkbox ------------- */}
       <FFormGroup
-        name={'sellable'}
+        name={"sellable"}
         inline={true}
-        className={'form-group--sellable'}
+        className={"form-group--sellable"}
         fastField
       >
         <FCheckbox
-          name={'sellable'}
+          name={"sellable"}
           inline={true}
-          labelElement={<T id={'i_sell_this_item'} />}
+          labelElement={<T id={"i_sell_this_item"} />}
           fastField
         />
       </FFormGroup>
 
       {/*------------- Selling price ------------- */}
       <FFormGroup
-        name={'sellPrice'}
-        label={<T id={'selling_price'} />}
+        name={"sellPrice"}
+        label={<T id={"selling_price"} />}
         inline={true}
         fastField
       >
-        <ControlGroup fill>
-          <InputPrependText text={baseCurrency} />
-          <FMoneyInputGroup
-            name={'sellPrice'}
-            shouldUpdate={sellPriceFieldShouldUpdate}
-            sellable={values.sellable}
-            inputGroupProps={{ fill: true }}
-            disabled={!values.sellable}
-            fastField
-          />
-        </ControlGroup>
+        <div>
+          <ControlGroup fill>
+            <InputPrependText text={baseCurrency} />
+            <FMoneyInputGroup
+              name={"sellPrice"}
+              onChange={(value: string | undefined) => {
+                setValues((previous) => {
+                  const sellPrice = value ?? "";
+                  const changed =
+                    sellPrice !== "" &&
+                    Number(sellPrice) !== Number(previous.sellPrice);
+                  return {
+                    ...previous,
+                    sellPrice,
+                    ...(changed
+                      ? {
+                          markupPercentage: deriveItemMarkup(
+                            previous.costPrice,
+                            sellPrice,
+                          ),
+                          pricingEditedManually: true,
+                        }
+                      : {}),
+                  };
+                });
+              }}
+              shouldUpdate={sellPriceFieldShouldUpdate}
+              sellable={values.sellable}
+              inputGroupProps={{ fill: true }}
+              disabled={!values.sellable}
+              fastField
+            />
+          </ControlGroup>
+          <ItemPriceMarkupSlider />
+        </div>
       </FFormGroup>
 
       {/*------------- Selling account ------------- */}
       <FFormGroup
-        label={<T id={'account'} />}
-        name={'sellAccountId'}
-        labelInfo={<Hint content={intl.get('item.field.sell_account.hint')} />}
+        label={<T id={"account"} />}
+        name={"sellAccountId"}
+        labelInfo={<Hint content={intl.get("item.field.sell_account.hint")} />}
         inline={true}
       >
         <AccountsSelect
-          name={'sellAccountId'}
+          name={"sellAccountId"}
           items={accounts}
-          placeholder={intl.get('select_account')}
+          placeholder={intl.get("select_account")}
           disabled={!values.sellable}
           filterByParentTypes={[ACCOUNT_PARENT_TYPE.INCOME]}
           fill={true}
@@ -97,19 +123,19 @@ export function ItemFormSellingSection() {
 
       {/*------------- Sell Tax Rate ------------- */}
       {isSalesTaxFeatureCan && (
-        <FFormGroup name={'sellTaxRateId'} label={'Tax Rate'} inline={true}>
-          <TaxRatesSelect name={'sellTaxRateId'} items={taxRates} allowCreate />
+        <FFormGroup name={"sellTaxRateId"} label={"Tax Rate"} inline={true}>
+          <TaxRatesSelect name={"sellTaxRateId"} items={taxRates} allowCreate />
         </FFormGroup>
       )}
 
       <FFormGroup
-        name={'sellDescription'}
-        label={<T id={'description'} />}
+        name={"sellDescription"}
+        label={<T id={"description"} />}
         inline={true}
         fastField
       >
         <FTextArea
-          name={'sellDescription'}
+          name={"sellDescription"}
           growVertically={true}
           disabled={!values.sellable}
           fill

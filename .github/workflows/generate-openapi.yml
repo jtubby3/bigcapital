@@ -64,6 +64,7 @@ env:
 
 jobs:
   generate-openapi:
+    if: github.repository == 'bigcapitalhq/bigcapital'
     name: Generate OpenAPI and SDK Types
     runs-on: ubuntu-latest
     timeout-minutes: 15

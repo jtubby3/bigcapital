@@ -1,5 +1,6 @@
 import { isEmpty } from 'lodash';
 import React, { createContext } from 'react';
+import intl from 'react-intl-universal';
 import type { EstimateTableRow } from './components';
 import type { IResourceField } from '@/components/AdvancedFilter/interfaces';
 import type { SettingsGroup } from '@bigcapital/sdk-ts';
@@ -66,7 +67,18 @@ function EstimatesListProvider({
     pagination: estimatesData?.pagination,
 
     fields: resourceMeta?.fields
-      ? getFieldsFromResourceMeta(resourceMeta.fields)
+      ? getFieldsFromResourceMeta(resourceMeta.fields).map((field) =>
+          field.key === 'status'
+            ? {
+                ...field,
+                options: field.options?.map((option) =>
+                  option.key === 'draft'
+                    ? { ...option, label: intl.get('sales.status.unfinished') }
+                    : option,
+                ),
+              }
+            : field,
+        )
       : [],
     estimatesViews,
 

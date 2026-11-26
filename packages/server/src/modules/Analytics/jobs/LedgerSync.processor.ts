@@ -1,6 +1,7 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
+import { ConfigService } from '@nestjs/config';
 import {
   ILedgerAnalyticsSyncJobPayload,
   LedgerAnalyticsSyncQueue,
@@ -17,6 +18,7 @@ export class LedgerSyncProcessor extends WorkerHost {
     private readonly syncService: LedgerAnalyticsSyncService,
     private readonly tenantConnectionFactory: TenantConnectionFactory,
     private readonly dirtySet: LedgerAnalyticsDirtySet,
+    private readonly configService: ConfigService,
   ) {
     super();
   }
@@ -28,6 +30,10 @@ export class LedgerSyncProcessor extends WorkerHost {
    */
   async process(job: Job<ILedgerAnalyticsSyncJobPayload>): Promise<void> {
     const { organizationId, deltas, accountIds } = job.data;
+    if (this.configService.get<boolean>('clickhouse.enabled') !== true) {
+      await this.dirtySet.mark(organizationId);
+      return;
+    }
 
     try {
       if (accountIds.length > 0) {
@@ -48,7 +54,6 @@ export class LedgerSyncProcessor extends WorkerHost {
         }
       }
       await this.syncService.insertLedgerDeltas(organizationId, deltas);
-      await this.dirtySet.unmark(organizationId);
     } catch (error) {
       this.logger.warn(
         `Failed to sync ledger deltas of org ${organizationId}: ${error.message}`,

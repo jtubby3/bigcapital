@@ -1,3 +1,4 @@
+import { isStagingEnvironment } from '@/common/config/deployment-environment';
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { RecurringInvoicesQueue } from './RecurringInvoicesQueue.service';
 
@@ -10,6 +11,7 @@ export class RecurringInvoicesBootstrap implements OnApplicationBootstrap {
   ) {}
 
   async onApplicationBootstrap(): Promise<void> {
+    if (isStagingEnvironment()) return;
     try {
       await this.recurringInvoicesQueue.registerScan();
     } catch (error) {

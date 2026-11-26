@@ -26,6 +26,7 @@ defaults:
 
 jobs:
   test_server:
+    if: github.repository == 'bigcapitalhq/bigcapital'
     runs-on: ubuntu-latest
     name: Jest e2e tests
     timeout-minutes: 40

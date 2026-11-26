@@ -54,6 +54,9 @@ export class GetCustomers {
       .onBuild((builder) => {
         dynamicList.buildQuery()(builder);
         builder.modify('inactiveMode', filter.inactiveMode);
+        if (typeof filterDto.filterQuery === 'function') {
+          filterDto.filterQuery(builder);
+        }
       })
       .pagination(filter.page - 1, filter.pageSize);
 

@@ -11,6 +11,7 @@ env:
 
 jobs:
   build-publish-webapp:
+    if: github.repository == 'bigcapitalhq/bigcapital'
     strategy:
       fail-fast: false
     name: Build and deploy webapp container
@@ -84,6 +85,7 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
   build-publish-server:
+    if: github.repository == 'bigcapitalhq/bigcapital'
     name: Build and deploy server container
     runs-on: ubuntu-latest
     permissions:

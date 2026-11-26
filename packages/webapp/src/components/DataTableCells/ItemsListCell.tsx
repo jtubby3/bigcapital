@@ -6,6 +6,7 @@ import intl from 'react-intl-universal';
 import { ItemsSuggest } from '@/components';
 import { CellType } from '@/constants';
 import { useCellAutoFocus } from '@/hooks';
+import { useCreateAutofillListener } from '@/hooks/state/autofill';
 
 /**
  * Items list cell.
@@ -29,6 +30,9 @@ export default function ItemsListCell({
     [updateData, index, id],
   );
 
+  const autofillRef = useCreateAutofillListener(({ itemId }) => {
+    if (itemId) handleItemSelected({ id: itemId });
+  });
   const error = errors?.[index]?.[id];
 
   return (
@@ -39,7 +43,8 @@ export default function ItemsListCell({
     >
       <ItemsSuggest
         items={items}
-        onItemSelect={handleItemSelected}
+        onItemChange={(_value, item) => handleItemSelected(item)}
+        autofillRef={autofillRef}
         selectedValue={initialValue}
         sellable={filterSellable}
         purchasable={filterPurchasable}
@@ -47,7 +52,7 @@ export default function ItemsListCell({
           inputRef: (ref) => (fieldRef.current = ref),
           placeholder: intl.get('enter_an_item'),
         }}
-        openOnKeyDown={true}
+        openOnKeyDown={false}
         blurOnSelectClose={false}
         {...fieldProps}
       />

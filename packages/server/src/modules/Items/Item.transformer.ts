@@ -1,5 +1,5 @@
-import { Transformer } from '../Transformer/Transformer';
-import { Item } from './models/Item';
+import { Transformer } from "../Transformer/Transformer";
+import { Item } from "./models/Item";
 // import { GetItemWarehouseTransformer } from '@/services/Warehouses/Items/GettItemWarehouseTransformer';
 
 export class ItemTransformer extends Transformer {
@@ -8,7 +8,7 @@ export class ItemTransformer extends Transformer {
    * @returns {string[]}
    */
   public excludeAttributes = (): string[] => {
-    return ['reorderPointNotified'];
+    return ["reorderPointNotified", "purchaseCostDate", "purchaseCostBillId"];
   };
 
   /**
@@ -17,10 +17,10 @@ export class ItemTransformer extends Transformer {
    */
   public includeAttributes = (): string[] => {
     return [
-      'typeFormatted',
-      'sellPriceFormatted',
-      'costPriceFormatted',
-      'itemWarehouses',
+      "typeFormatted",
+      "sellPriceFormatted",
+      "costPriceFormatted",
+      "itemWarehouses",
     ];
   };
 

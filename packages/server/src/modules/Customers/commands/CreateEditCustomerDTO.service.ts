@@ -1,6 +1,10 @@
 import * as moment from 'moment';
 import { defaultTo, omit, isEmpty } from 'lodash';
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { Customer } from '../models/Customer';
+import { CustomerProfileDto } from '../dtos/CustomerProfile.dto';
+import { Inject } from '@nestjs/common';
+import { TenantModelProxy } from '@/modules/System/models/TenantBaseModel';
 import { TenancyContext } from '@/modules/Tenancy/TenancyContext.service';
 import { ICustomerEditDTO, ICustomerNewDTO } from '../types/Customers.types';
 import { ContactService } from '@/modules/Contacts/types/Contacts.types';
@@ -10,7 +14,23 @@ export class CreateEditCustomerDTO {
   /**
    * @param {TenancyContext} tenancyContext - Tenancy context service.
    */
-  constructor(private readonly tenancyContext: TenancyContext) {}
+  constructor(
+    private readonly tenancyContext: TenancyContext,
+    @Inject(Customer.name)
+    private readonly customers: TenantModelProxy<typeof Customer>,
+  ) {}
+
+  private async validateProfile(dto: { customerProfile?: CustomerProfileDto }) {
+    const keys = dto.customerProfile?.attachmentKeys;
+    if (keys?.length) {
+      const docs = await this.customers()
+        .knex()('documents')
+        .whereIn('key', keys)
+        .select('key');
+      if (new Set(keys).size !== docs.length)
+        throw new BadRequestException('Invalid attachment');
+    }
+  }
 
   /**
    * Transformes the create/edit DTO.
@@ -38,6 +58,9 @@ export class CreateEditCustomerDTO {
    * @returns {Promise<Partial<Customer>>}
    */
   public transformCreateDTO = async (customerDTO: ICustomerNewDTO) => {
+    await this.validateProfile(
+      customerDTO as { customerProfile?: CustomerProfileDto },
+    );
     const commonDTO = this.transformCommonDTO(customerDTO);
 
     // Retrieves the tenant metadata.
@@ -68,7 +91,10 @@ export class CreateEditCustomerDTO {
    * @param   {ICustomerEditDTO} customerDTO
    * @returns
    */
-  public transformEditDTO = (customerDTO: ICustomerEditDTO) => {
+  public transformEditDTO = async (customerDTO: ICustomerEditDTO) => {
+    await this.validateProfile(
+      customerDTO as { customerProfile?: CustomerProfileDto },
+    );
     const commonDTO = this.transformCommonDTO(customerDTO);
 
     return {

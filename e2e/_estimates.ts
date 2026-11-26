@@ -1,18 +1,18 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from "@playwright/test";
 
 const MONTHS = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
 /**
@@ -21,47 +21,45 @@ const MONTHS = [
  * of the organization's configured date format.
  */
 function formatDateToInputFormat(date: Date, format: string): string {
-  const DD = String(date.getDate()).padStart(2, '0');
-  const MM = String(date.getMonth() + 1).padStart(2, '0');
+  const DD = String(date.getDate()).padStart(2, "0");
+  const MM = String(date.getMonth() + 1).padStart(2, "0");
   const YYYY = String(date.getFullYear());
   const MMM = MONTHS[date.getMonth()];
 
   return format
-    .replace('YYYY', YYYY)
-    .replace('MMM', MMM)
-    .replace('DD', DD)
-    .replace('MM', MM);
+    .replace("YYYY", YYYY)
+    .replace("MMM", MMM)
+    .replace("DD", DD)
+    .replace("MM", MM);
 }
 
 /**
  * Sets the estimate expiration date to the day before the estimate date, so the
  * form shows the "expiration date must be later than estimate date" error.
  */
-export async function setEstimateExpirationDateBeforeEstimateDate(
-  page: Page,
-) {
-  const expirationInput = page.locator('input.estimate-expiration-date-input');
+export async function setEstimateExpirationDateBeforeEstimateDate(page: Page) {
+  const expirationInput = page.locator("input.estimate-expiration-date-input");
   const format =
-    (await expirationInput.getAttribute('placeholder')) || 'DD MMM YYYY';
+    (await expirationInput.getAttribute("placeholder")) || "DD MMM YYYY";
 
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
 
   await expirationInput.click();
   await expirationInput.fill(formatDateToInputFormat(yesterday, format));
-  await page.keyboard.press('Escape');
+  await page.keyboard.press("Escape");
 }
 
 /**
  * Waits until the estimates list page is loaded.
  */
 export async function waitForEstimatesList(page: Page) {
-  await expect(page.getByTestId('dashboard-topbar').locator('h1')).toHaveText(
-    'Estimates',
+  await expect(page.getByTestId("dashboard-topbar").locator("h1")).toHaveText(
+    "Estimates",
     { timeout: 30_000 },
   );
   await expect(
-    page.getByRole('button', { name: 'New Estimate' }).first(),
+    page.getByRole("button", { name: "New Estimate" }).first(),
   ).toBeVisible({ timeout: 30_000 });
 }
 
@@ -70,49 +68,24 @@ export async function waitForEstimatesList(page: Page) {
  * (New Estimate or Edit Estimate).
  */
 export async function waitForEstimateForm(page: Page, title: string) {
-  await expect(page.getByTestId('dashboard-topbar').locator('h1')).toHaveText(
+  await expect(page.getByTestId("dashboard-topbar").locator("h1")).toHaveText(
     title,
     { timeout: 30_000 },
   );
-  await expect(page.getByTestId('estimate-customer-select')).toBeVisible({
+  await expect(page.getByTestId("estimate-customer-select")).toBeVisible({
     timeout: 30_000,
   });
 }
 
-/**
- * Selects the given customer inside the estimate form.
- *
- * The customer Select popover cannot be opened reliably with a plain mouse
- * click, so it is retried the same way the account type select does: focus
- * the trigger, press Enter to open the popover, then immediately click the
- * matching menu item before the popover collapses.
- */
+/** Selects the customer by name, independently of its displayed balance. */
 export async function selectCustomer(page: Page, displayName: string) {
-  const button = page.getByTestId('estimate-customer-select');
-
-  for (let attempt = 0; attempt < 8; attempt++) {
-    await button.focus();
-    await page.keyboard.press('Enter');
-
-    const clicked = await page.evaluate((name) => {
-      const items = Array.from(document.querySelectorAll('[role="menuitem"]'));
-      const item = items.find((el) =>
-        (el as HTMLElement).innerText.trim().includes(name),
-      );
-      if (item) {
-        (item as HTMLElement).click();
-        return true;
-      }
-      return false;
-    }, displayName);
-
-    if (clicked) {
-      await expect(button).toContainText(displayName, { timeout: 5_000 });
-      return;
-    }
-    await page.keyboard.press('Escape');
-  }
-  throw new Error(`Failed to select the "${displayName}" customer.`);
+  const button = page.getByTestId("estimate-customer-select");
+  await button.click();
+  await page
+    .getByRole("menuitem")
+    .filter({ has: page.getByText(displayName, { exact: true }) })
+    .click({ timeout: 15_000 });
+  await expect(button).toContainText(displayName, { timeout: 5_000 });
 }
 
 /**
@@ -120,10 +93,10 @@ export async function selectCustomer(page: Page, displayName: string) {
  *
  * Once the item is selected the row is auto-filled with the sell price, unit
  * quantity and description, and a new empty line is appended. Waiting for the
- * second item input ensures the fetched values were committed before saving.
+ * second item input and quantity ensures fetched values are committed before saving.
  */
 export async function selectEntryItem(page: Page, itemName: string) {
-  const input = page.getByPlaceholder('Enter an item...').first();
+  const input = page.getByPlaceholder("Enter an item...").first();
   await input.click();
   await input.pressSequentially(itemName);
 
@@ -134,8 +107,8 @@ export async function selectEntryItem(page: Page, itemName: string) {
   for (let attempt = 0; attempt < 12 && !clicked; attempt++) {
     clicked = await page.evaluate((name) => {
       const items = Array.from(document.querySelectorAll('[role="menuitem"]'));
-      const item = items.find((el) =>
-        (el as HTMLElement).innerText.trim().includes(name),
+      const item = items.find(
+        (el) => (el as HTMLElement).innerText.trim() === name,
       );
       if (item) {
         (item as HTMLElement).click();
@@ -153,12 +126,16 @@ export async function selectEntryItem(page: Page, itemName: string) {
     throw new Error(`Failed to select the "${itemName}" item.`);
   }
 
-  await expect(page.getByPlaceholder('Enter an item...')).toHaveCount(2, {
+  await expect(page.locator(".td-itemId input")).toHaveCount(2, {
+    timeout: 10_000,
+  });
+
+  await expect(page.locator(".td-quantity input").first()).toHaveValue("1", {
     timeout: 10_000,
   });
 
   // Close any lingering select popover before interacting with the footer.
-  await page.keyboard.press('Escape');
+  await page.keyboard.press("Escape");
 }
 
 /**
@@ -180,24 +157,24 @@ export async function createEstimate(
     estimateNumber?: string;
   },
 ): Promise<string> {
-  await page.goto('/estimates/new');
-  await waitForEstimateForm(page, 'New Estimate');
+  await page.goto("/estimates/new");
+  await waitForEstimateForm(page, "New Estimate");
 
   await selectCustomer(page, customerName);
   await selectEntryItem(page, itemName);
 
   if (estimateNumber) {
-    await page.getByTestId('estimate-number-input').fill(estimateNumber);
+    await page.getByTestId("estimate-number-input").fill(estimateNumber);
   }
 
   const createResponse = page.waitForResponse(
     (response) =>
-      response.url().includes('/api/sale-estimates') &&
-      response.request().method() === 'POST',
+      response.url().includes("/api/sale-estimates") &&
+      response.request().method() === "POST",
     { timeout: 20_000 },
   );
 
-  await page.getByRole('button', { name: 'Save as Draft' }).click();
+  await page.getByRole("button", { name: "Save for later" }).click();
 
   const response = await createResponse;
   if (!response.ok()) {
@@ -212,7 +189,7 @@ export async function createEstimate(
   const number =
     createdEstimate.estimateNumber ?? createdEstimate.estimate_number;
   if (!number) {
-    throw new Error('[e2e] Creating the estimate returned no estimate number.');
+    throw new Error("[e2e] Creating the estimate returned no estimate number.");
   }
 
   await waitForEstimatesList(page);
@@ -229,17 +206,17 @@ export async function filterEstimatesByNumber(
   page: Page,
   estimateNumber: string,
 ): Promise<Locator> {
-  await page.getByRole('button', { name: /filter|filters applied/i }).click();
-  await page.getByPlaceholder('Value').first().fill(estimateNumber);
+  await page.getByRole("button", { name: /filter|filters applied/i }).click();
+  await page.getByPlaceholder("Value").first().fill(estimateNumber);
 
   const row = page
-    .getByTestId('estimate-row')
+    .getByTestId("estimate-row")
     .filter({ hasText: estimateNumber })
     .first();
   await expect(row).toBeVisible({ timeout: 30_000 });
 
   // Close the filter popover before interacting with the table.
-  await page.keyboard.press('Escape');
+  await page.keyboard.press("Escape");
 
   return row;
 }
@@ -249,17 +226,17 @@ export async function filterEstimatesByNumber(
  * success toast.
  */
 export async function deleteEstimateViaRow(page: Page, row: Locator) {
-  await row.click({ button: 'right' });
-  await page.getByRole('menuitem', { name: 'Delete Estimate' }).click();
+  await row.click({ button: "right" });
+  await page.getByRole("menuitem", { name: "Delete Estimate" }).click();
 
-  await expect(page.getByTestId('estimate-delete-alert')).toBeVisible();
+  await expect(page.getByTestId("estimate-delete-alert")).toBeVisible();
   await page
-    .getByRole('dialog')
-    .filter({ has: page.getByTestId('estimate-delete-alert') })
-    .getByRole('button', { name: 'Delete' })
+    .getByRole("dialog")
+    .filter({ has: page.getByTestId("estimate-delete-alert") })
+    .getByRole("button", { name: "Delete" })
     .click();
 
   await expect(
-    page.getByText('The estimate has been deleted successfully.'),
+    page.getByText("The estimate has been deleted successfully."),
   ).toBeVisible({ timeout: 15_000 });
 }

@@ -4,6 +4,7 @@ import { FormattedMessage as T } from '@/components';
 import { Features } from '@/constants/features';
 
 export const PreferencesMenu: PreferencesMenuItem[] = [
+  { text: 'Custom form styles', href: '/preferences/custom-form-styles' },
   {
     text: <T id={'general'} />,
     disabled: false,

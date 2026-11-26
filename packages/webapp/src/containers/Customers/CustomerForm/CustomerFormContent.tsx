@@ -1,3 +1,4 @@
+import layout from '@/components/EntityFormLayout.module.scss';
 import { Tab } from '@blueprintjs/core';
 import { Tabs } from '@blueprintjs/core';
 import { css } from '@emotion/css';
@@ -21,11 +22,12 @@ export function CustomerFormContent() {
 
   return (
     <Card
-      className={css`
+      className={`${layout.root} ${css`
         padding-bottom: 0 !important;
-      `}
+      `}`}
     >
       <Group
+        className={layout.body}
         verticalAlign={'top'}
         alignItems={'flex-start'}
         flexWrap={'nowrap'}
@@ -43,7 +45,10 @@ export function CustomerFormContent() {
           <Tab id={'financial'} title={'Financial'} />
           <Tab id={'billingAddress'} title={'Billing address'} />
           <Tab id={'shippingAddress'} title={'Shipping address'} />
+          <Tab id={'savedAddresses'} title={'Other addresses'} />
           <Tab id={'notes'} title={'Notes'} />
+          <Tab id={'attachments'} title={'Attachments'} />
+          <Tab id={'additional'} title={'Additional info'} />
         </Tabs>
 
         <CustomerFormSections />

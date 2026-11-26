@@ -47,7 +47,7 @@ function CustomerFormPageContent() {
 
   return (
     <DashboardInsider loading={isFormLoading}>
-      <Box mx={'auto'} maxWidth={800}>
+      <Box mx={'auto'} maxWidth={800} style={{ width: '100%', minWidth: 0 }}>
         <CustomerFormFormik
           onSubmitSuccess={handleSubmitSuccess}
           onCancel={handleFormCancel}

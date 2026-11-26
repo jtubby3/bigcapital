@@ -67,7 +67,7 @@ export const statusAccessor = (row: EstimateTableRow) => (
 
     <Choose.Otherwise>
       <Tag round minimal>
-        <T id={'draft'} />
+        <T id={'sales.status.unfinished'} />
       </Tag>
     </Choose.Otherwise>
   </Choose>

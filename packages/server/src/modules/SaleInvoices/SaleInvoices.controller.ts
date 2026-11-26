@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import { SaleInvoicePdf } from './queries/SaleInvoicePdf.service';
 import {
   Body,
   Controller,
@@ -70,7 +71,35 @@ import { SmsNotificationsFeatureGuard } from '../SMS/SmsNotificationsFeatureGuar
 @ApiExtraModels(SmsNotificationDetailsResponseDto)
 @UseGuards(AuthorizationGuard, PermissionGuard)
 export class SaleInvoicesController {
-  constructor(private saleInvoiceApplication: SaleInvoiceApplication) {}
+  constructor(
+    private saleInvoiceApplication: SaleInvoiceApplication,
+    private invoicePdf: SaleInvoicePdf,
+  ) {}
+
+  @Get(':id/packing-slip')
+  @RequirePermission(SaleInvoiceAction.View, AbilitySubject.SaleInvoice)
+  @ApiOperation({ summary: 'Download a packing slip without prices.' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({
+    status: 200,
+    content: {
+      'application/pdf': { schema: { type: 'string', format: 'binary' } },
+    },
+  })
+  async getPackingSlip(
+    @Param('id', ParseIntPipe) id: number,
+    @Headers('accept') accept: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    if (accept?.includes(AcceptType.ApplicationTextHtml))
+      return { htmlContent: await this.invoicePdf.getPackingSlipHtml(id) };
+    const [pdf, filename] = await this.invoicePdf.getPackingSlipPdf(id);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="${filename}.pdf"`,
+    });
+    res.send(pdf);
+  }
 
   @Post('validate-bulk-delete')
   @RequirePermission(SaleInvoiceAction.Delete, AbilitySubject.SaleInvoice)
@@ -114,12 +143,18 @@ export class SaleInvoicesController {
   @ApiResponse({
     status: 201,
     description: 'Sale invoice created successfully',
+    schema: {
+      type: 'object',
+      required: ['id'],
+      properties: { id: { type: 'integer' } },
+    },
   })
   createSaleInvoice(@Body() saleInvoiceDTO: CreateSaleInvoiceDto) {
     return this.saleInvoiceApplication.createSaleInvoice(saleInvoiceDTO);
   }
 
   @Post(':id/mail')
+  @RequirePermission(SaleInvoiceAction.Edit, AbilitySubject.SaleInvoice)
   @HttpCode(200)
   @ApiOperation({ summary: 'Send the sale invoice mail.' })
   @ApiResponse({

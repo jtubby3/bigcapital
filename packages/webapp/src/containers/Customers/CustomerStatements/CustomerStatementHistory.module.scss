@@ -1,0 +1,66 @@
+.history {
+  padding: 24px;
+  border: 1px solid var(--color-card-border);
+  border-radius: 8px;
+  background: var(--color-card-background);
+  color: var(--color-datatable-text);
+  h2 {
+    font-size: 18px;
+    margin: 0;
+  }
+}
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.scroll {
+  overflow-x: auto;
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  th,
+  td {
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid var(--color-datatable-cell-border);
+  }
+  th {
+    color: var(--color-datatable-head-text);
+    background: var(--color-datatable-head-background);
+    font-size: 12px;
+  }
+  td {
+    vertical-align: top;
+  }
+  small {
+    display: block;
+    margin-top: 5px;
+    color: var(--color-muted-text);
+  }
+}
+.empty {
+  text-align: center;
+  padding: 40px 12px;
+  color: var(--color-muted-text);
+  h3 {
+    color: var(--color-datatable-text);
+  }
+}
+.previewActions {
+  display: flex;
+  gap: 8px;
+  padding: 16px 20px 0;
+}
+@media (max-width: 600px) {
+  .history {
+    padding: 16px;
+  }
+  .heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

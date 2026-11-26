@@ -1,3 +1,4 @@
+import { useMobileSearch } from '@/hooks/useMobileSearch';
 import { isEmpty } from 'lodash';
 import React, { createContext } from 'react';
 import { transformItemsTableState } from './utils';
@@ -33,6 +34,8 @@ type ItemsListContextValue = {
   isResourceFetching: boolean;
 
   isEmptyStatus: boolean;
+  mobileError: boolean;
+  retryMobile: () => void;
 };
 
 type ItemsListProviderProps = {
@@ -53,6 +56,7 @@ function ItemsListProvider({
   tableStateChanged,
   ...props
 }: ItemsListProviderProps) {
+  const { query: mobileSearch, isPhone } = useMobileSearch();
   const tableQuery = transformItemsTableState(tableState);
 
   // Fetch accounts resource views and fields.
@@ -70,19 +74,29 @@ function ItemsListProvider({
   const {
     data: itemsData,
     isFetching: isItemsFetching,
+    isError: queryError,
+    refetch: retryMobile,
     isLoading: isItemsLoading,
   } = useItems({
     ...(transformTableQueryToParams(tableQuery) as Record<string, unknown>),
+    ...(mobileSearch ? { search_keyword: mobileSearch } : {}),
   });
 
   // Fetch the items settings.
   const { data: itemsSettings } = useSettingsItems();
 
   // Detarmines the datatable empty status.
+  const mobileError = isPhone && queryError;
   const isEmptyStatus =
-    !tableStateChanged && !isItemsLoading && isEmpty(itemsData?.data);
+    !mobileSearch &&
+    !mobileError &&
+    !tableStateChanged &&
+    !isItemsLoading &&
+    isEmpty(itemsData?.data);
 
   const state: ItemsListContextValue = {
+    mobileError,
+    retryMobile,
     itemsViews,
     items: itemsData?.data,
     pagination: itemsData?.pagination,

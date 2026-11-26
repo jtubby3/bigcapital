@@ -1,3 +1,4 @@
+import type { InvoiceAfterSaveAction } from './invoiceWorkflow';
 import { isEmpty, pick } from 'lodash';
 import React, { createContext, useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -38,6 +39,7 @@ type InvoiceFormSubmitPayload = {
   redirect?: boolean;
   deliver?: boolean;
   resetForm?: boolean;
+  action?: InvoiceAfterSaveAction;
 };
 
 type InvoiceFormContextValue = {
@@ -71,7 +73,9 @@ type InvoiceFormContextValue = {
   isBootLoading: boolean;
   isNewMode: boolean;
 
-  createInvoiceMutate: (values: CreateSaleInvoiceBody) => Promise<void>;
+  createInvoiceMutate: (
+    values: CreateSaleInvoiceBody,
+  ) => Promise<{ id: number }>;
   editInvoiceMutate: (args: [number, EditSaleInvoiceBody]) => Promise<void>;
   setSubmitPayload: React.Dispatch<
     React.SetStateAction<InvoiceFormSubmitPayload | undefined>
@@ -203,8 +207,9 @@ function InvoiceFormProvider({
     branches: branches ?? [],
     warehouses: warehouses ?? [],
     taxRates: taxRates ?? [],
-    brandingTemplates:
-      brandingTemplates?.templates ?? ([] as PdfTemplateResponse[]),
+    brandingTemplates: (Array.isArray(brandingTemplates)
+      ? brandingTemplates
+      : (brandingTemplates?.templates ?? [])) as PdfTemplateResponse[],
 
     isInvoiceLoading,
     isItemsLoading,
@@ -221,7 +226,7 @@ function InvoiceFormProvider({
 
     createInvoiceMutate: createInvoiceMutate as (
       values: CreateSaleInvoiceBody,
-    ) => Promise<void>,
+    ) => Promise<{ id: number }>,
     editInvoiceMutate: editInvoiceMutate as (
       args: [number, EditSaleInvoiceBody],
     ) => Promise<void>,

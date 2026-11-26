@@ -17,7 +17,7 @@ export function InvoiceFormPage() {
   const invoiceId = id ? parseInt(id, 10) : undefined;
 
   return (
-    <InvoiceFormProvider invoiceId={invoiceId}>
+    <InvoiceFormProvider key={invoiceId ?? 'new'} invoiceId={invoiceId}>
       <AutoExchangeRateProvider>
         <InvoiceFormPageContent />
       </AutoExchangeRateProvider>

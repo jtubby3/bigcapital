@@ -10,18 +10,19 @@ describe('Attachments (e2e)', () => {
       .attach('file', Buffer.from('attachment test content'), {
         filename: 'test.txt',
         contentType: 'text/plain',
-      });
+      })
+      .expect(200);
 
-    // Uploading requires an S3-compatible service which is not available in
-    // every test environment, so skip when the upload cannot be performed.
-    if (upload.status !== 200 || !upload.body?.data?.id) {
-      return;
-    }
+    const key = upload.body.data.key;
+    expect(key).toEqual(expect.any(String));
 
-    return request(app.getHttpServer())
-      .get(`/attachments/${upload.body.data.id}/presigned-url`)
+    const response = await request(app.getHttpServer())
+      .get(`/attachments/${encodeURIComponent(key)}/presigned-url`)
       .set('organization-id', orgainzationId)
       .set('Authorization', AuthorizationHeader)
       .expect(200);
+    expect(response.body.presigned_url ?? response.body.presignedUrl).toMatch(
+      /^https?:\/\//,
+    );
   });
 });

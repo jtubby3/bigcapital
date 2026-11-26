@@ -4,7 +4,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { ConfigService } from '@nestjs/config';
 import { TenantModelProxy } from '../System/models/TenantBaseModel';
 import { DocumentModel } from './models/Document.model';
-import { S3_CLIENT } from '../S3/S3.module';
+import { S3_SIGNING_CLIENT } from '../S3/S3.module';
 
 @Injectable()
 export class GetAttachmentPresignedUrl {
@@ -14,8 +14,8 @@ export class GetAttachmentPresignedUrl {
     @Inject(DocumentModel.name)
     private readonly documentModel: TenantModelProxy<typeof DocumentModel>,
 
-    @Inject(S3_CLIENT)
-    private readonly s3Client: S3Client,
+    @Inject(S3_SIGNING_CLIENT)
+    private readonly s3SigningClient: S3Client,
   ) {}
 
   /**
@@ -39,7 +39,7 @@ export class GetAttachmentPresignedUrl {
       Key: key,
       ResponseContentDisposition,
     });
-    const signedUrl = await getSignedUrl(this.s3Client, command, {
+    const signedUrl = await getSignedUrl(this.s3SigningClient, command, {
       expiresIn: 300,
     });
 

@@ -533,6 +533,45 @@ export const getDashboardRoutes = () => [
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
   },
   {
+    path: '/financial-reports/sales-by-customer-summary',
+    component: lazy(() =>
+      import(
+        '@/containers/FinancialStatements/CustomerSales/CustomerSalesReport'
+      ).then((m) => ({ default: m.CustomerSalesReport })),
+    ),
+    breadcrumb: 'Sales by Customer Summary',
+    pageTitle: 'Sales by Customer Summary',
+    backLink: true,
+    sidebarExpand: false,
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
+  {
+    path: '/financial-reports/sales-by-customer-detail',
+    component: lazy(() =>
+      import(
+        '@/containers/FinancialStatements/CustomerSales/CustomerSalesReport'
+      ).then((m) => ({ default: m.CustomerSalesReport })),
+    ),
+    breadcrumb: 'Sales by Customer Detail',
+    pageTitle: 'Sales by Customer Detail',
+    backLink: true,
+    sidebarExpand: false,
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
+  {
+    path: '/financial-reports/income-by-customer-summary',
+    component: lazy(() =>
+      import(
+        '@/containers/FinancialStatements/CustomerSales/CustomerSalesReport'
+      ).then((m) => ({ default: m.CustomerSalesReport })),
+    ),
+    breadcrumb: 'Income by Customer Summary',
+    pageTitle: 'Income by Customer Summary',
+    backLink: true,
+    sidebarExpand: false,
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
+  {
     path: '/financial-reports',
     component: lazy(() =>
       import('@/containers/FinancialStatements/FinancialReports').then((m) => ({
@@ -635,6 +674,32 @@ export const getDashboardRoutes = () => [
     breadcrumb: intl.get('new_customer'),
     hotkey: 'ctrl+shift+c',
     pageTitle: intl.get('new_customer'),
+    backLink: true,
+    defaultSearchResource: RESOURCES_TYPES.CUSTOMER,
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
+  {
+    path: '/customers/statements/new',
+    component: lazy(() =>
+      import(
+        '@/containers/Customers/CustomerStatements/CreateCustomerStatements'
+      ).then((m) => ({ default: m.CreateCustomerStatements })),
+    ),
+    name: 'customer-statements',
+    pageTitle: 'Create statements',
+    sidebarExpand: false,
+    backLink: true,
+    defaultSearchResource: RESOURCES_TYPES.CUSTOMER,
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
+  {
+    path: `/customers/:id(\\d+)`,
+    component: lazy(() =>
+      import(
+        '@/containers/Customers/CustomerWorkspace/CustomerWorkspacePage'
+      ).then((m) => ({ default: m.CustomerWorkspacePage })),
+    ),
+    pageTitle: 'Customer',
     backLink: true,
     defaultSearchResource: RESOURCES_TYPES.CUSTOMER,
     subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
@@ -812,6 +877,20 @@ export const getDashboardRoutes = () => [
   },
 
   // Invoices.
+  {
+    path: `/invoices/packing-slips`,
+    component: lazy(() =>
+      import('@/containers/Sales/Invoices/PackingSlips/PackingSlipsPage').then((m) => ({
+        default: m.PackingSlipsPage,
+      })),
+    ),
+    name: 'invoice-packing-slips',
+    breadcrumb: 'Packing slips',
+    pageTitle: 'Packing slips',
+    backLink: true,
+    defaultSearchResource: RESOURCES_TYPES.INVOICE,
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   {
     path: `/invoices/import`,
     component: lazy(() =>
@@ -1102,6 +1181,19 @@ export const getDashboardRoutes = () => [
   },
 
   // Bills
+  {
+    path: '/bills/vendor-invoice-scans',
+    component: lazy(() =>
+      import('@/containers/Purchases/Bills/VendorInvoiceScans/VendorInvoiceScansPage').then(
+        (m) => ({ default: m.VendorInvoiceScansPage }),
+      ),
+    ),
+    name: 'vendor-invoice-scans',
+    breadcrumb: 'Scan vendor invoices',
+    pageTitle: 'Scan vendor invoices',
+    defaultSearchResource: RESOURCES_TYPES.BILL,
+    subscriptionActive: [SUBSCRIPTION_TYPE.MAIN],
+  },
   {
     path: `/bills/import`,
     component: lazy(() =>

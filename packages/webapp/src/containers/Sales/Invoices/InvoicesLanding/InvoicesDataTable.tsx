@@ -54,6 +54,8 @@ function InvoicesDataTableInner({
     isInvoicesLoading,
     isInvoicesFetching,
     invoiceSettings,
+    mobileError,
+    retryMobile,
   } = useInvoicesListContext();
   const invoicesTableSize = invoiceSettings?.tableSize as string | undefined;
 
@@ -132,6 +134,22 @@ function InvoicesDataTableInner({
   return (
     <DashboardContentTable>
       <DataTable
+        mobileError={mobileError}
+        onMobileRetry={retryMobile}
+        mobileCardColumns={[
+          'customer',
+          'invoice_no',
+          'status',
+          'amount',
+          'invoice_date',
+          'due_date',
+        ]}
+        mobileSearchPlaceholder="Search invoice numbers…"
+        mobileCardFooter={(invoice: InvoiceTableRow) => (
+          <p className="mobile-record__balance">
+            Balance: {invoice.dueAmountFormatted}
+          </p>
+        )}
         columns={columns}
         data={invoices ?? []}
         loading={isInvoicesLoading}
@@ -166,6 +184,11 @@ function InvoicesDataTableInner({
           onQuick: handleQuickPaymentReceive,
           onViewDetails: handleViewDetailInvoice,
           onPrint: handlePrintInvoice,
+          onPackingSlip: ({ id }: InvoiceTableRow) =>
+            openDialog('invoice-pdf-preview', {
+              invoiceId: id,
+              documentType: 'packing-slip',
+            }),
           onConvert: handleConvertToCreitNote,
           onSendMail: handleSendMailInvoice,
         }}

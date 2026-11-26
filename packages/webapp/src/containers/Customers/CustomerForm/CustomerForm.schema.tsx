@@ -2,6 +2,21 @@ import intl from 'react-intl-universal';
 import * as Yup from 'yup';
 
 const Schema = Yup.object().shape({
+  customerProfile: Yup.object().shape({
+    paymentTermsDays: Yup.number().min(0).max(365).nullable(),
+    addresses: Yup.array().of(
+      Yup.object().shape({
+        label: Yup.string().trim().required('Name this address'),
+        address: Yup.string().trim().required('Enter an address'),
+      }),
+    ),
+    customFields: Yup.array().of(
+      Yup.object().shape({
+        label: Yup.string().trim().required('Name this field'),
+        value: Yup.string(),
+      }),
+    ),
+  }),
   customerType: Yup.string()
     .required()
     .trim()

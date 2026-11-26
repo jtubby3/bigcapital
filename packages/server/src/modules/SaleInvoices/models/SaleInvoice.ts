@@ -21,11 +21,31 @@ import { SaleInvoiceMeta } from './SaleInvoice.meta';
 import { InjectModelDefaultViews } from '@/modules/Views/decorators/InjectModelDefaultViews.decorator';
 import { SaleInvoiceDefaultViews } from '../constants';
 
+const invoiceTotalSql = `(COALESCE(BALANCE, 0)
+  - CASE WHEN DISCOUNT_TYPE = 'amount' THEN COALESCE(DISCOUNT, 0)
+    ELSE COALESCE(BALANCE, 0) * COALESCE(DISCOUNT, 0) / 100 END
+  + COALESCE(ADJUSTMENT, 0)
+  + CASE WHEN IS_INCLUSIVE_TAX THEN 0 ELSE COALESCE(TAX_AMOUNT_WITHHELD, 0) END
+  + COALESCE(SHIPPING_CHARGE, 0))`;
+const invoiceSettledSql = `(COALESCE(PAYMENT_AMOUNT, 0) + COALESCE(WRITTENOFF_AMOUNT, 0) + COALESCE(CREDITED_AMOUNT, 0))`;
+
 @InjectAttachable()
 @ExportableModel()
 @InjectModelMeta(SaleInvoiceMeta)
 @InjectModelDefaultViews(SaleInvoiceDefaultViews)
 export class SaleInvoice extends TenantBaseModel {
+  public billingAddressText?: string | null;
+  public shippingAddressText?: string | null;
+  public recipientEmail?: string | null;
+  public shippingMethod?: string | null;
+  public shippingDate?: string | null;
+  public trackingNo?: string | null;
+  public paymentTermsDays?: number | null;
+  public paymentInstructions?: string | null;
+  public internalNotes?: string | null;
+  public statementMemo?: string | null;
+  public shippingCharge?: number;
+
   public taxAmountWithheld: number;
   public balance: number;
   public paymentAmount: number;
@@ -122,6 +142,7 @@ export class SaleInvoice extends TenantBaseModel {
 
       'writtenoffAmountLocal',
       'adjustmentLocal',
+      'shippingChargeLocal',
     ];
   }
 
@@ -220,13 +241,23 @@ export class SaleInvoice extends TenantBaseModel {
       ? 0
       : defaultTo(0, this.taxAmountWithheld);
 
-    return this.subtotal - this.discountAmount + adjustmentAmount + totalTax;
+    return (
+      this.subtotal -
+      this.discountAmount +
+      adjustmentAmount +
+      totalTax +
+      (Number(this.shippingCharge) || 0)
+    );
   }
 
   /**
    * Invoice total in local currency. (Tax included)
    * @returns {number}
    */
+  get shippingChargeLocal(): number {
+    return (Number(this.shippingCharge) || 0) * this.exchangeRate;
+  }
+
   get totalLocal() {
     return this.total * this.exchangeRate;
   }
@@ -345,10 +376,7 @@ export class SaleInvoice extends TenantBaseModel {
       dueInvoices(query) {
         query.where(
           raw(`
-            COALESCE(BALANCE, 0) -
-            COALESCE(PAYMENT_AMOUNT, 0) -
-            COALESCE(WRITTENOFF_AMOUNT, 0) -
-            COALESCE(CREDITED_AMOUNT, 0) > 0
+            ${invoiceTotalSql} - ${invoiceSettledSql} > 0
         `),
         );
       },
@@ -412,14 +440,14 @@ export class SaleInvoice extends TenantBaseModel {
        * Filters the partially invoices.
        */
       partiallyPaid(query) {
-        query.whereNot('payment_amount', 0);
-        query.whereNot(raw('`PAYMENT_AMOUNT` = `BALANCE`'));
+        query.where(raw(`${invoiceSettledSql} > 0`));
+        query.where(raw(`${invoiceTotalSql} - ${invoiceSettledSql} > 0`));
       },
       /**
        * Filters the paid invoices.
        */
       paid(query) {
-        query.where(raw('PAYMENT_AMOUNT = BALANCE'));
+        query.where(raw(`${invoiceTotalSql} - ${invoiceSettledSql} <= 0`));
       },
       /**
        * Filters the sale invoices from the given date.
@@ -432,7 +460,9 @@ export class SaleInvoice extends TenantBaseModel {
        */
       sortByStatus(query, order) {
         const dir = sanitizeSortDirection(order);
-        query.orderByRaw(`PAYMENT_AMOUNT = BALANCE ${dir}`);
+        query.orderByRaw(
+          `${invoiceTotalSql} - ${invoiceSettledSql} <= 0 ${dir}`,
+        );
       },
 
       /**
@@ -440,7 +470,9 @@ export class SaleInvoice extends TenantBaseModel {
        */
       sortByDueAmount(query, order) {
         const dir = sanitizeSortDirection(order);
-        query.orderByRaw(`BALANCE - PAYMENT_AMOUNT ${dir}`);
+        query.orderByRaw(
+          `GREATEST(${invoiceTotalSql} - ${invoiceSettledSql}, 0) ${dir}`,
+        );
       },
 
       /**

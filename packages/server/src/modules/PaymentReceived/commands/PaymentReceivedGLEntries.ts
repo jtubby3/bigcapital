@@ -144,10 +144,14 @@ export class PaymentReceivedGLEntries {
     const otherChargesAccount =
       await this.accountRepository.findOrCreateOtherChargesAccount({}, trx);
 
+    const shippingIncomeAccount =
+      await this.accountRepository.findOrCreateShippingIncomeAccount({}, trx);
+
     const paymentReceivedCashGL = new PaymentReceivedCashGL(paymentReceive)
       .setTaxPayableAccountId(taxPayableAccount.id)
       .setDiscountAccountId(discountAccount.id)
-      .setOtherChargesAccountId(otherChargesAccount.id);
+      .setOtherChargesAccountId(otherChargesAccount.id)
+      .setShippingIncomeAccountId(shippingIncomeAccount.id);
 
     return paymentReceivedCashGL.getLedger();
   };

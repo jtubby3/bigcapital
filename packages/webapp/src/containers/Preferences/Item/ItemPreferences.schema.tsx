@@ -1,17 +1,18 @@
-import * as Yup from 'yup';
+import * as Yup from "yup";
 
 const reorderPointNotificationEmailSchema = Yup.string()
-  .transform((value) => (value === '' ? null : value))
+  .transform((value) => (value === "" ? null : value))
   .nullable()
   .email();
 
 const Schema = Yup.object().shape({
+  autoIncreaseSellPrice: Yup.boolean(),
   preferredSellAccount: Yup.number().nullable(),
   preferredCostAccount: Yup.number().nullable(),
   preferredInventoryAccount: Yup.number().nullable(),
   reorderPointNotifications: Yup.boolean(),
   reorderPointNotificationEmail: reorderPointNotificationEmailSchema.when(
-    'reorderPointNotifications',
+    "reorderPointNotifications",
     {
       is: true,
       then: reorderPointNotificationEmailSchema.required(),

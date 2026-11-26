@@ -52,6 +52,7 @@ import type {
 import { saveInvoke } from '@/utils';
 
 const commonInvalidateQueries = (client: ReturnType<typeof useQueryClient>) => {
+  client.invalidateQueries({ queryKey: ['customers-workspace'] });
   client.invalidateQueries({ queryKey: paymentReceivesKeys.all() });
   client.invalidateQueries({
     queryKey: paymentReceivesKeys.editPage(null).slice(0, 1),
@@ -208,8 +209,12 @@ export function usePaymentReceiveEditPage(
 export function useRefreshPaymentReceive() {
   const queryClient = useQueryClient();
   return {
-    refresh: () =>
-      queryClient.invalidateQueries({ queryKey: paymentReceivesKeys.all() }),
+    refresh: () => {
+      queryClient.invalidateQueries({ queryKey: ['customers-workspace'] });
+      return queryClient.invalidateQueries({
+        queryKey: paymentReceivesKeys.all(),
+      });
+    },
   };
 }
 

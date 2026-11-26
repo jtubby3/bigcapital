@@ -84,7 +84,7 @@ export const EstimateStatus = ({ estimate }: EstimateStatusProps) => (
     </Choose.When>
     <Choose.Otherwise>
       <TextStatus intent={Intent.NONE}>
-        <T id={'draft'} />
+        <T id={'sales.status.unfinished'} />
       </TextStatus>
     </Choose.Otherwise>
   </Choose>

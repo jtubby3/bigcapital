@@ -1,0 +1,61 @@
+.item-price-history {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  container: item-price-history / inline-size;
+
+  &__scroll {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  &__table td:not(:last-child) {
+    white-space: nowrap;
+  }
+}
+
+@container item-price-history (max-width: 560px) {
+  .item-price-history__table {
+    display: block;
+
+    // Keep column headers available to assistive technology in the card layout.
+    thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+
+    tbody {
+      display: block;
+    }
+
+    tbody tr {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-bottom: 12px;
+    }
+
+    td[data-label] {
+      display: block;
+      min-width: 0;
+      white-space: normal;
+      overflow-wrap: anywhere;
+
+      &::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 4px;
+        font-weight: 600;
+      }
+    }
+
+    td:first-child,
+    td:last-child {
+      grid-column: 1 / -1;
+    }
+  }
+}

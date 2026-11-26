@@ -9,6 +9,9 @@ export interface ItemFormValues {
   code: string;
   reorderPoint: string | number;
   unit: string;
+  autoIncreaseSellPrice: boolean;
+  markupPercentage: number | null;
+  pricingEditedManually: boolean;
   costPrice: string | number;
   sellPrice: string | number;
   costAccountId: number | string;
@@ -23,7 +26,7 @@ export interface ItemFormValues {
   purchaseTaxRateId: number | string;
 }
 
-export type ItemFormType = 'service' | 'non-inventory' | 'inventory';
+export type ItemFormType = "service" | "non-inventory" | "inventory";
 
 export type ItemFormSubmitPayload = {
   redirect?: boolean;

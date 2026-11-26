@@ -1,0 +1,337 @@
+:global(.page-customer-statements .dashboard__topbar),
+:global(.page-customer-statements #sidebar) {
+  display: none;
+}
+
+.page {
+  --statement-border: var(--color-dashboard-actionsbar-border);
+  --statement-muted: var(--color-muted-text);
+  position: fixed;
+  inset: 0;
+  // Keep fullscreen content below Blueprint dialogs and popovers.
+  z-index: 10;
+  overflow-y: auto;
+  height: 100dvh;
+  background: var(--color-dashboard-insider-background);
+  color: var(--color-datatable-text);
+  padding-bottom: 110px;
+  font-size: 14px;
+
+  :global(.bp4-form-group) {
+    margin-bottom: 0;
+  }
+  :global(.bp4-checkbox) {
+    margin: 0;
+  }
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 32px;
+  background: var(--color-dashboard-topbar-background);
+  border-bottom: 1px solid var(--statement-border);
+  h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0;
+    letter-spacing: -0.4px;
+  }
+}
+.eyebrow {
+  display: none;
+}
+.main {
+  max-width: 1480px;
+  margin: auto;
+  padding: 24px 32px;
+}
+.summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 35px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--statement-border);
+}
+.settings {
+  display: grid;
+  grid-template-columns: 190px minmax(220px, 300px);
+  gap: 17px 26px;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+.description {
+  grid-column: 1 / -1;
+  color: var(--statement-muted);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 580px;
+}
+.paymentLinks {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  p {
+    color: var(--statement-muted);
+    font-size: 12px;
+    margin: 7px 0 0 26px;
+  }
+}
+.total {
+  text-align: right;
+  min-width: 230px;
+  padding-top: 1px;
+  > span {
+    font-size: 13px;
+    color: var(--statement-muted);
+  }
+  strong {
+    display: block;
+    font-size: 30px;
+    font-weight: 400;
+    margin-top: 8px;
+    white-space: nowrap;
+  }
+  small {
+    font-size: 12px;
+    color: var(--statement-muted);
+  }
+  p {
+    margin: 9px 0 0;
+    color: var(--statement-muted);
+    font-size: 12px;
+  }
+  :global(.bp4-spinner) {
+    margin-top: 16px;
+    justify-content: flex-end;
+  }
+}
+.period {
+  display: flex;
+  align-items: flex-end;
+  gap: 26px;
+  border: 0;
+  padding: 25px 0;
+  margin: 0;
+  :global(.bp4-form-group) {
+    width: 190px;
+  }
+  p {
+    color: var(--statement-muted);
+    font-size: 12px;
+    margin: 0 0 11px;
+  }
+}
+.messages {
+  display: grid;
+  gap: 12px;
+  &:not(:empty) {
+    margin-bottom: 22px;
+  }
+}
+.recipients {
+  padding-top: 9px;
+}
+.sectionHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 17px;
+  h2 {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+  }
+  span {
+    color: var(--statement-muted);
+    font-size: 12px;
+  }
+}
+.tableScroll {
+  overflow-x: auto;
+  border: 1px solid var(--statement-border);
+  border-radius: 5px;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  min-width: 670px;
+  th {
+    color: var(--color-datatable-head-text);
+    background: var(--color-datatable-head-background);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 16px 19px;
+  }
+  td {
+    padding: 16px 19px;
+    border-top: 1px solid var(--statement-border);
+  }
+  th:nth-child(2) {
+    width: 32%;
+  }
+  th:nth-child(3) {
+    width: 36%;
+  }
+  td > small {
+    display: block;
+    color: var(--statement-muted);
+    font-size: 11px;
+    margin-top: 5px;
+  }
+  tbody tr {
+    background: var(--color-dashboard-datatable-background);
+  }
+  tbody tr.selected {
+    background: var(--color-card-background);
+  }
+  tbody tr:hover {
+    background: var(--color-datatable-cell-hover-background);
+  }
+  td.balance {
+    font-variant-numeric: tabular-nums;
+  }
+  :global(.bp4-input) {
+    width: 100%;
+  }
+}
+.checkCell {
+  width: 52px;
+  padding-right: 5px !important;
+}
+.customerName {
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.balance {
+  text-align: right;
+  white-space: nowrap;
+}
+.note {
+  color: var(--statement-muted);
+  font-size: 12px;
+  margin: 16px 0;
+  line-height: 1.6;
+}
+.empty {
+  padding: 48px 20px;
+  text-align: center;
+  color: var(--statement-muted);
+  border: 1px solid var(--statement-border);
+  border-radius: 5px;
+  h3 {
+    color: var(--color-datatable-text);
+  }
+}
+.footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 12;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--color-dashboard-topbar-background);
+  border-top: 1px solid var(--statement-border);
+  padding: 17px 30px;
+  box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.05);
+}
+.footerActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.pdfDialog {
+  width: min(1000px, 94vw);
+  padding-bottom: 12px;
+  background: var(--color-card-background);
+}
+.pdfActions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 16px 22px;
+  a {
+    text-decoration: underline;
+  }
+}
+.pdfFrame {
+  width: calc(100% - 40px);
+  height: 70vh;
+  margin: 0 20px;
+  border: 1px solid var(--color-ui-input-border);
+  background: #fff;
+}
+.pdfHint {
+  color: var(--color-muted-text);
+  padding: 10px 22px 0;
+  font-size: 12px;
+}
+@media (max-width: 1000px) {
+  .main {
+    padding: 26px 22px;
+  }
+  .header {
+    padding: 22px;
+  }
+  .summary {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 23px;
+  }
+  .total {
+    text-align: left;
+    strong {
+      display: inline-block;
+      margin-right: 20px;
+    }
+    > span {
+      display: block;
+    }
+  }
+  .period {
+    flex-wrap: wrap;
+    p {
+      width: 100%;
+      margin: -8px 0 0;
+    }
+  }
+}
+@media (max-width: 650px) {
+  .page {
+    padding-bottom: 180px;
+  }
+  .settings {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .description,
+  .paymentLinks {
+    grid-column: 1;
+  }
+  .header h1 {
+    font-size: 23px;
+  }
+  .period {
+    gap: 20px;
+    :global(.bp4-form-group) {
+      flex: 1;
+      min-width: 135px;
+    }
+  }
+  .footer {
+    align-items: flex-start;
+    padding: 13px;
+  }
+  .footerActions {
+    gap: 8px;
+    max-width: 290px;
+  }
+  .footerActions :global(.bp4-button) {
+    font-size: 12px;
+    padding: 5px 9px;
+  }
+}

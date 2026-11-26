@@ -1,0 +1,100 @@
+.root {
+  min-width: 0;
+  max-width: 100%;
+  container-type: inline-size;
+  container-name: entity-form;
+}
+.body {
+  min-width: 0;
+  width: 100%;
+
+  > :last-child {
+    flex: 1 1 0;
+    min-width: 0;
+    width: 100%;
+  }
+  :global(.bp4-form-content),
+  :global(.bp6-form-content) {
+    min-width: 0;
+  }
+  :global(.bp4-input-group),
+  :global(input.bp4-input),
+  :global(textarea),
+  :global(.bp4-popover-target) {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+@container entity-form (max-width: 700px) {
+  .root .body {
+    flex-direction: column;
+    > :global(.bp4-tabs) {
+      position: static;
+      min-width: 0;
+      width: 100%;
+    }
+    > :global(.bp4-tabs.bp4-vertical) > :global(.bp4-tab-list) {
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-right: 0;
+      padding-bottom: 8px;
+    }
+    > :global(.bp4-tabs.bp4-vertical)
+      > :global(.bp4-tab-list)
+      :global(.bp4-tab) {
+      width: auto;
+      max-width: 100%;
+      white-space: normal;
+      line-height: 1.4;
+      padding: 6px 10px;
+    }
+    :global(.bp4-tab-indicator-wrapper) {
+      display: none;
+    }
+
+    :global(.bp4-form-group.bp4-inline) {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+    :global(.bp4-form-group.bp4-inline > label.bp4-label) {
+      min-width: 0;
+      margin: 0;
+      line-height: 1.4;
+    }
+    :global(.bp4-form-content),
+    :global(.bp6-form-content) {
+      width: 100%;
+      min-width: 0;
+    }
+    :global(.bp4-input-group),
+    :global(input.bp4-input),
+    :global(textarea),
+    :global(.bp4-popover-target) {
+      width: 100%;
+    }
+  }
+  .root > :last-child {
+    padding-left: 0;
+  }
+}
+@container entity-form (max-width: 420px) {
+  .root
+    .body
+    :global(.bp4-form-group:has(input[name='firstName']) .bp4-control-group) {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .root
+    .body
+    :global(
+      .bp4-form-group:has(input[name='firstName']) .bp4-control-group > *
+    ) {
+    flex: 1 1 120px;
+    min-width: 0;
+  }
+}

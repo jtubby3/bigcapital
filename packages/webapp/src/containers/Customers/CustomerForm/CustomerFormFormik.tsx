@@ -1,3 +1,5 @@
+import { Button, Callout, Spinner } from '@blueprintjs/core';
+import { useState } from 'react';
 import { Intent } from '@blueprintjs/core';
 import { Formik, Form, FormikHelpers } from 'formik';
 import { useMemo } from 'react';
@@ -48,10 +50,11 @@ function CustomerFormFormikRoot({
   onSubmitSuccess,
   onSubmitError,
   // `onCancel` is accepted for compatibility but currently not used.
-  onCancel: _onCancel,
+  onCancel,
   className: _className,
 }: CustomerFormFormikRootProps) {
   const baseCurrency = useCurrentOrganizationBaseCurrency();
+  const [saveError, setSaveError] = useState(false);
 
   const {
     customer,
@@ -60,6 +63,7 @@ function CustomerFormFormikRoot({
     editCustomerMutate,
     createCustomerMutate,
     isNewMode,
+    isFormLoading,
   } = useCustomerFormContext();
 
   const initialValues = useMemo<CustomerFormValues>(() => {
@@ -88,6 +92,7 @@ function CustomerFormFormikRoot({
     formArgs: FormikHelpers<CustomerFormValues>,
   ) => {
     const { setSubmitting, resetForm } = formArgs;
+    setSaveError(false);
 
     const onSuccess = () => {
       AppToaster.show({
@@ -104,6 +109,7 @@ function CustomerFormFormikRoot({
     };
 
     const onError = () => {
+      setSaveError(true);
       setSubmitting(false);
       saveInvoke(onSubmitError, values, formArgs, submitPayload);
     };
@@ -120,6 +126,8 @@ function CustomerFormFormikRoot({
     }
   };
 
+  if (isFormLoading) return <Spinner size={24} />;
+
   return (
     <Formik<CustomerFormValues>
       validationSchema={isNewMode ? CreateCustomerForm : EditCustomerForm}
@@ -128,6 +136,24 @@ function CustomerFormFormikRoot({
     >
       <Form>
         <CustomerFormFields>
+          {onCancel && (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                marginBottom: 10,
+              }}
+            >
+              <Button minimal type="button" onClick={onCancel}>
+                Cancel
+              </Button>
+            </div>
+          )}
+          {saveError && (
+            <Callout intent="danger">
+              The customer could not be saved. Check the fields and try again.
+            </Callout>
+          )}
           <CustomerFormContent />
         </CustomerFormFields>
       </Form>
