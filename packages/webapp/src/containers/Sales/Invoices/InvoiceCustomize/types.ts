@@ -1,3 +1,4 @@
+import type { InvoiceCustomization } from '@bigcapital/pdf-templates';
 import {
   BrandingState,
   BrandingTemplateValues,
@@ -5,7 +6,9 @@ import {
 
 export interface InvoiceCustomizeState extends BrandingState {}
 
-export interface InvoiceCustomizeFormValues extends BrandingTemplateValues {
+export interface InvoiceCustomizeFormValues
+  extends BrandingTemplateValues,
+    Partial<InvoiceCustomization> {
   // Colors
   primaryColor?: string;
   secondaryColor?: string;

@@ -5,7 +5,7 @@ import * as FF from 'fp-ts/function';
 import { isEmpty, defaultTo } from 'lodash';
 import React from 'react';
 import intl from 'react-intl-universal';
-import { useHistory } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { PaymentReceiveSyncIncrementSettingsToForm } from './components';
 import { PaymentReceiveFormFloatingActions as PaymentReceiveFloatingActions } from './PaymentReceiveFloatingActions';
 import {
@@ -54,9 +54,11 @@ function PaymentReceiveFormRoot({ openDialog }: PaymentReceiveFormRootProps) {
   const baseCurrency = useCurrentOrganizationBaseCurrency();
 
   const history = useHistory();
+  const { state: customerLocation } = useLocation<{ customerId?: number }>();
 
   const {
     isNewMode,
+    customers,
     paymentReceiveEditPage,
     paymentEntriesEditPage,
     paymentReceiveId,
@@ -96,11 +98,17 @@ function PaymentReceiveFormRoot({ openDialog }: PaymentReceiveFormRootProps) {
         )
       : {
           ...defaultPaymentReceive,
+          customerId:
+            customerLocation?.customerId || defaultPaymentReceive.customerId,
           ...(paymentReceiveAutoIncrement && {
             paymentReceiveNo: nextPaymentNumber,
           }),
           depositAccountId: defaultTo(preferredDepositAccount, ''),
-          currencyCode: baseCurrency ?? '',
+          currencyCode:
+            customers.find((c) => c.id === customerLocation?.customerId)
+              ?.currencyCode ||
+            baseCurrency ||
+            '',
           pdfTemplateId: paymentReceivedState?.defaultTemplateId ?? '',
         }),
   };

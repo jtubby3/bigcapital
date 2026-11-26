@@ -65,7 +65,7 @@ export const InvoiceExchangeRateInputField = FF.pipe(
  * Syncs invoice auto-increment settings to invoice form once update.
  */
 export const InvoiceNoSyncSettingsToForm = () => {
-  const { invoiceSettings } = useInvoiceFormContext();
+  const { invoiceSettings, isNewMode } = useInvoiceFormContext();
   const invoiceAutoIncrement = invoiceSettings?.autoIncrement as
     | boolean
     | undefined;
@@ -73,17 +73,24 @@ export const InvoiceNoSyncSettingsToForm = () => {
   const invoiceNumberPrefix = invoiceSettings?.numberPrefix as
     | string
     | undefined;
-  const { setFieldValue } = useFormikContext<InvoiceFormValues>();
+  const { setFieldValue, values } = useFormikContext<InvoiceFormValues>();
 
   useUpdateEffect(() => {
     // Do not update if the invoice auto-increment mode is disabled.
-    if (!invoiceAutoIncrement) return;
+    if (!invoiceAutoIncrement || !isNewMode || values.invoiceNoManually) return;
 
     setFieldValue(
       'invoiceNo',
       transactionNumber(invoiceNumberPrefix, invoiceNextNumber),
     );
-  }, [setFieldValue, invoiceNumberPrefix, invoiceNextNumber]);
+  }, [
+    setFieldValue,
+    invoiceNumberPrefix,
+    invoiceNextNumber,
+    isNewMode,
+    invoiceAutoIncrement,
+    values.invoiceNoManually,
+  ]);
 
   return null;
 };

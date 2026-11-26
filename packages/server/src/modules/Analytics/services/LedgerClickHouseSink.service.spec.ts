@@ -8,7 +8,8 @@ describe('LedgerClickHouseSink', () => {
     const dirtySet = { mark: jest.fn() } as any;
     const cls = { get: jest.fn(() => organizationId) } as any;
 
-    const sink = new LedgerClickHouseSink(syncQueue, dirtySet, cls);
+    const config = { get: () => true } as any;
+    const sink = new LedgerClickHouseSink(syncQueue, dirtySet, cls, config);
     return { sink, syncQueue, dirtySet };
   };
 

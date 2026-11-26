@@ -14,6 +14,8 @@ import { useSticky } from 'react-table-sticky';
 import '@/style/components/DataTable/DataTable.scss';
 import TableCell from './TableCell';
 import TableContext from './TableContext';
+import { MobileDataTable } from './MobileDataTable';
+import { usePhoneLayout } from '@/hooks/usePhoneLayout';
 import TableFooter from './TableFooter';
 import TableHeader from './TableHeader';
 import TableIndeterminateCheckboxHeader from './TableIndeterminateCheckboxHeader';
@@ -34,6 +36,7 @@ import { saveInvoke } from '@/utils';
  * Datatable component.
  */
 export function DataTable(props) {
+  const isPhone = usePhoneLayout();
   const {
     columns,
     data,
@@ -211,15 +214,19 @@ export function DataTable(props) {
 
   return (
     <TableContext.Provider value={{ table, props }}>
-      <TableWrapperRenderer>
-        <TableHeaderRenderer />
+      {isPhone && props.mobileCardColumns ? (
+        <MobileDataTable />
+      ) : (
+        <TableWrapperRenderer>
+          <TableHeaderRenderer />
 
-        <TableTBodyRenderer>
-          <TablePageRenderer />
-        </TableTBodyRenderer>
+          <TableTBodyRenderer>
+            <TablePageRenderer />
+          </TableTBodyRenderer>
 
-        <TableFooterRenderer />
-      </TableWrapperRenderer>
+          <TableFooterRenderer />
+        </TableWrapperRenderer>
+      )}
 
       <TablePaginationRenderer />
     </TableContext.Provider>

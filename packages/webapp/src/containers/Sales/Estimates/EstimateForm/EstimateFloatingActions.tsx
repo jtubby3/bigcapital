@@ -131,7 +131,7 @@ export function EstimateFloatingActions() {
               disabled={isSubmitting}
               className={'ml1'}
               onClick={handleSubmitDraftBtnClick}
-              text={<T id={'save_as_draft'} />}
+              text={<T id={'sales.save_for_later'} />}
             />
             <Popover
               content={

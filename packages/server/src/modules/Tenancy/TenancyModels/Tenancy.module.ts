@@ -44,7 +44,10 @@ import { Model } from 'objection';
 import { ClsModule } from 'nestjs-cls';
 import { TenantUser } from './models/TenantUser.model';
 
+import { CustomerStatement } from '@/modules/CustomerStatements/CustomerStatement.model';
+
 const models = [
+  CustomerStatement,
   Item,
   Account,
   ItemEntry,

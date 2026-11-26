@@ -102,7 +102,11 @@ export function ActionsMenu({
  * Phone number accessor.
  */
 export function PhoneNumberAccessor(row: CustomerRow) {
-  return <div className={'work_phone'}>{row.personalPhone}</div>;
+  return (
+    <div className={'work_phone'}>
+      {(row as Customer).workPhone || row.personalPhone || '—'}
+    </div>
+  );
 }
 
 /**
@@ -148,7 +152,7 @@ export function useCustomersTableColumns() {
       },
       {
         id: 'display_name',
-        Header: intl.get('display_name'),
+        Header: 'Name',
         accessor: 'displayName',
         className: 'display_name',
         width: 150,
@@ -171,17 +175,8 @@ export function useCustomersTableColumns() {
         className: clsx('phone_number', CLASSES.TEXT_MUTED),
       },
       {
-        id: 'note',
-        Header: intl.get('note'),
-        accessor: NoteAccessor,
-        disableSortBy: true,
-        width: 85,
-        clickable: true,
-        className: clsx(CLASSES.TEXT_MUTED),
-      },
-      {
         id: 'balance',
-        Header: intl.get('receivable_balance'),
+        Header: 'Open balance',
         accessor: BalanceAccessor,
         align: 'right',
         width: 100,

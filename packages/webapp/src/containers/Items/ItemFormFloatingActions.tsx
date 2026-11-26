@@ -36,7 +36,17 @@ export function ItemFormFloatingActions() {
   };
 
   return (
-    <FloatingActionsGroup spacing={10}>
+    <FloatingActionsGroup spacing={10} position="right">
+      {!isNewMode && (
+        <Button
+          disabled={isSubmitting}
+          loading={isSubmitting}
+          intent={Intent.PRIMARY}
+          type="submit"
+          onClick={handleSubmitBtnClick}
+          text={<T id={'save'} />}
+        />
+      )}
       <ButtonGroup>
         {/* ----------- Save and New ----------- */}
         <Button
@@ -73,7 +83,6 @@ export function ItemFormFloatingActions() {
 
 const FloatingActionsGroup = styled(Group)`
   padding: 10px 0;
-  padding-left: 165px;
   border-top: 1px solid #50555a;
   position: sticky;
   bottom: 0;

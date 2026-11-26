@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { newInvoiceTemplateDefaults } from '@bigcapital/pdf-templates';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { events } from '@/common/events/events';
 import { CreatePdfTemplateDto } from '../dtos/PdfTemplate.dto';
@@ -25,7 +26,10 @@ export class CreatePdfTemplateService {
    */
   public createPdfTemplate(createDTO: CreatePdfTemplateDto) {
     const { templateName, resource, attributes } = createDTO;
-    const sanitizedAttributes = sanitizePdfTemplateAttributes(attributes);
+    const sanitizedAttributes = sanitizePdfTemplateAttributes({
+      ...(resource === 'SaleInvoice' ? newInvoiceTemplateDefaults : {}),
+      ...attributes,
+    });
 
     return this.uow.withTransaction(async (trx) => {
       // Triggers `onPdfTemplateCreating` event.

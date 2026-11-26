@@ -1,5 +1,5 @@
 import React from 'react';
-import intl from 'react-intl-universal';
+import moment from 'moment';
 import styled from 'styled-components';
 import { getReportCellTestId, getReportRowTestId } from '../reportTestIds';
 import { useFinancialReportSorting } from '../useReportSorting';
@@ -19,6 +19,14 @@ export function BalanceSheetTable({ companyName }: BalanceSheetTableProps) {
 
   // Retrieve the database columns.
   const tableColumns = useBalanceSheetColumns();
+  const asDate = balanceSheet?.query?.toDate;
+  const dateText =
+    asDate && moment(asDate).isValid()
+      ? `As of ${moment(asDate).format('MMMM D, YYYY')}`
+      : (
+          balanceSheet?.meta?.formattedDateRange ??
+          balanceSheet?.meta?.formattedAsDate
+        )?.replace(/^As\b(?! of\b)/, 'As of');
 
   // Retrieve default expanded rows of balance sheet.
   const expandedRows = React.useMemo(
@@ -34,12 +42,10 @@ export function BalanceSheetTable({ companyName }: BalanceSheetTableProps) {
 
   return (
     <FinancialSheet
+      className="quickbooks-report-paper"
       companyName={companyName}
-      sheetType={intl.get('balance_sheet')}
-      dateText={
-        balanceSheet?.meta?.formattedDateRange ??
-        balanceSheet?.meta?.formattedAsDate
-      }
+      sheetType="Balance Sheet"
+      dateText={dateText}
       basis={balanceSheet?.query.basis}
     >
       <BalanceSheetDataTable

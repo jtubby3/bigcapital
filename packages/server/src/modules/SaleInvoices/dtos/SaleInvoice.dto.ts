@@ -8,6 +8,9 @@ import {
   IsBoolean,
   IsDateString,
   IsEnum,
+  IsEmail,
+  Max,
+  MaxLength,
   IsInt,
   IsNotEmpty,
   IsNumber,
@@ -43,6 +46,128 @@ class AttachmentDto {
 }
 
 class CommandSaleInvoiceDto {
+  @IsOptional()
+  @IsString()
+  @MaxLength(4000)
+  @ApiProperty({
+    type: String,
+    required: false,
+    nullable: true,
+    description: 'Invoice billing address; null uses the customer address.',
+  })
+  billingAddressText?: string | null;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(4000)
+  @ApiProperty({
+    type: String,
+    required: false,
+    nullable: true,
+    description: 'Invoice shipping address; null uses the customer address.',
+  })
+  shippingAddressText?: string | null;
+
+  @IsOptional()
+  @IsEmail()
+  @MaxLength(254)
+  @ApiProperty({
+    type: String,
+    required: false,
+    nullable: true,
+    description: 'Recipient email for this invoice.',
+  })
+  recipientEmail?: string | null;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  @ApiProperty({
+    type: String,
+    required: false,
+    nullable: true,
+    description: 'Carrier or delivery method.',
+  })
+  shippingMethod?: string | null;
+
+  @IsOptional()
+  @IsDateString()
+  @ApiProperty({
+    type: String,
+    required: false,
+    nullable: true,
+    description: 'Shipping date.',
+  })
+  shippingDate?: string | null;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  @ApiProperty({
+    type: String,
+    required: false,
+    nullable: true,
+    description: 'Shipment tracking number.',
+  })
+  trackingNo?: string | null;
+
+  @IsOptional()
+  @ToNumber()
+  @IsInt()
+  @Min(0)
+  @Max(3650)
+  @ApiProperty({
+    type: Number,
+    required: false,
+    nullable: true,
+    description: 'Payment terms in days; null keeps a custom due date.',
+  })
+  paymentTermsDays?: number | null;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(4000)
+  @ApiProperty({
+    type: String,
+    required: false,
+    nullable: true,
+    description: 'Payment instructions shown on the invoice.',
+  })
+  paymentInstructions?: string | null;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(4000)
+  @ApiProperty({
+    type: String,
+    required: false,
+    nullable: true,
+    description: 'Private notes excluded from customer documents.',
+  })
+  internalNotes?: string | null;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(4000)
+  @ApiProperty({
+    type: String,
+    required: false,
+    nullable: true,
+    description: 'Private invoice memo.',
+  })
+  statementMemo?: string | null;
+  @IsOptional()
+  @ToNumber()
+  @IsNumber({ maxDecimalPlaces: 3 })
+  @Min(0)
+  @Max(1000000000)
+  @ApiProperty({
+    required: false,
+    description:
+      'Separate shipping charge posted to the Shipping Income account.',
+  })
+  shippingCharge?: number;
+
   @ToNumber()
   @IsInt()
   @IsNotEmpty()

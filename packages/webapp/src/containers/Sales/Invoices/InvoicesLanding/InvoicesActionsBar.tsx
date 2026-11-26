@@ -16,6 +16,7 @@ import { isEmpty } from 'lodash';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useBulkDeleteInvoicesDialog } from '../hooks/use-bulk-delete-accounts-dialog';
+import { usePackingSlipPermissions } from '../PackingSlips/usePackingSlips';
 import { useInvoicesListContext } from './InvoicesListProvider';
 import { withInvoiceActions } from './withInvoiceActions';
 import { withInvoices } from './withInvoices';
@@ -59,6 +60,7 @@ function InvoiceActionsBar({
   const { mutateAsync: saveSettings } = useSaveSettings();
 
   const history = useHistory();
+  const { canView: canViewPackingSlips } = usePackingSlipPermissions();
   const { openBulkDeleteDialog, isValidatingBulkDeleteInvoices } =
     useBulkDeleteInvoicesDialog();
 
@@ -142,6 +144,14 @@ function InvoiceActionsBar({
             onClick={handleClickNewInvoice}
           />
         </Can>
+        {canViewPackingSlips && (
+          <Button
+            className={Classes.MINIMAL}
+            icon="document"
+            text="Bulk scan packing slips"
+            onClick={() => history.push('/invoices/packing-slips')}
+          />
+        )}
         <AdvancedFilterPopover
           advancedFilterProps={{
             conditions: invoicesFilterRoles,

@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef } from 'react';
 import {
   Navbar,
   NavbarGroup,
@@ -68,6 +69,21 @@ function DashboardTopbar({
   // #withDialogActions
   openDialog,
 }: DashboardTopbarProps) {
+  const topbarRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const topbar = topbarRef.current;
+    const dashboard = topbar?.closest<HTMLElement>('.dashboard-content');
+    if (!topbar || !dashboard) return;
+    const measure = () =>
+      dashboard.style.setProperty('--top-offset', `${topbar.offsetHeight}px`);
+    const observer = new ResizeObserver(measure);
+    observer.observe(topbar);
+    measure();
+    return () => {
+      observer.disconnect();
+      dashboard.style.removeProperty('--top-offset');
+    };
+  }, []);
   const history = useHistory();
   const { openDrawer } = useDrawerActions();
   const { data: unreadCount = 0 } = useNotificationsUnreadCount();
@@ -85,7 +101,11 @@ function DashboardTopbar({
   };
 
   return (
-    <div className="dashboard__topbar" data-testId={'dashboard-topbar'}>
+    <div
+      ref={topbarRef}
+      className="dashboard__topbar"
+      data-testId={'dashboard-topbar'}
+    >
       <div className="dashboard__topbar-left">
         <div className="dashboard__topbar-sidebar-toggle">
           <Tooltip
@@ -98,7 +118,13 @@ function DashboardTopbar({
             }
             position={Position.RIGHT}
           >
-            <DashboardHamburgerButton onClick={handleSidebarToggleBtn} />
+            <DashboardHamburgerButton
+              onClick={handleSidebarToggleBtn}
+              aria-label={
+                sidebarExpended ? 'Collapse main menu' : 'Open main menu'
+              }
+              aria-expanded={sidebarExpended}
+            />
           </Tooltip>
         </div>
 

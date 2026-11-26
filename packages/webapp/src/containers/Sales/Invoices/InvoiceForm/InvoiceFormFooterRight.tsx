@@ -15,6 +15,8 @@ import {
 import type { InvoiceFormValues } from './utils';
 import {
   T,
+  FFormGroup,
+  FInputGroup,
   TotalLines,
   TotalLine,
   TotalLineBorderStyle,
@@ -56,6 +58,23 @@ export function InvoiceFormFooterRight() {
         currencyCode={currencyCode}
         discountAmount={discountAmount}
       />
+      <TotalLine
+        title="Shipping"
+        value={
+          <FFormGroup name="shippingCharge">
+            <FInputGroup
+              name="shippingCharge"
+              type="number"
+              min={0}
+              step="0.01"
+              aria-label="Shipping charge"
+            />
+          </FFormGroup>
+        }
+      />
+      <div style={{ fontSize: 11, opacity: 0.7, marginBottom: 12 }}>
+        Shipping is added after product taxes.
+      </div>
       <AdjustmentTotalLine adjustmentAmount={adjustmentAmount} />
 
       {isSalesTaxFeatureCan &&
@@ -68,7 +87,7 @@ export function InvoiceFormFooterRight() {
           />
         ))}
       <TotalLine
-        title={`Total (${currencyCode})`}
+        title={`Invoice total (${currencyCode})`}
         value={totalFormatted}
         borderStyle={TotalLineBorderStyle.SingleDark}
         textStyle={TotalLineTextStyle.Bold}

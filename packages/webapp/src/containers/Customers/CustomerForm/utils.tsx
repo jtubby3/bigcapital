@@ -1,3 +1,4 @@
+import type { CustomerProfile } from '../CustomerWorkspace/useCustomerWorkspace';
 import { useFormikContext } from 'formik';
 import { first } from 'lodash';
 import moment from 'moment';
@@ -17,6 +18,7 @@ import {
 } from '@/utils';
 
 export type CustomerFormValues = {
+  customerProfile: CustomerProfile;
   customerType: string;
   salutation: string;
   firstName: string;
@@ -58,6 +60,13 @@ export type CustomerFormValues = {
 };
 
 export const defaultInitialValues: CustomerFormValues = {
+  customerProfile: {
+    categories: [],
+    addresses: [],
+    customFields: [],
+    attachmentKeys: [],
+    shippingSameAsBilling: false,
+  },
   customerType: 'business',
   salutation: '',
   firstName: '',
@@ -114,6 +123,10 @@ export const transformCustomerToForm = (
   ({
     ...transformToForm(customer ?? {}, defaults),
     active: customer?.active ?? defaults.active,
+    customerProfile: {
+      ...defaults.customerProfile,
+      ...(customer as any)?.customerProfile,
+    },
   }) as CustomerFormValues;
 
 /**
@@ -129,7 +142,8 @@ export const transformValuesToForm = (
  */
 export const transformFormToCreateRequest = (
   values: CustomerFormValues,
-): CreateCustomerBody => ({
+): CreateCustomerBody & { customerProfile: CustomerProfile } => ({
+  customerProfile: values.customerProfile,
   customerType: values.customerType,
   currencyCode: values.currencyCode,
   displayName: values.displayName,
@@ -154,13 +168,27 @@ export const transformFormToCreateRequest = (
   billingAddressPhone: values.billingAddressPhone,
   billingAddressState: values.billingAddressState,
 
-  shippingAddress1: values.shippingAddress1,
-  shippingAddress2: values.shippingAddress2,
-  shippingAddressCity: values.shippingAddressCity,
-  shippingAddressCountry: values.shippingAddressCountry,
-  shippingAddressPostcode: values.shippingAddressPostcode,
-  shippingAddressPhone: values.shippingAddressPhone,
-  shippingAddressState: values.shippingAddressState,
+  shippingAddress1: values.customerProfile.shippingSameAsBilling
+    ? values.billingAddress1
+    : values.shippingAddress1,
+  shippingAddress2: values.customerProfile.shippingSameAsBilling
+    ? values.billingAddress2
+    : values.shippingAddress2,
+  shippingAddressCity: values.customerProfile.shippingSameAsBilling
+    ? values.billingAddressCity
+    : values.shippingAddressCity,
+  shippingAddressCountry: values.customerProfile.shippingSameAsBilling
+    ? values.billingAddressCountry
+    : values.shippingAddressCountry,
+  shippingAddressPostcode: values.customerProfile.shippingSameAsBilling
+    ? values.billingAddressPostcode
+    : values.shippingAddressPostcode,
+  shippingAddressPhone: values.customerProfile.shippingSameAsBilling
+    ? values.billingAddressPhone
+    : values.shippingAddressPhone,
+  shippingAddressState: values.customerProfile.shippingSameAsBilling
+    ? values.billingAddressState
+    : values.shippingAddressState,
 
   openingBalance: toNumber(values.openingBalance),
   openingBalanceAt: values.openingBalanceAt,
@@ -173,7 +201,8 @@ export const transformFormToCreateRequest = (
  */
 export const transformFormToEditRequest = (
   values: CustomerFormValues,
-): EditCustomerBody => ({
+): EditCustomerBody & { customerProfile: CustomerProfile } => ({
+  customerProfile: values.customerProfile,
   customerType: values.customerType,
   displayName: values.displayName,
   active: parseBoolean(values.active, true),
@@ -197,13 +226,27 @@ export const transformFormToEditRequest = (
   billingAddressPhone: values.billingAddressPhone,
   billingAddressState: values.billingAddressState,
 
-  shippingAddress1: values.shippingAddress1,
-  shippingAddress2: values.shippingAddress2,
-  shippingAddressCity: values.shippingAddressCity,
-  shippingAddressCountry: values.shippingAddressCountry,
-  shippingAddressPostcode: values.shippingAddressPostcode,
-  shippingAddressPhone: values.shippingAddressPhone,
-  shippingAddressState: values.shippingAddressState,
+  shippingAddress1: values.customerProfile.shippingSameAsBilling
+    ? values.billingAddress1
+    : values.shippingAddress1,
+  shippingAddress2: values.customerProfile.shippingSameAsBilling
+    ? values.billingAddress2
+    : values.shippingAddress2,
+  shippingAddressCity: values.customerProfile.shippingSameAsBilling
+    ? values.billingAddressCity
+    : values.shippingAddressCity,
+  shippingAddressCountry: values.customerProfile.shippingSameAsBilling
+    ? values.billingAddressCountry
+    : values.shippingAddressCountry,
+  shippingAddressPostcode: values.customerProfile.shippingSameAsBilling
+    ? values.billingAddressPostcode
+    : values.shippingAddressPostcode,
+  shippingAddressPhone: values.customerProfile.shippingSameAsBilling
+    ? values.billingAddressPhone
+    : values.shippingAddressPhone,
+  shippingAddressState: values.customerProfile.shippingSameAsBilling
+    ? values.billingAddressState
+    : values.shippingAddressState,
 });
 
 export const useSetPrimaryBranchToForm = () => {

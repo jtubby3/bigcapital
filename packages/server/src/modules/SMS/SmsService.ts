@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { isStagingEnvironment } from '@/common/config/deployment-environment';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { Twilio } from 'twilio';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { ServiceError } from '@/modules/Items/ServiceError';
@@ -17,6 +18,10 @@ export class SmsService {
    * @returns {Promise<void>}
    */
   public async send(to: string, body: string): Promise<void> {
+    if (isStagingEnvironment())
+      throw new ForbiddenException(
+        'External SMS delivery is disabled in staging.',
+      );
     const credentials = await this.smsIntegrationSettings.getCredentials();
 
     if (!credentials) {

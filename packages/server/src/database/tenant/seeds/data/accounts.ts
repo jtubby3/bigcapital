@@ -78,6 +78,17 @@ export const PurchaseDiscountAccount = {
   predefined: true,
 };
 
+export const ShippingIncomeAccount = {
+  name: 'Shipping Income',
+  slug: 'shipping-income',
+  account_type: 'other-income',
+  code: '40012',
+  description: 'Shipping charges billed to customers.',
+  active: true,
+  index: 1,
+  predefined: true,
+};
+
 export const OtherChargesAccount = {
   name: 'Other Charges',
   slug: 'other-charges',
@@ -398,4 +409,5 @@ export const AccountsData = [
   DiscountExpenseAccount,
   PurchaseDiscountAccount,
   OtherChargesAccount,
+  ShippingIncomeAccount,
 ];

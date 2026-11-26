@@ -1,0 +1,70 @@
+name: Fork CI
+on:
+  push:
+    branches: [develop, "codex/**"]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: fork-ci-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 18.20.8 }
+      - uses: pnpm/action-setup@v4
+        with: { version: 9.1.2 }
+      - name: Check tracked source for credentials
+        run: python3 deployment/check-source-secrets.py
+      - name: Install Linux document tools
+        run: sudo apt-get update -qq && sudo apt-get install -y tesseract-ocr poppler-utils fonts-dejavu-core
+      - name: Install frozen dependencies
+        run: HUSKY=0 pnpm install --frozen-lockfile
+      - name: Build shared packages and API
+        run: pnpm run build:shared && pnpm --filter @bigcapital/server run build && pnpm --filter @bigcapital/server exec nest build cli
+        env: { NX_DAEMON: "false", NX_SKIP_NX_CACHE: "true" }
+      - name: Typecheck frontend
+        run: pnpm --filter @bigcapital/webapp run typecheck
+      - name: Server tests
+        run: pnpm --filter @bigcapital/server exec jest --runInBand
+      - name: Shared financial/PDF tests
+        run: node --test shared/bigcapital-utils/test/*.test.cjs shared/pdf-templates/test/*.test.cjs
+      - name: Linux scanner tests and synthetic command smoke test
+        run: python3 -m unittest discover -s packages/server/src/modules/PackingSlips/native -p test_packing_scan_linux.py -v
+  images:
+    needs: verify
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix: { package: [server, webapp] }
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and publish commit-addressed fork image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: packages/${{ matrix.package }}/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ghcr.io/${{ github.repository }}/${{ matrix.package }}:sha-${{ github.sha }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+          cache-from: type=gha,scope=fork-${{ matrix.package }}
+          cache-to: type=gha,mode=max,scope=fork-${{ matrix.package }}

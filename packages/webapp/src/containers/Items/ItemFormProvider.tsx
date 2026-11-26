@@ -6,6 +6,7 @@ import type {
   AccountsList,
   TaxRatesListResponse,
   CreateItemBody,
+  CreateItemResponse,
   EditItemBody,
   ItemCategoriesListResponse,
 } from '@bigcapital/sdk-ts';
@@ -27,6 +28,7 @@ type ItemFormSubmitPayload = {
 
 type ItemFormProviderProps = {
   itemId?: number;
+  ignoreLocationState?: boolean;
   children?: React.ReactNode;
 };
 
@@ -45,7 +47,7 @@ type ItemFormContextValue = {
   isItemLoading: boolean;
   isTaxRatesLoading: boolean;
 
-  createItemMutate: (values: CreateItemBody) => Promise<void>;
+  createItemMutate: (values: CreateItemBody) => Promise<CreateItemResponse>;
   editItemMutate: (args: [number, EditItemBody]) => Promise<void>;
   setSubmitPayload: React.Dispatch<React.SetStateAction<ItemFormSubmitPayload>>;
 };
@@ -57,9 +59,13 @@ const ItemFormContext = createContext<ItemFormContextValue | undefined>(
 /**
  * Accounts chart data provider.
  */
-function ItemFormProvider({ itemId, ...props }: ItemFormProviderProps) {
+function ItemFormProvider({
+  itemId,
+  ignoreLocationState = false,
+  ...props
+}: ItemFormProviderProps) {
   const { state } = useLocation<{ action?: number | string }>();
-  const duplicateId = state?.action;
+  const duplicateId = ignoreLocationState ? undefined : state?.action;
 
   // Feature flags.
   const { featureCan } = useFeatureCan();
@@ -123,7 +129,7 @@ function ItemFormProvider({ itemId, ...props }: ItemFormProviderProps) {
 
     createItemMutate: createItemMutate as (
       values: CreateItemBody,
-    ) => Promise<void>,
+    ) => Promise<CreateItemResponse>,
     editItemMutate: editItemMutate as (
       args: [number, EditItemBody],
     ) => Promise<void>,

@@ -46,7 +46,7 @@ export class EditCustomer {
       .throwIfNotFound();
 
     // Transforms the given customer DTO to object.
-    const customerObj = this.customerDTO.transformEditDTO(customerDTO);
+    const customerObj = await this.customerDTO.transformEditDTO(customerDTO);
 
     // Edits the given customer under unit-of-work environment.
     return this.uow.withTransaction(async (trx: Knex.Transaction) => {

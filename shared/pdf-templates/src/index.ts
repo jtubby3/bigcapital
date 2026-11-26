@@ -1,6 +1,7 @@
 export * from './components';
 
 export * from './renders/render-invoice-paper-template';
+export * from './renders/render-packing-slip-paper-template';
 export * from './renders/render-credit-note-paper-template';
 export * from './renders/render-estimate-paper-template';
 export * from './renders/render-receipt-paper-template';

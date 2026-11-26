@@ -55,6 +55,7 @@ import type {
 const commonInvalidateQueries = (
   queryClient: ReturnType<typeof useQueryClient>,
 ) => {
+  queryClient.invalidateQueries({ queryKey: ['customers-workspace'] });
   // Invalidate credit note.
   queryClient.invalidateQueries({ queryKey: creditNotesKeys.all() });
 

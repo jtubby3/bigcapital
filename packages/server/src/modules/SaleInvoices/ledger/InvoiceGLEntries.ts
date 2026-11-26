@@ -47,6 +47,9 @@ export class SaleInvoiceGLEntries {
     const otherChargesAccount =
       await this.accountRepository.findOrCreateOtherChargesAccount({}, trx);
 
+    const shippingIncomeAccount =
+      await this.accountRepository.findOrCreateShippingIncomeAccount({}, trx);
+
     // Retrieves the ledger of the invoice.
     const invoiceAccrualGL = new InvoiceAccrualGL(saleInvoice);
 
@@ -54,6 +57,7 @@ export class SaleInvoiceGLEntries {
     invoiceAccrualGL.setTaxPayableAccountId(taxPayableAccount.id);
     invoiceAccrualGL.setDiscountAccountId(discountAccount.id);
     invoiceAccrualGL.setOtherChargesAccountId(otherChargesAccount.id);
+    invoiceAccrualGL.setShippingIncomeAccountId(shippingIncomeAccount.id);
 
     const ledger = invoiceAccrualGL.getInvoiceLedger();
 

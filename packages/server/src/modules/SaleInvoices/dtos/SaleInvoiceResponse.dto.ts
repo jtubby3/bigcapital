@@ -9,6 +9,31 @@ import { SaleInvoiceTaxEntryDto } from './SaleInvoiceTaxEntry.dto';
 import { DiscountType } from '@/common/types/Discount';
 
 export class SaleInvoiceResponseDto {
+  @ApiProperty({ type: String, required: false, nullable: true })
+  billingAddressText?: string | null;
+  @ApiProperty({ type: String, required: false, nullable: true })
+  shippingAddressText?: string | null;
+  @ApiProperty({ type: String, required: false, nullable: true })
+  recipientEmail?: string | null;
+  @ApiProperty({ type: String, required: false, nullable: true })
+  shippingMethod?: string | null;
+  @ApiProperty({ type: String, required: false, nullable: true })
+  shippingDate?: string | null;
+  @ApiProperty({ type: String, required: false, nullable: true }) trackingNo?:
+    | string
+    | null;
+  @ApiProperty({ type: Number, required: false, nullable: true })
+  paymentTermsDays?: number | null;
+  @ApiProperty({ type: String, required: false, nullable: true })
+  paymentInstructions?: string | null;
+  @ApiProperty({ type: String, required: false, nullable: true })
+  internalNotes?: string | null;
+  @ApiProperty({ type: String, required: false, nullable: true })
+  statementMemo?: string | null;
+  @ApiProperty({ required: false }) shippingCharge?: number;
+  @ApiProperty({ required: false }) shippingChargeFormatted?: string;
+  @ApiProperty({ required: false }) shippingDateFormatted?: string;
+
   @ApiProperty({
     description: 'The unique identifier of the sale invoice',
     example: 1,

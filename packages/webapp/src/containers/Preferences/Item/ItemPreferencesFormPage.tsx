@@ -1,30 +1,31 @@
-import { Intent } from '@blueprintjs/core';
-import { Formik, type FormikHelpers } from 'formik';
-import * as FF from 'fp-ts/function';
-import React, { useEffect } from 'react';
-import intl from 'react-intl-universal';
-import '@/style/pages/Preferences/Accounting.scss';
-import { ItemPreferencesSchema } from './ItemPreferences.schema';
+import { Intent } from "@blueprintjs/core";
+import { Formik, type FormikHelpers } from "formik";
+import * as FF from "fp-ts/function";
+import React, { useEffect } from "react";
+import intl from "react-intl-universal";
+import "@/style/pages/Preferences/Accounting.scss";
+import { ItemPreferencesSchema } from "./ItemPreferences.schema";
 import {
   ItemForm as ItemPreferencesForm,
   type ItemPreferencesFormValues,
-} from './ItemPreferencesForm';
-import { useItemPreferencesFormContext } from './ItemPreferencesFormProvider';
-import type { WithDashboardActionsProps } from '@/containers/Dashboard/withDashboardActions';
-import { AppToaster } from '@/components';
-import { withDashboardActions } from '@/containers/Dashboard/withDashboardActions';
+} from "./ItemPreferencesForm";
+import { useItemPreferencesFormContext } from "./ItemPreferencesFormProvider";
+import type { WithDashboardActionsProps } from "@/containers/Dashboard/withDashboardActions";
+import { AppToaster } from "@/components";
+import { withDashboardActions } from "@/containers/Dashboard/withDashboardActions";
 import {
   optionsMapToArray,
   transformToForm,
   transfromToSnakeCase,
-} from '@/utils';
+} from "@/utils";
 
 const defaultFormValues: ItemPreferencesFormValues = {
-  preferredSellAccount: '',
-  preferredCostAccount: '',
-  preferredInventoryAccount: '',
+  autoIncreaseSellPrice: true,
+  preferredSellAccount: "",
+  preferredCostAccount: "",
+  preferredInventoryAccount: "",
   reorderPointNotifications: false,
-  reorderPointNotificationEmail: '',
+  reorderPointNotificationEmail: "",
   preventStockFromGoingBelowZero: false,
 };
 
@@ -41,7 +42,7 @@ function ItemPreferencesFormPageInner({
   };
 
   useEffect(() => {
-    changePreferencesPageTitle(intl.get('items'));
+    changePreferencesPageTitle(intl.get("items"));
   }, [changePreferencesPageTitle]);
 
   const handleFormSubmit = (
@@ -50,22 +51,23 @@ function ItemPreferencesFormPageInner({
   ) => {
     const options = optionsMapToArray(
       transfromToSnakeCase({
+        autoIncreaseSellPrice: Boolean(values.autoIncreaseSellPrice),
         preferredSellAccount: values.preferredSellAccount,
         preferredCostAccount: values.preferredCostAccount,
         preferredInventoryAccount: values.preferredInventoryAccount,
         reorderPointNotifications: Boolean(values.reorderPointNotifications),
         reorderPointNotificationEmail:
-          values.reorderPointNotificationEmail ?? '',
+          values.reorderPointNotificationEmail ?? "",
         preventStockFromGoingBelowZero: values.preventStockFromGoingBelowZero,
       }),
     ).map((option) => ({
       ...option,
-      group: 'items',
+      group: "items",
     }));
 
     const onSuccess = () => {
       AppToaster.show({
-        message: intl.get('the_items_preferences_has_been_saved'),
+        message: intl.get("the_items_preferences_has_been_saved"),
         intent: Intent.SUCCESS,
       });
       setSubmitting(false);

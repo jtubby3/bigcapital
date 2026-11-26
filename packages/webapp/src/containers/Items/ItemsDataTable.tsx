@@ -78,6 +78,8 @@ function ItemsDataTableInner({
     isEmptyStatus,
     isItemsFetching,
     itemsSettings,
+    mobileError,
+    retryMobile,
   } = useItemsListContext();
   const itemsTableSize = itemsSettings?.tableSize as string | undefined;
 
@@ -186,6 +188,15 @@ function ItemsDataTableInner({
   return (
     <DashboardContentTable>
       <DataTable
+        mobileError={mobileError}
+        onMobileRetry={retryMobile}
+        mobileCardColumns={[
+          'name',
+          'code',
+          'sell_price',
+          'quantity_on_hand',
+          'type',
+        ]}
         columns={columns}
         data={items || []}
         loading={isItemsLoading}

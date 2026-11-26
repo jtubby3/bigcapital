@@ -16,9 +16,9 @@ import '@/style/pages/Preferences/Page.scss';
  * Preferences page.
  */
 function PreferencesPage({ toggleSidebarExpand }) {
-  // Shrink the dashboard sidebar once open application preferences page.
+  // Keep both navigation menus docked so the main menu cannot cover Preferences.
   React.useEffect(() => {
-    toggleSidebarExpand(false);
+    toggleSidebarExpand(true);
   }, [toggleSidebarExpand]);
 
   return (

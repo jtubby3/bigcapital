@@ -37,7 +37,7 @@ const models = [
 
 @Module({
   imports: [S3Module, ...models],
-  exports: [...models, GetAttachmentPresignedUrl],
+  exports: [...models, GetAttachmentPresignedUrl, GetAttachment],
   controllers: [AttachmentsController],
   providers: [
     DeleteAttachment,

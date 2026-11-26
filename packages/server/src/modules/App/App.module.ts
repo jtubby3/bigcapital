@@ -47,6 +47,9 @@ import { ValidationPipe } from '@/common/pipes/ClassValidation.pipe';
 import { ServiceErrorFilter } from '@/common/filters/service-error.filter';
 import { ModelHasRelationsFilter } from '@/common/filters/model-has-relations.filter';
 import { ChromiumlyTenancyModule } from '../ChromiumlyTenancy/ChromiumlyTenancy.module';
+import { PackingSlipsModule } from '../PackingSlips/PackingSlips.module';
+import { VendorInvoiceScanModule } from '../VendorInvoiceScan/VendorInvoiceScan.module';
+import { CustomerStatementsModule } from '../CustomerStatements/CustomerStatements.module';
 import { CustomersModule } from '../Customers/Customers.module';
 import { VendorsModule } from '../Vendors/Vendors.module';
 import { SaleEstimatesModule } from '../SaleEstimates/SaleEstimates.module';
@@ -215,6 +218,9 @@ import { AppThrottleModule } from './AppThrottle.module';
     WarehousesModule,
     WarehousesTransfersModule,
     CustomersModule,
+    CustomerStatementsModule,
+    PackingSlipsModule,
+    VendorInvoiceScanModule,
     VendorsModule,
     SaleInvoicesModule,
     RecurringInvoicesModule,

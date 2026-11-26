@@ -1,3 +1,4 @@
+import { environmentTitle } from '@/components/DeploymentEnvironment';
 import * as FF from 'fp-ts/function';
 import { Helmet } from 'react-helmet';
 import { App } from '@/constants/app';
@@ -22,7 +23,7 @@ function DashboardDocumentTitle({
 
   return (
     <Helmet>
-      <title>{documentTitle}</title>
+      <title>{environmentTitle(documentTitle)}</title>
     </Helmet>
   );
 }

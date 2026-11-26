@@ -1,6 +1,7 @@
 .page-form--item {
   $self: '.page-form';
   padding: 20px;
+  overflow-wrap: anywhere;
 
   .bp4-form-group {
     max-width: 500px;

@@ -13,7 +13,7 @@ export const financialReportMenus: FinancialSection[] = [
     sectionTitle: <T id={'financial_accounting'} />,
     reports: [
       {
-        title: <T id={'balance_sheet_report'} />,
+        title: 'Balance Sheet',
         desc: (
           <T id={'reports_a_company_s_assets_liabilities_and_shareholders'} />
         ),
@@ -31,7 +31,7 @@ export const financialReportMenus: FinancialSection[] = [
         ability: ReportsAction.READ_TRIAL_BALANCE_SHEET,
       },
       {
-        title: <T id={'profit_loss_report'} />,
+        title: 'Profit and Loss',
         desc: <T id={'reports_the_revenues_costs_and_expenses'} />,
         link: '/financial-reports/profit-loss-sheet',
         subject: AbilitySubject.Report,
@@ -61,7 +61,7 @@ export const financialReportMenus: FinancialSection[] = [
         ability: ReportsAction.READ_GENERAL_LEDGET,
       },
       {
-        title: <T id={'receivable_aging_summary'} />,
+        title: 'Accounts receivable aging summary',
         desc: (
           <T id={'summarize_total_unpaid_balances_of_customers_invoices'} />
         ),
@@ -95,6 +95,27 @@ export const financialReportMenus: FinancialSection[] = [
   {
     sectionTitle: <T id={'sales_purchases_reports'} />,
     reports: [
+      {
+        title: 'Income by Customer Summary',
+        desc: 'Income, posted expenses and net income for each customer.',
+        link: '/financial-reports/income-by-customer-summary',
+        subject: AbilitySubject.Report,
+        ability: ReportsAction.READ_CUSTOMERS_TRANSACTIONS,
+      },
+      {
+        title: 'Sales by Customer Summary',
+        desc: 'Net sales for each customer, before sales tax.',
+        link: '/financial-reports/sales-by-customer-summary',
+        subject: AbilitySubject.Report,
+        ability: ReportsAction.READ_CUSTOMERS_TRANSACTIONS,
+      },
+      {
+        title: 'Sales by Customer Detail',
+        desc: 'Sales line items grouped by customer, with subtotals and running balances.',
+        link: '/financial-reports/sales-by-customer-detail',
+        subject: AbilitySubject.Report,
+        ability: ReportsAction.READ_CUSTOMERS_TRANSACTIONS,
+      },
       {
         title: <T id={'purchases_by_items'} />,
         desc: (

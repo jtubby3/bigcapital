@@ -1,0 +1,134 @@
+.root {
+  width: 100%;
+  height: 100%;
+
+  [data-testId='customize-fields-scroll'] {
+    container-type: inline-size;
+    container-name: invoice-editor-fields;
+
+    label:not(:global(.bp4-control)):not(:global(.bp4-label)) {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+      line-height: 1.4;
+    }
+
+    :global(.bp4-form-group) {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      min-width: 0;
+      margin-bottom: 8px;
+    }
+
+    :global(.bp4-form-group > .bp4-label) {
+      display: block;
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    :global(.bp4-form-content) {
+      min-width: 0;
+      width: 100%;
+      margin-left: 0;
+    }
+
+    :global(.bp4-input-group),
+    :global(input.bp4-input),
+    :global(select.bp4-input),
+    textarea {
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    :global(.bp4-popover-target) {
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    :global(.bp4-control) {
+      margin-bottom: 0;
+      line-height: 20px;
+    }
+
+    :global(.bp4-control + .bp4-form-group) {
+      margin-top: 12px;
+    }
+
+    :global(.bp4-button-text) {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    details > summary {
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    fieldset {
+      min-width: 0;
+      padding: 12px;
+    }
+
+    legend {
+      padding: 0 4px;
+      line-height: 1.4;
+    }
+  }
+}
+
+.marginGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
+  gap: 16px;
+}
+
+@container invoice-editor-fields (max-width: 300px) {
+  .marginGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.designerControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.designerField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  line-height: 1.4;
+
+  select {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.referenceControl {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(100%, 300px);
+  margin: 16px 0;
+
+  input {
+    width: 100%;
+    margin: 0;
+  }
+}
+
+.referenceGuide summary {
+  margin-bottom: 12px;
+  line-height: 1.4;
+}

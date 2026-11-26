@@ -12,6 +12,9 @@ import {
   AbilitySubject,
 } from '@/constants/abilityOption';
 import { useAbilityContext } from '@/hooks/utils';
+import { PackingSlipAttachments } from '@/containers/Sales/Invoices/PackingSlips/PackingSlipAttachments';
+import { usePackingSlipPermissions } from '@/containers/Sales/Invoices/PackingSlips/usePackingSlips';
+import { useInvoiceDetailDrawerContext } from './InvoiceDetailDrawerProvider';
 
 /**
  * Invoice details tabs.
@@ -19,6 +22,8 @@ import { useAbilityContext } from '@/hooks/utils';
  */
 function InvoiceDetailsTabs() {
   const ability = useAbilityContext();
+  const { invoiceId } = useInvoiceDetailDrawerContext();
+  const { canView } = usePackingSlipPermissions();
 
   return (
     <DrawerMainTabs
@@ -30,6 +35,13 @@ function InvoiceDetailsTabs() {
         id={'details'}
         panel={<InvoiceDetailTab />}
       />
+      {canView && (
+        <Tab
+          title="Packing slips"
+          id="packing_slips"
+          panel={<PackingSlipAttachments invoiceId={invoiceId} />}
+        />
+      )}
       <Tab
         title={intl.get('journal_entries')}
         id={'journal_entries'}

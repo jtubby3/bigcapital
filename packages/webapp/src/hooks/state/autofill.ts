@@ -77,10 +77,13 @@ export const useResetAutofillRefs = () => {
  * @param {(payload: any, ref: number) => void} callback
  * @returns {number}
  */
+let nextAutofillRef = Date.now();
+
 export const useCreateAutofillListener = (
   callback: (payload: any, ref: number) => void,
 ): number => {
-  const ref = useRef<number>(Date.now());
+  const ref = useRef<number>(0);
+  if (!ref.current) ref.current = ++nextAutofillRef;
   const autofillPayload = useGetAutofillPayload(ref.current);
   const removeAutofill = useRemoveAutofillRef();
 

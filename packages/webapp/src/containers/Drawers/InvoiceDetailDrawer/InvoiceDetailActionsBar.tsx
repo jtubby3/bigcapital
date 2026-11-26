@@ -164,6 +164,17 @@ function InvoiceDetailActionsBarInner({
             text={<T id={'print'} />}
             onClick={handlePrintInvoice}
           />
+          <Button
+            className={Classes.MINIMAL}
+            icon="box"
+            text="Packing slip"
+            onClick={() =>
+              openDialog('invoice-pdf-preview', {
+                invoiceId,
+                documentType: 'packing-slip',
+              })
+            }
+          />
           <NavbarDivider />
         </Can>
         <Can I={SaleInvoiceAction.Delete} a={AbilitySubject.Invoice}>

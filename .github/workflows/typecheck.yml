@@ -33,6 +33,7 @@ defaults:
 
 jobs:
   typecheck:
+    if: github.repository == 'bigcapitalhq/bigcapital'
     name: TypeScript Type Check
     runs-on: ubuntu-latest
     timeout-minutes: 10

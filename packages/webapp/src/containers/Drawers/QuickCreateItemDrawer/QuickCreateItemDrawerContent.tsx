@@ -9,10 +9,12 @@ import { DRAWERS } from '@/constants/drawers';
 
 interface QuickCreateItemDrawerContentProps {
   itemName?: string;
+  autofillRef?: number;
 }
 
 export function QuickCreateItemDrawerContent({
   itemName,
+  autofillRef,
 }: QuickCreateItemDrawerContentProps): React.ReactElement {
   return (
     <React.Fragment>
@@ -21,7 +23,10 @@ export function QuickCreateItemDrawerContent({
         title={<T id={'create_a_new_item'} />}
       />
       <DrawerBody>
-        <QuickCreateItemDrawerForm itemName={itemName} />
+        <QuickCreateItemDrawerForm
+          itemName={itemName}
+          autofillRef={autofillRef}
+        />
       </DrawerBody>
     </React.Fragment>
   );

@@ -8,7 +8,11 @@ import {
 } from '@/hooks/query/pdf-templates';
 import { transformToForm } from '@/utils';
 
-const commonExcludedAttrs = ['templateName', 'companyLogoUri'];
+const commonExcludedAttrs = [
+  'templateName',
+  'companyLogoUri',
+  'footerImageUri',
+];
 
 export const transformToEditRequest = <T extends BrandingTemplateValues>(
   values: T,

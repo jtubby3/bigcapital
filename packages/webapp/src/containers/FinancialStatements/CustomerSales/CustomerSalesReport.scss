@@ -1,0 +1,209 @@
+.customer-sales-report {
+  padding: 20px 28px 32px;
+  min-width: 0;
+  &__back {
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+  &__controls {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--color-financial-sheet-card-border);
+  }
+  &__controls label,
+  &__label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+  }
+  &__label {
+    margin-bottom: 6px;
+  }
+  &__controls input {
+    min-width: 145px;
+    width: 100%;
+  }
+  &__controls select {
+    min-width: 190px;
+  }
+  &__loading {
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  &__warning {
+    margin-top: 16px;
+  }
+  &__sheet-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 16px;
+    margin-top: -8px;
+  }
+  &__table-scroll {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--report-text, var(--color-financial-sheet-title-text));
+  }
+  &__table th {
+    font-weight: 600;
+    border-top: 1px solid var(--color-financial-sheet-card-border);
+    border-bottom: 2px solid var(--report-border);
+    white-space: nowrap;
+  }
+  &__table th,
+  &__table td {
+    padding: 5px 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  &__table .is-number {
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  &__table th button {
+    border: 0;
+    color: inherit;
+    background: transparent;
+    cursor: pointer;
+    padding: 2px 0;
+    font: inherit;
+    text-align: inherit;
+  }
+  &__table th button:focus-visible {
+    outline: 2px solid var(--report-accent);
+    outline-offset: 3px;
+  }
+  &__table td:first-child {
+    min-width: 220px;
+  }
+  &__group th {
+    background: var(--report-band);
+    border-bottom: 1px solid var(--report-border);
+  }
+  &__group button {
+    width: 100%;
+    text-align: left;
+  }
+  &__row--subtotal td,
+  &__row--total td {
+    font-weight: 600;
+    border-top: 1px solid var(--report-border);
+    border-bottom: 1px solid var(--color-financial-sheet-card-border);
+  }
+  &__row--total td {
+    border-bottom: 3px double var(--report-accent);
+  }
+  &__empty {
+    text-align: center !important;
+    padding: 32px 12px !important;
+    color: var(--report-muted);
+  }
+}
+.customer-report-paper {
+  position: relative;
+}
+.customer-report-paper--detail {
+  .customer-sales-report__table {
+    min-width: 1140px;
+  }
+  .customer-sales-report__table td:first-child {
+    min-width: 100px;
+  }
+  .customer-sales-report__table td:nth-child(4) {
+    min-width: 150px;
+  }
+  .customer-sales-report__table td:nth-child(5) {
+    min-width: 220px;
+    max-width: 320px;
+  }
+}
+.customer-report-pdf {
+  padding: 16px;
+}
+.customer-report-pdf iframe {
+  width: 100%;
+  height: 72vh;
+  border: 0;
+  background: #fff;
+}
+.customer-report-pdf > div {
+  margin-top: 12px;
+  text-align: right;
+}
+@media (max-width: 767px) {
+  .customer-sales-report {
+    padding: 16px 10px;
+    &__controls {
+      gap: 12px;
+    }
+    &__controls label {
+      flex: 1 1 130px;
+      min-width: 0;
+    }
+    &__controls select,
+    &__controls input {
+      min-width: 0;
+      width: 100%;
+    }
+    &__table {
+      min-width: 560px;
+    }
+    &__table td:first-child {
+      min-width: 180px;
+    }
+    &__sheet-actions {
+      flex-wrap: wrap;
+    }
+  }
+}
+@media print {
+  .customer-sales-report__controls,
+  .customer-sales-report__back,
+  .customer-sales-report__sheet-actions,
+  .customer-sales-report__warning {
+    display: none !important;
+  }
+  .customer-sales-report__table-scroll {
+    overflow: visible;
+  }
+  .customer-sales-report__table {
+    width: 100%;
+    min-width: 0 !important;
+    font-size: 9px;
+  }
+  .customer-sales-report__table td {
+    min-width: 0 !important;
+  }
+}
+
+.quickbooks-report-paper .customer-sales-report__table .is-number {
+  text-align: right;
+}
+
+.quickbooks-report-paper .customer-sales-report__sheet-actions {
+  .bp4-button,
+  .bp4-button .bp4-icon {
+    color: var(--report-accent);
+  }
+  .bp4-button:hover {
+    background: var(--report-band);
+  }
+  .bp4-button:disabled,
+  .bp4-button:disabled .bp4-icon {
+    color: var(--report-muted);
+  }
+}

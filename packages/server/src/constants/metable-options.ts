@@ -1,13 +1,13 @@
-import { chain, mapKeys } from 'lodash';
+import { chain, mapKeys } from "lodash";
 
 const getTransactionsLockingSettingsSchema = (modules: string[]) => {
   const moduleSchema = {
-    active: { type: 'boolean' },
-    lock_to_date: { type: 'date' },
-    unlock_from_date: { type: 'date' },
-    unlock_to_date: { type: 'date' },
-    lock_reason: { type: 'string' },
-    unlock_reason: { type: 'string' },
+    active: { type: "boolean" },
+    lock_to_date: { type: "date" },
+    unlock_from_date: { type: "date" },
+    unlock_to_date: { type: "date" },
+    lock_reason: { type: "string" },
+    unlock_reason: { type: "string" },
   };
   return chain(modules)
     .map((module: string) => {
@@ -26,294 +26,297 @@ const getTransactionsLockingSettingsSchema = (modules: string[]) => {
 export const SettingsOptions = {
   organization: {
     name: {
-      type: 'string',
+      type: "string",
     },
     base_currency: {
-      type: 'string',
+      type: "string",
     },
     industry: {
-      type: 'string',
+      type: "string",
     },
     location: {
-      type: 'string',
+      type: "string",
     },
     fiscal_year: {
-      type: 'string',
+      type: "string",
     },
     financial_date_start: {
-      type: 'string',
+      type: "string",
     },
     language: {
-      type: 'string',
+      type: "string",
     },
     time_zone: {
-      type: 'string',
+      type: "string",
     },
     date_format: {
-      type: 'string',
+      type: "string",
     },
     accounting_basis: {
-      type: 'string',
+      type: "string",
     },
   },
   manual_journals: {
     next_number: {
-      type: 'string',
+      type: "string",
     },
     number_prefix: {
-      type: 'string',
+      type: "string",
     },
     auto_increment: {
-      type: 'boolean',
+      type: "boolean",
     },
   },
   bill_payments: {
     withdrawal_account: {
-      type: 'number',
+      type: "number",
     },
   },
   sales_estimates: {
     next_number: {
-      type: 'string',
+      type: "string",
     },
     number_prefix: {
-      type: 'string',
+      type: "string",
     },
     auto_increment: {
-      type: 'boolean',
+      type: "boolean",
     },
     customer_notes: {
-      type: 'string',
+      type: "string",
     },
     terms_conditions: {
-      type: 'string',
+      type: "string",
     },
   },
   sales_receipts: {
     next_number: {
-      type: 'string',
+      type: "string",
     },
     number_prefix: {
-      type: 'string',
+      type: "string",
     },
     auto_increment: {
-      type: 'boolean',
+      type: "boolean",
     },
     preferred_deposit_account: {
-      type: 'number',
+      type: "number",
     },
     receipt_message: {
-      type: 'string',
+      type: "string",
     },
     terms_conditions: {
-      type: 'string',
+      type: "string",
     },
   },
   sales_invoices: {
     next_number: {
-      type: 'string',
+      type: "string",
     },
     number_prefix: {
-      type: 'string',
+      type: "string",
     },
     auto_increment: {
-      type: 'boolean',
+      type: "boolean",
     },
     customer_notes: {
-      type: 'string',
+      type: "string",
     },
     terms_conditions: {
-      type: 'string',
+      type: "string",
     },
   },
   payment_receives: {
     next_number: {
-      type: 'string',
+      type: "string",
     },
     number_prefix: {
-      type: 'string',
+      type: "string",
     },
     auto_increment: {
-      type: 'boolean',
+      type: "boolean",
     },
     preferred_deposit_account: {
-      type: 'number',
+      type: "number",
     },
     preferred_advance_deposit: {
-      type: 'number',
+      type: "number",
     },
   },
   items: {
+    auto_increase_sell_price: {
+      type: "boolean",
+    },
     preferred_sell_account: {
-      type: 'number',
+      type: "number",
     },
     preferred_cost_account: {
-      type: 'number',
+      type: "number",
     },
     preferred_inventory_account: {
-      type: 'number',
+      type: "number",
     },
     reorder_point_notifications: {
-      type: 'boolean',
+      type: "boolean",
     },
     reorder_point_notification_email: {
-      type: 'string',
+      type: "string",
     },
     prevent_stock_from_going_below_zero: {
-      type: 'boolean',
+      type: "boolean",
     },
   },
   item_categories: {
     table_size: {
-      type: 'string',
+      type: "string",
     },
   },
   expenses: {
     preferred_payment_account: {
-      type: 'number',
+      type: "number",
     },
   },
   inventory: {
     cost_compute_running: {
-      type: 'boolean',
+      type: "boolean",
     },
   },
   accounts: {
     account_code_required: {
-      type: 'boolean',
+      type: "boolean",
     },
     account_code_unique: {
-      type: 'boolean',
+      type: "boolean",
     },
   },
   cashflow: {
     next_number: {
-      type: 'string',
+      type: "string",
     },
     number_prefix: {
-      type: 'string',
+      type: "string",
     },
     auto_increment: {
-      type: 'boolean',
+      type: "boolean",
     },
   },
   credit_note: {
     next_number: {
-      type: 'string',
+      type: "string",
     },
     number_prefix: {
-      type: 'string',
+      type: "string",
     },
     auto_increment: {
-      type: 'boolean',
+      type: "boolean",
     },
     customer_notes: {
-      type: 'string',
+      type: "string",
     },
     terms_conditions: {
-      type: 'string',
+      type: "string",
     },
   },
   vendor_credit: {
     next_number: {
-      type: 'string',
+      type: "string",
     },
     number_prefix: {
-      type: 'string',
+      type: "string",
     },
     auto_increment: {
-      type: 'boolean',
+      type: "boolean",
     },
   },
   warehouse_transfers: {
     next_number: {
-      type: 'string',
+      type: "string",
     },
     number_prefix: {
-      type: 'string',
+      type: "string",
     },
     auto_increment: {
-      type: 'boolean',
+      type: "boolean",
     },
   },
-  'sms-integration': {
+  "sms-integration": {
     twilio_account_sid: {
-      type: 'string',
+      type: "string",
     },
     twilio_auth_token: {
-      type: 'string',
+      type: "string",
     },
     twilio_from_number: {
-      type: 'string',
+      type: "string",
     },
   },
-  'sms-notification': {
-    'sms-notification-enable.sale-invoice-details': {
-      type: 'boolean',
+  "sms-notification": {
+    "sms-notification-enable.sale-invoice-details": {
+      type: "boolean",
     },
-    'sms-notification-enable.sale-invoice-reminder': {
-      type: 'boolean',
+    "sms-notification-enable.sale-invoice-reminder": {
+      type: "boolean",
     },
-    'sms-notification-enable.sale-estimate-details': {
-      type: 'boolean',
+    "sms-notification-enable.sale-estimate-details": {
+      type: "boolean",
     },
-    'sms-notification-enable.sale-receipt-details': {
-      type: 'boolean',
+    "sms-notification-enable.sale-receipt-details": {
+      type: "boolean",
     },
-    'sms-notification-enable.payment-receive-details': {
-      type: 'boolean',
+    "sms-notification-enable.payment-receive-details": {
+      type: "boolean",
     },
-    'sms-notification-enable.customer-balance': {
-      type: 'boolean',
+    "sms-notification-enable.customer-balance": {
+      type: "boolean",
     },
-    'sms-message.sale-invoice-details': {
-      type: 'string',
+    "sms-message.sale-invoice-details": {
+      type: "string",
     },
-    'sms-message.sale-invoice-reminder': {
-      type: 'string',
+    "sms-message.sale-invoice-reminder": {
+      type: "string",
     },
-    'sms-message.sale-estimate-details': {
-      type: 'string',
+    "sms-message.sale-estimate-details": {
+      type: "string",
     },
-    'sms-message.sale-receipt-details': {
-      type: 'string',
+    "sms-message.sale-receipt-details": {
+      type: "string",
     },
-    'sms-message.payment-receive-details': {
-      type: 'string',
+    "sms-message.payment-receive-details": {
+      type: "string",
     },
-    'sms-message.customer-balance': {
-      type: 'string',
+    "sms-message.customer-balance": {
+      type: "string",
     },
   },
-  'transactions-locking': {
-    'locking-type': {
-      type: 'string',
+  "transactions-locking": {
+    "locking-type": {
+      type: "string",
     },
     ...getTransactionsLockingSettingsSchema([
-      'all',
-      'sales',
-      'purchases',
-      'financial',
+      "all",
+      "sales",
+      "purchases",
+      "financial",
     ]),
   },
   features: {
     warehouses: {
-      type: 'boolean',
+      type: "boolean",
     },
     branches: {
-      type: 'boolean',
+      type: "boolean",
     },
     landed_cost: {
-      type: 'boolean',
+      type: "boolean",
     },
     sms_notifications: {
-      type: 'boolean',
+      type: "boolean",
     },
     sales_tax: {
-      type: 'boolean',
+      type: "boolean",
     },
     tracking_categories: {
-      type: 'boolean',
+      type: "boolean",
     },
   },
 };

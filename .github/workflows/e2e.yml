@@ -25,6 +25,7 @@ defaults:
 
 jobs:
   test_e2e:
+    if: github.repository == 'bigcapitalhq/bigcapital'
     runs-on: ubuntu-latest
     name: Playwright tests
     timeout-minutes: 20

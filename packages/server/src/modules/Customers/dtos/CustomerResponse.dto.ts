@@ -1,7 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
+import { CustomerProfileDto } from './CustomerProfile.dto';
+
 export class CustomerResponseDto {
+  @ApiProperty({ required: false }) code?: string;
+  @ApiProperty({ required: false }) customerType?: string;
+
+  @ApiProperty({ required: false, type: CustomerProfileDto })
+  customerProfile?: CustomerProfileDto;
+
   @ApiProperty({ example: 1, description: 'Customer id.' })
   id: number;
 

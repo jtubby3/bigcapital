@@ -81,8 +81,6 @@ playwright.config.ts
 *.map
 
 # TypeScript configs (not needed at runtime)
-tsconfig*.json
-!tsconfig.json
 
 # Linting/formatting
 .eslintrc*
@@ -91,3 +89,8 @@ tsconfig*.json
 
 # Package manager locks (we copy them explicitly)
 # pnpm-lock.yaml
+
+# Local runtimes, private work, and browser evidence
+.local-dev/
+work/
+.playwright-cli/

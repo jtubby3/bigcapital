@@ -6,6 +6,15 @@ const BASE_URL = '/preferences';
 
 export const getPreferenceRoutes = () => [
   {
+    path: `${BASE_URL}/custom-form-styles`,
+    component: lazy(() =>
+      import(
+        '@/containers/Preferences/CustomFormStyles/CustomFormStylesPage'
+      ).then((m) => ({ default: m.CustomFormStylesPage })),
+    ),
+    exact: true,
+  },
+  {
     path: `${BASE_URL}/general`,
     component: lazy(() =>
       import('@/containers/Preferences/General/General').then((m) => ({

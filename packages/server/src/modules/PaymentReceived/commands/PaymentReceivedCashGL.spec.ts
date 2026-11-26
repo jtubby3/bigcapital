@@ -19,6 +19,7 @@ interface TestInvoice {
   entries: TestItemEntry[];
   discountAmountLocal?: number | null;
   adjustmentLocal?: number | null;
+  shippingChargeLocal?: number;
 }
 
 const buildItemEntry = (
@@ -76,7 +77,8 @@ const buildGL = (payment: PaymentReceived) =>
   new PaymentReceivedCashGL(payment)
     .setTaxPayableAccountId(200)
     .setDiscountAccountId(300)
-    .setOtherChargesAccountId(400);
+    .setOtherChargesAccountId(400)
+    .setShippingIncomeAccountId(600);
 
 const findEntry = (entries: any[], accountId: number) =>
   entries.find((entry) => entry.accountId === accountId);
@@ -182,6 +184,34 @@ describe('PaymentReceivedCashGL', () => {
     expect(findEntry(entries, 300).debit).toBe(100);
     expect(findEntry(entries, 400).credit).toBe(50);
   });
+
+  it.each([0.4, 1])(
+    'separates shipping from adjustments for a %s paid invoice',
+    (ratio) => {
+      const invoice = buildInvoice([buildItemEntry()], {
+        totalLocal: 1075,
+        adjustmentLocal: 25,
+        shippingChargeLocal: 50,
+      });
+      const payment = {
+        ...buildPayment(),
+        entries: [buildPaymentEntry(invoice, 1075 * ratio)],
+      } as unknown as PaymentReceived;
+      const entries = buildGL(payment).GLEntries();
+      expect(findEntry(entries, 600)).toMatchObject({
+        credit: 50 * ratio,
+        debit: 0,
+        note: 'Shipping',
+      });
+      expect(findEntry(entries, 400)).toMatchObject({
+        credit: 25 * ratio,
+        debit: 0,
+      });
+      expect(
+        entries.reduce((total, e) => total + e.debit - e.credit, 0),
+      ).toBeCloseTo(0, 8);
+    },
+  );
 
   it('records the income of each invoice of a multi-invoices payment', () => {
     const invoiceA = buildInvoice([buildItemEntry({ sellAccountId: 500 })], {

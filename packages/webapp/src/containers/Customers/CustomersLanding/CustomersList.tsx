@@ -1,3 +1,4 @@
+import { CustomersSalesOverview } from '../CustomerWorkspace/CustomerSalesSummary';
 import * as FF from 'fp-ts/function';
 import { useEffect } from 'react';
 import '@/style/pages/Customers/List.scss';
@@ -44,6 +45,7 @@ function CustomersListInner({
       tableState={customersTableState}
       tableStateChanged={customersTableStateChanged}
     >
+      <CustomersSalesOverview />
       <CustomersActionsBar />
       <CustomersListDialogs />
 

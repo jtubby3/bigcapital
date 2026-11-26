@@ -45,6 +45,7 @@ import type {
 const commonInvalidateQueries = (
   queryClient: ReturnType<typeof useQueryClient>,
 ) => {
+  queryClient.invalidateQueries({ queryKey: ['customers-workspace'] });
   queryClient.invalidateQueries({ queryKey: estimatesKeys.all() });
   queryClient.invalidateQueries({
     queryKey: itemsKeys.associatedEstimates(null).slice(0, 1),

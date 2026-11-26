@@ -31,6 +31,7 @@ function DrawerComponent(props: DrawerInnerProps) {
     children,
     onClose,
     closeDrawer,
+    style,
     ...restProps
   } = props;
 
@@ -49,6 +50,15 @@ function DrawerComponent(props: DrawerInnerProps) {
       onClose={handleClose}
       portalClassName={'drawer-portal'}
       {...restProps}
+      style={{
+        ...style,
+        minWidth: style?.minWidth
+          ? `min(${typeof style.minWidth === 'number' ? `${style.minWidth}px` : style.minWidth}, 100vw)`
+          : undefined,
+        maxWidth: style?.maxWidth
+          ? `min(${typeof style.maxWidth === 'number' ? `${style.maxWidth}px` : style.maxWidth}, 100vw)`
+          : '100vw',
+      }}
     >
       <DrawerProvider name={name} payload={payload}>
         {children}

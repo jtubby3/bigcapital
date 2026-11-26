@@ -1,5 +1,10 @@
-import { MenuItem } from '@blueprintjs/core';
-import { ItemRenderer, ItemPredicate } from '@blueprintjs/select';
+import { Menu, MenuItem } from '@blueprintjs/core';
+import {
+  ItemRenderer,
+  ItemPredicate,
+  ItemListRenderer,
+  renderFilteredItems,
+} from '@blueprintjs/select';
 import React, { useCallback, useMemo, ComponentType } from 'react';
 import intl from 'react-intl-universal';
 import type { ItemRestrictType } from './ItemsSelect';
@@ -91,6 +96,7 @@ interface ItemsSuggestOwnProps {
   purchasable?: boolean;
   restrictType?: ItemRestrictType;
   allowCreate?: boolean;
+  autofillRef?: number;
 }
 
 type ProvidedSuggestProps =
@@ -121,6 +127,7 @@ function withItemsSuggestLogic<C extends ComponentType<any>>(
     purchasable = false,
     restrictType,
     allowCreate,
+    autofillRef,
     ...suggestProps
   }: ItemsSuggestOwnProps & Omit<ComponentProps<C>, ProvidedSuggestProps>) {
     const filteredItems = useMemo(() => {
@@ -135,10 +142,46 @@ function withItemsSuggestLogic<C extends ComponentType<any>>(
     const handleCreateItemSelect = useCallback(
       (item: ItemSuggestModel | Partial<ItemSuggestModel>) => {
         if (!('id' in item) || !item.id) {
-          openDrawer(DRAWERS.QUICK_CREATE_ITEM);
+          openDrawer(DRAWERS.QUICK_CREATE_ITEM, {
+            name: item.name,
+            autofillRef,
+          });
         }
       },
-      [openDrawer],
+      [openDrawer, autofillRef],
+    );
+
+    // Blueprint hides its built-in create action until a query is entered.
+    // Keep an explicit action at the top of the initial list as well.
+    const renderItemList = useCallback<ItemListRenderer<ItemSuggestModel>>(
+      (listProps) => {
+        const createItem = listProps.query.trim() ? (
+          listProps.renderCreateItem()
+        ) : (
+          <MenuItem
+            icon="add"
+            text="Create new product or service"
+            shouldDismissPopover={false}
+            onClick={() => handleCreateItemSelect({ name: '' })}
+          />
+        );
+        return (
+          <Menu
+            role="listbox"
+            {...listProps.menuProps}
+            ulRef={listProps.itemsParentRef}
+          >
+            {createItem}
+            {renderFilteredItems(
+              listProps,
+              createItem ? null : (
+                <MenuItem disabled text={<T id="no_results" />} />
+              ),
+            )}
+          </Menu>
+        );
+      },
+      [handleCreateItemSelect],
     );
 
     const maybeCreateNewItemRenderer = allowCreate
@@ -163,7 +206,8 @@ function withItemsSuggestLogic<C extends ComponentType<any>>(
       popoverProps: { minimal: true, boundary: 'window' as const },
       createNewItemRenderer: maybeCreateNewItemRenderer,
       createNewItemFromQuery: maybeCreateNewItemFromQuery,
-      createNewItemPosition: 'top' as const,
+      createNewItemPosition: 'first' as const,
+      ...(allowCreate ? { itemListRenderer: renderItemList } : {}),
       ...suggestProps,
     } as ComponentProps<C>;
 

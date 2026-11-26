@@ -1,11 +1,18 @@
+import layout from '@/components/EntityFormLayout.module.scss';
 import { Tab, Tabs } from '@blueprintjs/core';
 import { css } from '@emotion/css';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
+import { useItemFormContext } from './ItemFormProvider';
 import { ItemFormSections } from './ItemFormFields';
 import { ItemFormFloatingActions } from './ItemFormFloatingActions';
 import { Card, Group } from '@/components';
 
-export function ItemFormContent() {
+export function ItemFormContent({
+  footerActions,
+}: {
+  footerActions?: ReactNode;
+}) {
+  const { itemId, isNewMode } = useItemFormContext();
   const [selectedTabId, setSelectedTabId] = useState<string>('primary');
 
   const handleTabChange = (tabId: string) => {
@@ -20,11 +27,12 @@ export function ItemFormContent() {
 
   return (
     <Card
-      className={css`
+      className={`${layout.root} ${css`
         padding-bottom: 0 !important;
-      `}
+      `}`}
     >
       <Group
+        className={layout.body}
         verticalAlign={'top'}
         alignItems={'flex-start'}
         flexWrap={'nowrap'}
@@ -42,11 +50,14 @@ export function ItemFormContent() {
           <Tab id={'selling'} title={'Selling'} />
           <Tab id={'purchasing'} title={'Purchasing'} />
           <Tab id={'inventory'} title={'Inventory'} />
+          {itemId && !isNewMode && (
+            <Tab id="price-history" title="Price history" />
+          )}
         </Tabs>
 
         <ItemFormSections />
       </Group>
-      <ItemFormFloatingActions />
+      {footerActions ?? <ItemFormFloatingActions />}
     </Card>
   );
 }

@@ -10,7 +10,13 @@ import {
   Query,
   HttpCode,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
+import { ItemPriceHistoryService } from './ItemPriceHistory.service';
+import {
+  GetItemPriceHistoryQueryDto,
+  ItemPriceChangeDto,
+} from './dtos/ItemPriceHistory.dto';
 import { TenantController } from '../Tenancy/Tenant.controller';
 import { ItemsApplicationService } from './ItemsApplication.service';
 import {
@@ -56,8 +62,25 @@ import { ItemAction } from '@/interfaces/Item';
 @ApiCommonHeaders()
 @UseGuards(AuthorizationGuard, PermissionGuard)
 export class ItemsController extends TenantController {
-  constructor(private readonly itemsApplication: ItemsApplicationService) {
+  constructor(
+    private readonly itemsApplication: ItemsApplicationService,
+    private readonly priceHistory: ItemPriceHistoryService,
+  ) {
     super();
+  }
+
+  @Get(':id/price-history')
+  @RequirePermission(ItemAction.VIEW, AbilitySubject.Item)
+  @ApiOperation({
+    summary: 'Get saved cost and selling-price changes, newest first.',
+  })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({ status: 200, type: ItemPriceChangeDto, isArray: true })
+  async getPriceHistory(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() query: GetItemPriceHistoryQueryDto,
+  ): Promise<ItemPriceChangeDto[]> {
+    return this.priceHistory.getHistory(id, query.limit);
   }
 
   @Get()
@@ -225,6 +248,11 @@ export class ItemsController extends TenantController {
   @ApiResponse({
     status: 200,
     description: 'The item has been successfully created.',
+    schema: {
+      type: 'object',
+      required: ['id', 'message'],
+      properties: { id: { type: 'number' }, message: { type: 'string' } },
+    },
   })
   @ApiResponse({
     status: 400,

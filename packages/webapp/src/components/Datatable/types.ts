@@ -117,6 +117,11 @@ export interface DataTableProps<D extends object = any> {
   // columns at the source via `DataTableColumn<RowType>` returned from
   // their `useXxxTableColumns()` hooks.
   columns: any[];
+  mobileCardColumns?: string[];
+  mobileSearchPlaceholder?: string;
+  mobileError?: boolean;
+  onMobileRetry?: () => void;
+  mobileCardFooter?: (record: D) => ReactNode;
   data: D[];
 
   onFetchData?: (params: {

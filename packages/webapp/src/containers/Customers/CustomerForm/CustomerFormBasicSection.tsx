@@ -1,3 +1,5 @@
+import { useFormikContext } from 'formik';
+import type { CustomerFormValues } from './utils';
 import {
   ControlGroup,
   Divider,
@@ -20,6 +22,7 @@ import {
 import { useAutofocus } from '@/hooks';
 
 export function CustomerFormBasicSection() {
+  const { setFieldValue } = useFormikContext<CustomerFormValues>();
   const firstNameFieldRef = useAutofocus<HTMLInputElement>();
   const { syncDisplayName, createFieldOnChange } = useDisplayNameSynchronizer();
 
@@ -86,12 +89,13 @@ export function CustomerFormBasicSection() {
         helperText="This is the name that appears on invoices and emails."
         inline
       >
-        <DisplayNameList
-          name={'displayName'}
-          popoverProps={{ minimal: true }}
-          buttonProps={{
-            fill: true,
-            'data-testId': 'customer-display-name-select',
+        <FInputGroup
+          name="displayName"
+          data-testId="customer-display-name-input"
+          fill
+          onChange={(event) => {
+            setFieldValue('displayName', event.target.value);
+            setFieldValue('displayNameFormat', '');
           }}
         />
       </FFormGroup>
@@ -99,7 +103,7 @@ export function CustomerFormBasicSection() {
       <Divider style={{ margin: '20px 0' }} />
 
       {/*------------ Vendor email -----------*/}
-      <FFormGroup name={'email'} label={intl.get('vendor_email')} inline>
+      <FFormGroup name={'email'} label={'Email'} inline>
         <FInputGroup name={'email'} leftIcon={<Icon icon="envelope" />} />
       </FFormGroup>
 

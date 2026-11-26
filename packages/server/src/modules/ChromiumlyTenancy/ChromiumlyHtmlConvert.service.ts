@@ -1,3 +1,4 @@
+import { watermarkStagingPdf } from '@/common/config/deployment-environment';
 import { Inject, Injectable } from '@nestjs/common';
 import * as path from 'path';
 import { promises as fs } from 'fs';
@@ -53,7 +54,9 @@ export class ChromiumlyHtmlConvert {
     properties?: PageProperties,
     pdfFormat?: PdfFormat,
   ): Promise<Buffer> {
-    const [filename, cleanupTempFile] = await this.writeTempHtmlFile(html);
+    const [filename, cleanupTempFile] = await this.writeTempHtmlFile(
+      watermarkStagingPdf(html),
+    );
     const fileDir = getPdfFilesStorageDir(filename);
 
     const url = path.join(Chromiumly.GOTENBERG_DOCS_ENDPOINT, fileDir);

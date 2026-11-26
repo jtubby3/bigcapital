@@ -86,7 +86,11 @@ export function CompanyLogoUpload({
       {imagePreviewUrl ? (
         <span>
           <img src={imagePreviewUrl} alt="" className={styles.previewImage} />
+          <Button minimal onClick={() => openRef.current?.()}>
+            Replace image
+          </Button>
           <Button
+            aria-label="Remove image"
             minimal
             intent={Intent.DANGER}
             onClick={handleRemove}

@@ -1,10 +1,10 @@
-import { DATATYPES_LENGTH } from '@/constants/data-types';
-import z from 'zod';
+import { DATATYPES_LENGTH } from "@/constants/data-types";
+import z from "zod";
 
 export const createItemSchema = z
   .object({
     name: z.string().max(DATATYPES_LENGTH.STRING),
-    type: z.enum(['service', 'non-inventory', 'inventory']),
+    type: z.enum(["service", "non-inventory", "inventory"]),
     code: z.string().max(DATATYPES_LENGTH.STRING).nullable().optional(),
     reorder_point: z
       .number()
@@ -12,6 +12,8 @@ export const createItemSchema = z
       .max(DATATYPES_LENGTH.DECIMAL_13_3)
       .nullable()
       .optional(),
+    auto_increase_sell_price: z.boolean().optional(),
+    markup_percentage: z.number().finite().min(-100).nullable().optional(),
     purchasable: z.boolean().optional(),
     cost_price: z
       .number()
@@ -81,8 +83,8 @@ export const createItemSchema = z
     },
     {
       message:
-        'Cost price and cost account ID are required when item is purchasable',
-      path: ['cost_price', 'cost_account_id'],
+        "Cost price and cost account ID are required when item is purchasable",
+      path: ["cost_price", "cost_account_id"],
     },
   )
   .refine(
@@ -96,20 +98,20 @@ export const createItemSchema = z
     },
     {
       message:
-        'Sell price and sell account ID are required when item is sellable',
-      path: ['sell_price', 'sell_account_id'],
+        "Sell price and sell account ID are required when item is sellable",
+      path: ["sell_price", "sell_account_id"],
     },
   )
   .refine(
     (data) => {
-      if (data.type === 'inventory') {
+      if (data.type === "inventory") {
         return data.inventory_account_id !== undefined;
       }
       return true;
     },
     {
-      message: 'Inventory account ID is required for inventory items',
-      path: ['inventory_account_id'],
+      message: "Inventory account ID is required for inventory items",
+      path: ["inventory_account_id"],
     },
   );
 

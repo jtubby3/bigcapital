@@ -1,3 +1,4 @@
+import { environmentTitle } from '@/components/DeploymentEnvironment';
 import { hsl, lighten, parseToHsl } from 'polished';
 import { useEffect } from 'react';
 import BodyClassName from 'react-body-classname';
@@ -34,7 +35,9 @@ function PaymentPortalHelmet() {
   return (
     <Helmet>
       <title>
-        {sharableLinkMeta?.invoiceNo} | {sharableLinkMeta?.organization?.name}
+        {environmentTitle(
+          `${sharableLinkMeta?.invoiceNo || ''} | ${sharableLinkMeta?.organization?.name || ''}`,
+        )}
       </title>
     </Helmet>
   );

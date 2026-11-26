@@ -1,5 +1,4 @@
 import React from 'react';
-import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { getReportRowTestId } from '../reportTestIds';
 import { useFinancialReportSorting } from '../useReportSorting';
@@ -37,8 +36,9 @@ export function ProfitLossSheetTable({
 
   return (
     <FinancialSheet
+      className="quickbooks-report-paper"
       companyName={companyName}
-      sheetType={intl.get('profit_loss_sheet')}
+      sheetType="Profit and Loss"
       dateText={meta?.formattedDateRange}
       basis={query?.basis}
     >

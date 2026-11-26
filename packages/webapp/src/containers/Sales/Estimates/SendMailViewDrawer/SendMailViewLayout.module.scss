@@ -1,0 +1,30 @@
+.body {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.fields,
+.preview {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+.fields > * {
+  min-height: 0;
+}
+@media (max-width: 1100px) {
+  .body {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+  .fields {
+    flex: 0 0 calc(100dvh - 64px);
+  }
+  .preview {
+    flex: 0 0 600px;
+  }
+}

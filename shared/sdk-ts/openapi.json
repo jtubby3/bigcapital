@@ -411,6 +411,70 @@
         ]
       }
     },
+    "/api/items/{id}/price-history": {
+      "get": {
+        "operationId": "ItemsController_getPriceHistory",
+        "summary": "Get saved cost and selling-price changes, newest first.",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 6,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemPriceChangeDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Items"
+        ]
+      }
+    },
     "/api/items": {
       "get": {
         "operationId": "ItemsController_getItems",
@@ -599,7 +663,26 @@
         },
         "responses": {
           "200": {
-            "description": "The item has been successfully created."
+            "description": "The item has been successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "message"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Validation error. Possible error types: ITEM_NAME_EXISTS, ITEM_CATEOGRY_NOT_FOUND, COST_ACCOUNT_NOT_COGS, SELL_ACCOUNT_NOT_INCOME, INVENTORY_ACCOUNT_NOT_INVENTORY, INCOME_ACCOUNT_REQUIRED_WITH_SELLABLE_ITEM, COST_ACCOUNT_REQUIRED_WITH_PURCHASABLE_ITEM, etc.",
@@ -1207,6 +1290,176 @@
         },
         "tags": [
           "Items"
+        ]
+      }
+    },
+    "/api/audit-logs/filter-options": {
+      "get": {
+        "operationId": "AuditLogsController_getAuditLogFilterOptions",
+        "summary": "Distinct subject and action values for audit log filters.",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAuditLogFilterOptionsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Audit logs"
+        ]
+      }
+    },
+    "/api/audit-logs": {
+      "get": {
+        "operationId": "AuditLogsController_getAuditLogs",
+        "summary": "List financial audit log entries for the tenant.",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "subject",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "a"
+                }
+              }
+            }
+          },
+          {
+            "name": "action",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "a"
+                }
+              }
+            }
+          },
+          {
+            "name": "subjectId",
+            "required": false,
+            "in": "query",
+            "description": "Subject record id",
+            "schema": {
+              "minimum": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "description": "System user id",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "ISO date (inclusive), start of day",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "ISO date (inclusive), end of day",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAuditLogsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Audit logs"
         ]
       }
     },
@@ -3033,6 +3286,65 @@
         ]
       }
     },
+    "/api/sale-invoices/{id}/packing-slip": {
+      "get": {
+        "operationId": "SaleInvoicesController_getPackingSlip",
+        "summary": "Download a packing slip without prices.",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "accept",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "tags": [
+          "Sale Invoices"
+        ]
+      }
+    },
     "/api/sale-invoices/validate-bulk-delete": {
       "post": {
         "operationId": "SaleInvoicesController_validateBulkDeleteSaleInvoices",
@@ -3167,7 +3479,22 @@
         },
         "responses": {
           "201": {
-            "description": "Sale invoice created successfully"
+            "description": "Sale invoice created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -4090,6 +4417,996 @@
         },
         "tags": [
           "Sale Invoices"
+        ]
+      }
+    },
+    "/api/packing-slips/health": {
+      "get": {
+        "operationId": "PackingSlipsController_health",
+        "summary": "Check local scan recognition availability",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Packing Slips"
+        ]
+      }
+    },
+    "/api/packing-slips/mail-jobs/{id}": {
+      "get": {
+        "operationId": "PackingSlipsController_mailJob",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Packing Slips"
+        ]
+      }
+    },
+    "/api/packing-slips/batches": {
+      "get": {
+        "operationId": "PackingSlipsController_list",
+        "summary": "List recent packing scan batches",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Packing Slips"
+        ]
+      },
+      "post": {
+        "operationId": "PackingSlipsController_create",
+        "summary": "Create packing scan batch",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Packing Slips"
+        ]
+      }
+    },
+    "/api/packing-slips/batches/{id}": {
+      "get": {
+        "operationId": "PackingSlipsController_get",
+        "summary": "Get packing scan batch progress and matches",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Packing Slips"
+        ]
+      }
+    },
+    "/api/packing-slips/batches/{id}/files": {
+      "post": {
+        "operationId": "PackingSlipsController_upload",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Packing Slips"
+        ]
+      }
+    },
+    "/api/packing-slips/batches/{id}/cancel": {
+      "post": {
+        "operationId": "PackingSlipsController_cancel",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Packing Slips"
+        ]
+      }
+    },
+    "/api/packing-slips/files/{id}/retry": {
+      "post": {
+        "operationId": "PackingSlipsController_retry",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Packing Slips"
+        ]
+      }
+    },
+    "/api/packing-slips/files/{id}/regroup": {
+      "post": {
+        "operationId": "PackingSlipsController_regroup",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegroupPackingSlipsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Packing Slips"
+        ]
+      }
+    },
+    "/api/packing-slips/files/{id}/pages/{page}": {
+      "get": {
+        "operationId": "PackingSlipsController_page",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Packing Slips"
+        ]
+      }
+    },
+    "/api/packing-slips/candidates": {
+      "get": {
+        "operationId": "PackingSlipsController_candidates",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Packing Slips"
+        ]
+      }
+    },
+    "/api/packing-slips/slips/{id}/confirm": {
+      "post": {
+        "operationId": "PackingSlipsController_confirm",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmPackingSlipDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Packing Slips"
+        ]
+      }
+    },
+    "/api/packing-slips/slips/{id}/detach": {
+      "post": {
+        "operationId": "PackingSlipsController_detach",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PackingSlipVersionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Packing Slips"
+        ]
+      }
+    },
+    "/api/packing-slips/slips/{id}/ignore": {
+      "post": {
+        "operationId": "PackingSlipsController_ignore",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PackingSlipVersionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Packing Slips"
+        ]
+      }
+    },
+    "/api/packing-slips/slips/{id}/pdf": {
+      "get": {
+        "operationId": "PackingSlipsController_pdf",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "version",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Packing Slips"
+        ]
+      }
+    },
+    "/api/packing-slips/invoices/{id}": {
+      "get": {
+        "operationId": "PackingSlipsController_invoice",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Packing Slips"
+        ]
+      }
+    },
+    "/api/roles": {
+      "post": {
+        "operationId": "RolesController_createRole",
+        "summary": "Create a new role",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Role created successfully"
+          }
+        },
+        "tags": [
+          "Roles"
+        ]
+      },
+      "get": {
+        "operationId": "RolesController_getRoles",
+        "summary": "Get all roles",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of all roles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RoleResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Roles"
+        ]
+      }
+    },
+    "/api/roles/{id}": {
+      "put": {
+        "operationId": "RolesController_editRole",
+        "summary": "Edit an existing role",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Role ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Role updated successfully"
+          }
+        },
+        "tags": [
+          "Roles"
+        ]
+      },
+      "delete": {
+        "operationId": "RolesController_deleteRole",
+        "summary": "Delete a role",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Role ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Role deleted successfully"
+          }
+        },
+        "tags": [
+          "Roles"
+        ]
+      },
+      "get": {
+        "operationId": "RolesController_getRole",
+        "summary": "Get a specific role by ID",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Role ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Role details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Roles"
+        ]
+      }
+    },
+    "/api/roles/permissions/schema": {
+      "get": {
+        "operationId": "RolesController_getRolePermissionsSchema",
+        "summary": "Get role permissions schema",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Role permissions schema"
+          }
+        },
+        "tags": [
+          "Roles"
         ]
       }
     },
@@ -8509,6 +9826,624 @@
         },
         "tags": [
           "Customers"
+        ]
+      }
+    },
+    "/api/customer-workspace/summary": {
+      "get": {
+        "operationId": "CustomerWorkspaceController_summary",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/customer-workspace/customers": {
+      "get": {
+        "operationId": "CustomerWorkspaceController_customers",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number (1-based)",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Page size",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "customViewId",
+            "required": false,
+            "in": "query",
+            "description": "Custom view ID",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "filterRoles",
+            "required": false,
+            "in": "query",
+            "description": "Filter roles",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "columnSortBy",
+            "required": false,
+            "in": "query",
+            "description": "Column to sort by",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "description": "Sort order (asc/desc)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "stringifiedFilterRoles",
+            "required": false,
+            "in": "query",
+            "description": "Stringified filter roles",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchKeyword",
+            "required": false,
+            "in": "query",
+            "description": "Search keyword",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "viewSlug",
+            "required": false,
+            "in": "query",
+            "description": "View slug",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "metric",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/customer-workspace/categories": {
+      "get": {
+        "operationId": "CustomerWorkspaceController_categories",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/customer-workspace/{id}/attachments": {
+      "get": {
+        "operationId": "CustomerWorkspaceController_attachments",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/customer-workspace/{id}": {
+      "get": {
+        "operationId": "CustomerWorkspaceController_transactions",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/customer-types": {
+      "get": {
+        "operationId": "CustomerTypesController_list",
+        "summary": "Lists customer types, including types already assigned to customers.",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Customers"
+        ]
+      },
+      "post": {
+        "operationId": "CustomerTypesController_create",
+        "summary": "Adds a reusable customer type for this company.",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerTypeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The customer type already exists."
+          }
+        },
+        "tags": [
+          "Customers"
+        ]
+      }
+    },
+    "/api/customer-statements/recipients": {
+      "get": {
+        "operationId": "CustomerStatementsController_recipients",
+        "summary": "Retrieve customer statement recipients",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customerIds",
+            "required": false,
+            "in": "query",
+            "description": "Comma-separated customer ids; omit for active customers",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Customer Statements"
+        ]
+      }
+    },
+    "/api/customer-statements/preview": {
+      "post": {
+        "operationId": "CustomerStatementsController_preview",
+        "summary": "Preview customer statements without saving",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatementDraftDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Customer Statements"
+        ]
+      }
+    },
+    "/api/customer-statements/preview/pdf": {
+      "post": {
+        "operationId": "CustomerStatementsController_previewPdf",
+        "summary": "Generate customer statement preview PDF without saving",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatementDraftDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Customer Statements"
+        ]
+      }
+    },
+    "/api/customer-statements/saved/pdf": {
+      "post": {
+        "operationId": "CustomerStatementsController_savedPdf",
+        "summary": "Generate combined PDF from immutable saved statement snapshots",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SavedStatementPdfDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Customer Statements"
+        ]
+      }
+    },
+    "/api/customer-statements": {
+      "post": {
+        "operationId": "CustomerStatementsController_save",
+        "summary": "Save immutable customer statement snapshots",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatementDraftDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Customer Statements"
+        ]
+      },
+      "get": {
+        "operationId": "CustomerStatementsController_list",
+        "summary": "Retrieve saved customer statements",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customerId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Customer Statements"
+        ]
+      }
+    },
+    "/api/customer-statements/{id}/pdf": {
+      "get": {
+        "operationId": "CustomerStatementsController_pdf",
+        "summary": "Generate PDF from a saved statement snapshot",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Customer Statements"
+        ]
+      }
+    },
+    "/api/customer-statements/{id}/send": {
+      "post": {
+        "operationId": "CustomerStatementsController_send",
+        "summary": "Send the saved statement PDF to its saved email recipient",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Customer Statements"
         ]
       }
     },
@@ -16531,6 +18466,95 @@
         ]
       }
     },
+    "/api/reports/customer-sales": {
+      "get": {
+        "operationId": "CustomerSalesController_report",
+        "summary": "Get sales or income by customer, using posted ledger amounts",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer bc_1234567890abcdef"
+            }
+          },
+          {
+            "name": "organization-id",
+            "in": "header",
+            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reportType",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "summary",
+                "detail",
+                "income"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "2026-01-01",
+              "type": "string"
+            }
+          },
+          {
+            "name": "toDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "example": "2026-12-31",
+              "type": "string"
+            }
+          },
+          {
+            "name": "basis",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "cash",
+                "accrual"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "customerIds",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Reports"
+        ]
+      }
+    },
     "/api/reports/balance-sheet": {
       "get": {
         "operationId": "BalanceSheetStatementController_balanceSheet",
@@ -23578,274 +25602,6 @@
         ]
       }
     },
-    "/api/roles": {
-      "post": {
-        "operationId": "RolesController_createRole",
-        "summary": "Create a new role",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateRoleDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Role created successfully"
-          }
-        },
-        "tags": [
-          "Roles"
-        ]
-      },
-      "get": {
-        "operationId": "RolesController_getRoles",
-        "summary": "Get all roles",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of all roles",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/RoleResponseDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Roles"
-        ]
-      }
-    },
-    "/api/roles/{id}": {
-      "put": {
-        "operationId": "RolesController_editRole",
-        "summary": "Edit an existing role",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "Role ID",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EditRoleDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Role updated successfully"
-          }
-        },
-        "tags": [
-          "Roles"
-        ]
-      },
-      "delete": {
-        "operationId": "RolesController_deleteRole",
-        "summary": "Delete a role",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "Role ID",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Role deleted successfully"
-          }
-        },
-        "tags": [
-          "Roles"
-        ]
-      },
-      "get": {
-        "operationId": "RolesController_getRole",
-        "summary": "Get a specific role by ID",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "Role ID",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Role details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RoleResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Roles"
-        ]
-      }
-    },
-    "/api/roles/permissions/schema": {
-      "get": {
-        "operationId": "RolesController_getRolePermissionsSchema",
-        "summary": "Get role permissions schema",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Role permissions schema"
-          }
-        },
-        "tags": [
-          "Roles"
-        ]
-      }
-    },
     "/api/subscription": {
       "get": {
         "operationId": "SubscriptionsController_getSubscriptions",
@@ -25997,166 +27753,6 @@
         ]
       }
     },
-    "/api/audit-logs/filter-options": {
-      "get": {
-        "operationId": "AuditLogsController_getAuditLogFilterOptions",
-        "summary": "Distinct subject and action values for audit log filters.",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetAuditLogFilterOptionsResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Audit logs"
-        ]
-      }
-    },
-    "/api/audit-logs": {
-      "get": {
-        "operationId": "AuditLogsController_getAuditLogs",
-        "summary": "List financial audit log entries for the tenant.",
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "Bearer bc_1234567890abcdef"
-            }
-          },
-          {
-            "name": "organization-id",
-            "in": "header",
-            "description": "Required if Authorization is a JWT token. The organization ID to operate within.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "minimum": 1,
-              "default": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "pageSize",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "minimum": 1,
-              "maximum": 100,
-              "default": 20,
-              "type": "number"
-            }
-          },
-          {
-            "name": "subject",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "array",
-                "items": {
-                  "type": "a"
-                }
-              }
-            }
-          },
-          {
-            "name": "action",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "array",
-                "items": {
-                  "type": "a"
-                }
-              }
-            }
-          },
-          {
-            "name": "userId",
-            "required": false,
-            "in": "query",
-            "description": "System user id",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "from",
-            "required": false,
-            "in": "query",
-            "description": "ISO date (inclusive), start of day",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "to",
-            "required": false,
-            "in": "query",
-            "description": "ISO date (inclusive), end of day",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetAuditLogsResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Audit logs"
-        ]
-      }
-    },
     "/api/landed-cost/transactions": {
       "get": {
         "operationId": "BillAllocateLandedCostController_getLandedCostTransactions",
@@ -27275,6 +28871,16 @@
             "description": "Whether the item can be purchased",
             "example": true
           },
+          "autoIncreaseSellPrice": {
+            "type": "boolean",
+            "description": "Automatically raise selling price when cost increases",
+            "default": true
+          },
+          "markupPercentage": {
+            "type": "number",
+            "description": "Saved markup percentage",
+            "nullable": true
+          },
           "sellPrice": {
             "type": "number",
             "description": "The selling price of the item",
@@ -27409,10 +29015,55 @@
           "unit",
           "sellable",
           "purchasable",
+          "autoIncreaseSellPrice",
           "currencyCode",
           "active",
           "createdAt",
           "updatedAt"
+        ]
+      },
+      "ItemPriceChangeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "changedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "oldCostPrice": {
+            "type": "number",
+            "nullable": true
+          },
+          "newCostPrice": {
+            "type": "number",
+            "nullable": true
+          },
+          "oldSellPrice": {
+            "type": "number",
+            "nullable": true
+          },
+          "newSellPrice": {
+            "type": "number",
+            "nullable": true
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "item_edit",
+              "purchase"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "changedAt",
+          "oldCostPrice",
+          "newCostPrice",
+          "oldSellPrice",
+          "newSellPrice",
+          "source"
         ]
       },
       "EditItemDto": {
@@ -27468,6 +29119,17 @@
               "day"
             ],
             "example": "kg"
+          },
+          "autoIncreaseSellPrice": {
+            "type": "boolean",
+            "description": "Automatically raise selling price when cost increases",
+            "default": true
+          },
+          "markupPercentage": {
+            "type": "number",
+            "description": "Saved markup percentage used for future cost increases",
+            "nullable": true,
+            "minimum": -100
           },
           "purchasable": {
             "type": "boolean",
@@ -27643,6 +29305,17 @@
             ],
             "example": "kg"
           },
+          "autoIncreaseSellPrice": {
+            "type": "boolean",
+            "description": "Automatically raise selling price when cost increases",
+            "default": true
+          },
+          "markupPercentage": {
+            "type": "number",
+            "description": "Saved markup percentage used for future cost increases",
+            "nullable": true,
+            "minimum": -100
+          },
           "purchasable": {
             "type": "boolean",
             "description": "Whether the item can be purchased",
@@ -27736,6 +29409,153 @@
         "required": [
           "name",
           "type"
+        ]
+      },
+      "AuditLogFilterOptionDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "SaleInvoice"
+          },
+          "label": {
+            "type": "string",
+            "example": "Sale Invoice"
+          }
+        },
+        "required": [
+          "key",
+          "label"
+        ]
+      },
+      "GetAuditLogFilterOptionsResponseDto": {
+        "type": "object",
+        "properties": {
+          "subjects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuditLogFilterOptionDto"
+            }
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuditLogFilterOptionDto"
+            }
+          }
+        },
+        "required": [
+          "subjects",
+          "actions"
+        ]
+      },
+      "AuditLogListItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "userId": {
+            "type": "number",
+            "example": 5,
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "example": "John Doe",
+            "nullable": true
+          },
+          "userEmail": {
+            "type": "string",
+            "example": "john@example.com",
+            "nullable": true
+          },
+          "action": {
+            "type": "string",
+            "example": "created"
+          },
+          "subject": {
+            "type": "string",
+            "example": "sale_invoice"
+          },
+          "subjectId": {
+            "type": "number",
+            "example": 42,
+            "nullable": true
+          },
+          "metadata": {
+            "type": "object",
+            "nullable": true,
+            "example": {
+              "invoiceNumber": "INV-001"
+            }
+          },
+          "summary": {
+            "type": "string",
+            "example": "Invoice INV-001 was created for $500.00"
+          },
+          "ip": {
+            "type": "string",
+            "example": "192.168.1.1",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2025-04-12T18:30:00.000Z"
+          },
+          "createdAtFormatted": {
+            "type": "string",
+            "example": "Apr 12, 2025 at 06:30 PM"
+          }
+        },
+        "required": [
+          "id",
+          "action",
+          "subject",
+          "summary",
+          "createdAt",
+          "createdAtFormatted"
+        ]
+      },
+      "PaginationMetaDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "example": 1
+          },
+          "pageSize": {
+            "type": "number",
+            "example": 20
+          }
+        },
+        "required": [
+          "total",
+          "page",
+          "pageSize"
+        ]
+      },
+      "GetAuditLogsResponseDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuditLogListItemDto"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetaDto"
+          }
+        },
+        "required": [
+          "data",
+          "pagination"
         ]
       },
       "ItemLinkDto": {
@@ -29425,9 +31245,86 @@
           "enable"
         ]
       },
+      "CustomerSavedAddressDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "address"
+        ]
+      },
+      "CustomerCustomFieldDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "value"
+        ]
+      },
+      "CustomerProfileDto": {
+        "type": "object",
+        "properties": {
+          "paymentTermsDays": {
+            "type": "number"
+          },
+          "paymentMethod": {
+            "type": "string"
+          },
+          "shippingSameAsBilling": {
+            "type": "boolean"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerSavedAddressDto"
+            }
+          },
+          "customFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerCustomFieldDto"
+            }
+          },
+          "attachmentKeys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "CustomerResponseDto": {
         "type": "object",
         "properties": {
+          "code": {
+            "type": "string"
+          },
+          "customerType": {
+            "type": "string"
+          },
+          "customerProfile": {
+            "$ref": "#/components/schemas/CustomerProfileDto"
+          },
           "id": {
             "type": "number",
             "example": 1,
@@ -29604,6 +31501,55 @@
       "SaleInvoiceResponseDto": {
         "type": "object",
         "properties": {
+          "billingAddressText": {
+            "type": "string",
+            "nullable": true
+          },
+          "shippingAddressText": {
+            "type": "string",
+            "nullable": true
+          },
+          "recipientEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "shippingMethod": {
+            "type": "string",
+            "nullable": true
+          },
+          "shippingDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "trackingNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentTermsDays": {
+            "type": "number",
+            "nullable": true
+          },
+          "paymentInstructions": {
+            "type": "string",
+            "nullable": true
+          },
+          "internalNotes": {
+            "type": "string",
+            "nullable": true
+          },
+          "statementMemo": {
+            "type": "string",
+            "nullable": true
+          },
+          "shippingCharge": {
+            "type": "number"
+          },
+          "shippingChargeFormatted": {
+            "type": "string"
+          },
+          "shippingDateFormatted": {
+            "type": "string"
+          },
           "id": {
             "type": "number",
             "description": "The unique identifier of the sale invoice",
@@ -29965,6 +31911,60 @@
       "CreateSaleInvoiceDto": {
         "type": "object",
         "properties": {
+          "billingAddressText": {
+            "type": "string",
+            "nullable": true,
+            "description": "Invoice billing address; null uses the customer address."
+          },
+          "shippingAddressText": {
+            "type": "string",
+            "nullable": true,
+            "description": "Invoice shipping address; null uses the customer address."
+          },
+          "recipientEmail": {
+            "type": "string",
+            "nullable": true,
+            "description": "Recipient email for this invoice."
+          },
+          "shippingMethod": {
+            "type": "string",
+            "nullable": true,
+            "description": "Carrier or delivery method."
+          },
+          "shippingDate": {
+            "type": "string",
+            "nullable": true,
+            "description": "Shipping date."
+          },
+          "trackingNo": {
+            "type": "string",
+            "nullable": true,
+            "description": "Shipment tracking number."
+          },
+          "paymentTermsDays": {
+            "type": "number",
+            "nullable": true,
+            "description": "Payment terms in days; null keeps a custom due date."
+          },
+          "paymentInstructions": {
+            "type": "string",
+            "nullable": true,
+            "description": "Payment instructions shown on the invoice."
+          },
+          "internalNotes": {
+            "type": "string",
+            "nullable": true,
+            "description": "Private notes excluded from customer documents."
+          },
+          "statementMemo": {
+            "type": "string",
+            "nullable": true,
+            "description": "Private invoice memo."
+          },
+          "shippingCharge": {
+            "type": "number",
+            "description": "Separate shipping charge posted to the Shipping Income account."
+          },
           "customerId": {
             "type": "number",
             "description": "Customer ID",
@@ -30101,6 +32101,60 @@
       "EditSaleInvoiceDto": {
         "type": "object",
         "properties": {
+          "billingAddressText": {
+            "type": "string",
+            "nullable": true,
+            "description": "Invoice billing address; null uses the customer address."
+          },
+          "shippingAddressText": {
+            "type": "string",
+            "nullable": true,
+            "description": "Invoice shipping address; null uses the customer address."
+          },
+          "recipientEmail": {
+            "type": "string",
+            "nullable": true,
+            "description": "Recipient email for this invoice."
+          },
+          "shippingMethod": {
+            "type": "string",
+            "nullable": true,
+            "description": "Carrier or delivery method."
+          },
+          "shippingDate": {
+            "type": "string",
+            "nullable": true,
+            "description": "Shipping date."
+          },
+          "trackingNo": {
+            "type": "string",
+            "nullable": true,
+            "description": "Shipment tracking number."
+          },
+          "paymentTermsDays": {
+            "type": "number",
+            "nullable": true,
+            "description": "Payment terms in days; null keeps a custom due date."
+          },
+          "paymentInstructions": {
+            "type": "string",
+            "nullable": true,
+            "description": "Payment instructions shown on the invoice."
+          },
+          "internalNotes": {
+            "type": "string",
+            "nullable": true,
+            "description": "Private notes excluded from customer documents."
+          },
+          "statementMemo": {
+            "type": "string",
+            "nullable": true,
+            "description": "Private invoice memo."
+          },
+          "shippingCharge": {
+            "type": "number",
+            "description": "Separate shipping charge posted to the Shipping Income account."
+          },
           "customerId": {
             "type": "number",
             "description": "Customer ID",
@@ -30275,6 +32329,258 @@
             "example": "2026-11-07"
           }
         }
+      },
+      "RegroupPackingSlipsDto": {
+        "type": "object",
+        "properties": {
+          "groups": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            }
+          },
+          "versions": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": [
+          "groups",
+          "versions"
+        ]
+      },
+      "ConfirmPackingSlipDto": {
+        "type": "object",
+        "properties": {
+          "invoiceFingerprint": {
+            "type": "string"
+          },
+          "invoiceId": {
+            "type": "number"
+          },
+          "version": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "invoiceFingerprint",
+          "invoiceId",
+          "version"
+        ]
+      },
+      "PackingSlipVersionDto": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "version"
+        ]
+      },
+      "RolePermissionResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1,
+            "description": "The permission ID"
+          },
+          "ability": {
+            "type": "string",
+            "example": "read",
+            "description": "The action/ability of the permission"
+          },
+          "subject": {
+            "type": "string",
+            "example": "item",
+            "description": "The subject of the permission"
+          },
+          "value": {
+            "type": "boolean",
+            "example": true,
+            "description": "The value of the permission"
+          }
+        },
+        "required": [
+          "id",
+          "ability",
+          "subject",
+          "value"
+        ]
+      },
+      "RoleResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1,
+            "description": "Unique identifier of the role"
+          },
+          "slug": {
+            "type": "string",
+            "example": "admin",
+            "description": "The slug of the role"
+          },
+          "name": {
+            "type": "string",
+            "example": "Administrator",
+            "description": "The name of the role"
+          },
+          "description": {
+            "type": "string",
+            "example": "Administrator role with all permissions",
+            "description": "The description of the role"
+          },
+          "predefined": {
+            "type": "boolean",
+            "example": false,
+            "description": "Indicates if the role is predefined"
+          },
+          "permissions": {
+            "description": "List of permissions associated with the role",
+            "example": [
+              {
+                "ability": "read",
+                "subject": "item",
+                "value": true
+              },
+              {
+                "ability": "edit",
+                "subject": "item",
+                "value": false
+              }
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RolePermissionResponseDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "description",
+          "predefined",
+          "permissions"
+        ]
+      },
+      "CreateRolePermissionDto": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "example": "subject",
+            "description": "The subject of the permission"
+          },
+          "ability": {
+            "type": "string",
+            "example": "read",
+            "description": "The action of the permission"
+          },
+          "value": {
+            "type": "boolean",
+            "example": true,
+            "description": "The value of the permission"
+          }
+        },
+        "required": [
+          "subject",
+          "ability",
+          "value"
+        ]
+      },
+      "CreateRoleDto": {
+        "type": "object",
+        "properties": {
+          "roleName": {
+            "type": "string",
+            "example": "admin",
+            "description": "The name of the role"
+          },
+          "roleDescription": {
+            "type": "string",
+            "example": "Administrator",
+            "description": "The description of the role"
+          },
+          "permissions": {
+            "description": "The permissions of the role",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateRolePermissionDto"
+            }
+          }
+        },
+        "required": [
+          "roleName",
+          "roleDescription",
+          "permissions"
+        ]
+      },
+      "EditRolePermissionDto": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "example": "subject",
+            "description": "The subject of the permission"
+          },
+          "ability": {
+            "type": "string",
+            "example": "read",
+            "description": "The action of the permission"
+          },
+          "value": {
+            "type": "boolean",
+            "example": true,
+            "description": "The value of the permission"
+          },
+          "permissionId": {
+            "type": "number",
+            "example": 1,
+            "description": "The permission ID"
+          }
+        },
+        "required": [
+          "subject",
+          "ability",
+          "value",
+          "permissionId"
+        ]
+      },
+      "EditRoleDto": {
+        "type": "object",
+        "properties": {
+          "roleName": {
+            "type": "string",
+            "example": "admin",
+            "description": "The name of the role"
+          },
+          "roleDescription": {
+            "type": "string",
+            "example": "Administrator",
+            "description": "The description of the role"
+          },
+          "permissions": {
+            "description": "The permissions of the role",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EditRolePermissionDto"
+            }
+          }
+        },
+        "required": [
+          "roleName",
+          "roleDescription",
+          "permissions"
+        ]
       },
       "CreatePdfTemplateDto": {
         "type": "object",
@@ -33237,6 +35543,9 @@
             "type": "string",
             "description": "Shipping address state"
           },
+          "customerProfile": {
+            "$ref": "#/components/schemas/CustomerProfileDto"
+          },
           "customerType": {
             "type": "string",
             "description": "Customer type",
@@ -33399,6 +35708,9 @@
             "type": "string",
             "description": "Shipping address state"
           },
+          "customerProfile": {
+            "$ref": "#/components/schemas/CustomerProfileDto"
+          },
           "customerType": {
             "type": "string",
             "description": "Customer type"
@@ -33504,6 +35816,91 @@
             "type": "boolean",
             "description": "When true, undeletable customers will be skipped and only deletable ones removed.",
             "default": false
+          }
+        },
+        "required": [
+          "ids"
+        ]
+      },
+      "CreateCustomerTypeDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "example": "Restaurants"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "StatementRecipientDto": {
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "type": "number"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "customerId"
+        ]
+      },
+      "StatementDraftDto": {
+        "type": "object",
+        "properties": {
+          "statementType": {
+            "type": "string",
+            "enum": [
+              "balance-forward",
+              "open-item",
+              "transaction"
+            ]
+          },
+          "statementDate": {
+            "type": "string",
+            "example": "2026-01-31"
+          },
+          "fromDate": {
+            "type": "string",
+            "example": "2026-01-01"
+          },
+          "toDate": {
+            "type": "string",
+            "example": "2026-01-31"
+          },
+          "includePaymentLinks": {
+            "type": "boolean"
+          },
+          "recipients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StatementRecipientDto"
+            }
+          }
+        },
+        "required": [
+          "statementType",
+          "statementDate",
+          "fromDate",
+          "toDate",
+          "includePaymentLinks",
+          "recipients"
+        ]
+      },
+      "SavedStatementPdfDto": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "minItems": 1,
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
           }
         },
         "required": [
@@ -47446,204 +49843,6 @@
           "isBigcapitalCloud"
         ]
       },
-      "RolePermissionResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "example": 1,
-            "description": "The permission ID"
-          },
-          "ability": {
-            "type": "string",
-            "example": "read",
-            "description": "The action/ability of the permission"
-          },
-          "subject": {
-            "type": "string",
-            "example": "item",
-            "description": "The subject of the permission"
-          },
-          "value": {
-            "type": "boolean",
-            "example": true,
-            "description": "The value of the permission"
-          }
-        },
-        "required": [
-          "id",
-          "ability",
-          "subject",
-          "value"
-        ]
-      },
-      "RoleResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "example": 1,
-            "description": "Unique identifier of the role"
-          },
-          "slug": {
-            "type": "string",
-            "example": "admin",
-            "description": "The slug of the role"
-          },
-          "name": {
-            "type": "string",
-            "example": "Administrator",
-            "description": "The name of the role"
-          },
-          "description": {
-            "type": "string",
-            "example": "Administrator role with all permissions",
-            "description": "The description of the role"
-          },
-          "predefined": {
-            "type": "boolean",
-            "example": false,
-            "description": "Indicates if the role is predefined"
-          },
-          "permissions": {
-            "description": "List of permissions associated with the role",
-            "example": [
-              {
-                "ability": "read",
-                "subject": "item",
-                "value": true
-              },
-              {
-                "ability": "edit",
-                "subject": "item",
-                "value": false
-              }
-            ],
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/RolePermissionResponseDto"
-            }
-          }
-        },
-        "required": [
-          "id",
-          "slug",
-          "name",
-          "description",
-          "predefined",
-          "permissions"
-        ]
-      },
-      "CreateRolePermissionDto": {
-        "type": "object",
-        "properties": {
-          "subject": {
-            "type": "string",
-            "example": "subject",
-            "description": "The subject of the permission"
-          },
-          "ability": {
-            "type": "string",
-            "example": "read",
-            "description": "The action of the permission"
-          },
-          "value": {
-            "type": "boolean",
-            "example": true,
-            "description": "The value of the permission"
-          }
-        },
-        "required": [
-          "subject",
-          "ability",
-          "value"
-        ]
-      },
-      "CreateRoleDto": {
-        "type": "object",
-        "properties": {
-          "roleName": {
-            "type": "string",
-            "example": "admin",
-            "description": "The name of the role"
-          },
-          "roleDescription": {
-            "type": "string",
-            "example": "Administrator",
-            "description": "The description of the role"
-          },
-          "permissions": {
-            "description": "The permissions of the role",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateRolePermissionDto"
-            }
-          }
-        },
-        "required": [
-          "roleName",
-          "roleDescription",
-          "permissions"
-        ]
-      },
-      "EditRolePermissionDto": {
-        "type": "object",
-        "properties": {
-          "subject": {
-            "type": "string",
-            "example": "subject",
-            "description": "The subject of the permission"
-          },
-          "ability": {
-            "type": "string",
-            "example": "read",
-            "description": "The action of the permission"
-          },
-          "value": {
-            "type": "boolean",
-            "example": true,
-            "description": "The value of the permission"
-          },
-          "permissionId": {
-            "type": "number",
-            "example": 1,
-            "description": "The permission ID"
-          }
-        },
-        "required": [
-          "subject",
-          "ability",
-          "value",
-          "permissionId"
-        ]
-      },
-      "EditRoleDto": {
-        "type": "object",
-        "properties": {
-          "roleName": {
-            "type": "string",
-            "example": "admin",
-            "description": "The name of the role"
-          },
-          "roleDescription": {
-            "type": "string",
-            "example": "Administrator",
-            "description": "The description of the role"
-          },
-          "permissions": {
-            "description": "The permissions of the role",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/EditRolePermissionDto"
-            }
-          }
-        },
-        "required": [
-          "roleName",
-          "roleDescription",
-          "permissions"
-        ]
-      },
       "SubscriptionResponseDto": {
         "type": "object",
         "properties": {
@@ -49435,153 +51634,6 @@
         },
         "required": [
           "deleted"
-        ]
-      },
-      "AuditLogFilterOptionDto": {
-        "type": "object",
-        "properties": {
-          "key": {
-            "type": "string",
-            "example": "SaleInvoice"
-          },
-          "label": {
-            "type": "string",
-            "example": "Sale Invoice"
-          }
-        },
-        "required": [
-          "key",
-          "label"
-        ]
-      },
-      "GetAuditLogFilterOptionsResponseDto": {
-        "type": "object",
-        "properties": {
-          "subjects": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AuditLogFilterOptionDto"
-            }
-          },
-          "actions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AuditLogFilterOptionDto"
-            }
-          }
-        },
-        "required": [
-          "subjects",
-          "actions"
-        ]
-      },
-      "AuditLogListItemDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "example": 1
-          },
-          "userId": {
-            "type": "number",
-            "example": 5,
-            "nullable": true
-          },
-          "userName": {
-            "type": "string",
-            "example": "John Doe",
-            "nullable": true
-          },
-          "userEmail": {
-            "type": "string",
-            "example": "john@example.com",
-            "nullable": true
-          },
-          "action": {
-            "type": "string",
-            "example": "created"
-          },
-          "subject": {
-            "type": "string",
-            "example": "sale_invoice"
-          },
-          "subjectId": {
-            "type": "number",
-            "example": 42,
-            "nullable": true
-          },
-          "metadata": {
-            "type": "object",
-            "nullable": true,
-            "example": {
-              "invoiceNumber": "INV-001"
-            }
-          },
-          "summary": {
-            "type": "string",
-            "example": "Invoice INV-001 was created for $500.00"
-          },
-          "ip": {
-            "type": "string",
-            "example": "192.168.1.1",
-            "nullable": true
-          },
-          "createdAt": {
-            "type": "string",
-            "example": "2025-04-12T18:30:00.000Z"
-          },
-          "createdAtFormatted": {
-            "type": "string",
-            "example": "Apr 12, 2025 at 06:30 PM"
-          }
-        },
-        "required": [
-          "id",
-          "action",
-          "subject",
-          "summary",
-          "createdAt",
-          "createdAtFormatted"
-        ]
-      },
-      "PaginationMetaDto": {
-        "type": "object",
-        "properties": {
-          "total": {
-            "type": "number",
-            "example": 100
-          },
-          "page": {
-            "type": "number",
-            "example": 1
-          },
-          "pageSize": {
-            "type": "number",
-            "example": 20
-          }
-        },
-        "required": [
-          "total",
-          "page",
-          "pageSize"
-        ]
-      },
-      "GetAuditLogsResponseDto": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AuditLogListItemDto"
-            }
-          },
-          "pagination": {
-            "$ref": "#/components/schemas/PaginationMetaDto"
-          }
-        },
-        "required": [
-          "data",
-          "pagination"
         ]
       },
       "BillLandedCostTransactionDto": {

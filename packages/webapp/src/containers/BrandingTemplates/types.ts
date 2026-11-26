@@ -1,4 +1,6 @@
 export interface BrandingTemplateValues {
+  footerImageKey?: string;
+  footerImageUri?: string;
   templateName: string;
 
   // Company logo

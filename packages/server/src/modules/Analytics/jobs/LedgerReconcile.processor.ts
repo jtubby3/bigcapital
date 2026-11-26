@@ -29,6 +29,7 @@ export class LedgerReconcileProcessor extends WorkerHost {
    * @param {Job<ILedgerAnalyticsReconcileJobPayload>} job
    */
   async process(job: Job<ILedgerAnalyticsReconcileJobPayload>): Promise<void> {
+    if (this.configService.get<boolean>('clickhouse.enabled') !== true) return;
     const { organizationId, all } = job.data;
 
     if (all) {
@@ -55,7 +56,6 @@ export class LedgerReconcileProcessor extends WorkerHost {
 
     for (const organizationId of dirtyOrganizations) {
       await this.reconcileOrganization(organizationId);
-      await this.dirtySet.unmark(organizationId);
     }
   }
 
@@ -85,7 +85,9 @@ export class LedgerReconcileProcessor extends WorkerHost {
   private async reconcileOrganization(organizationId: string): Promise<void> {
     try {
       await this.syncService.rebuildOrganization(organizationId);
+      await this.dirtySet.unmark(organizationId);
     } catch (error) {
+      await this.dirtySet.mark(organizationId);
       this.logger.warn(
         `Failed to reconcile org ${organizationId}: ${error.message}`,
       );

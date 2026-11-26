@@ -6,8 +6,19 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "assets": [
-      { "include": "i18n/**/*" },
-      { "include": "database/**/*", "exclude": "**/*.ts" }
+      {
+        "include": "i18n/**/*"
+      },
+      {
+        "include": "database/**/*",
+        "exclude": "**/*.ts"
+      },
+      {
+        "include": "modules/PackingSlips/native/*.swift"
+      },
+      {
+        "include": "modules/PackingSlips/native/packing_scan_linux.py"
+      }
     ]
   },
   "projects": {
@@ -17,7 +28,7 @@
       "entryFile": "cli",
       "sourceRoot": "src",
       "compilerOptions": {
-        "tsConfigPath": "tsconfig.json"
+        "tsConfigPath": "tsconfig.build.json"
       }
     }
   }

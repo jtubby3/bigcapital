@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { ItemEntriesQuantityFooter } from './ItemEntriesQuantityFooter';
 import React, { useCallback } from 'react';
 import { useEditableItemsEntriesColumns } from './components';
 import {
@@ -21,6 +22,7 @@ import { useUncontrolled } from '@/hooks/useUncontrolled';
 
 interface ItemsEntriesTableProps {
   initialValue?: ItemEntry[];
+  showTotalQuantity?: boolean;
   value?: ItemEntry[];
   onChange?: (entries: ItemEntry[]) => void;
   taxRates?: TaxRate[];
@@ -61,7 +63,7 @@ export function ItemsEntriesTable(props: ItemsEntriesTableProps) {
         handleChange,
       }}
     >
-      <ItemEntriesTableRoot />
+      <ItemEntriesTableRoot showTotalQuantity={props.showTotalQuantity} />
     </ItemEntriesTableProvider>
   );
 }
@@ -70,7 +72,11 @@ export function ItemsEntriesTable(props: ItemsEntriesTableProps) {
  * Items entries table logic.
  * @returns {JSX.Element}
  */
-function ItemEntriesTableRoot() {
+function ItemEntriesTableRoot({
+  showTotalQuantity,
+}: {
+  showTotalQuantity?: boolean;
+}) {
   const {
     localValue,
     defaultEntry,
@@ -123,6 +129,9 @@ function ItemEntriesTableRoot() {
       className={classNames(CLASSES.DATATABLE_EDITOR_ITEMS_ENTRIES)}
       columns={columns}
       data={localValue}
+      {...(showTotalQuantity
+        ? { TableFooterRenderer: ItemEntriesQuantityFooter }
+        : {})}
       sticky={true}
       progressBarLoading={isItemFetching}
       cellsLoading={isItemFetching}

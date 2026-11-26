@@ -241,6 +241,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/items/{id}/price-history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get saved cost and selling-price changes, newest first. */
+        get: operations["ItemsController_getPriceHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/items": {
         parameters: {
             query?: never;
@@ -406,6 +423,40 @@ export interface paths {
         };
         /** Retrieves the item associated receipts transactions. */
         get: operations["ItemsController_getItemReceiptTransactions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/audit-logs/filter-options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Distinct subject and action values for audit log filters. */
+        get: operations["AuditLogsController_getAuditLogFilterOptions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/audit-logs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List financial audit log entries for the tenant. */
+        get: operations["AuditLogsController_getAuditLogs"];
         put?: never;
         post?: never;
         delete?: never;
@@ -832,6 +883,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/sale-invoices/{id}/packing-slip": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download a packing slip without prices. */
+        get: operations["SaleInvoicesController_getPackingSlip"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/sale-invoices/validate-bulk-delete": {
         parameters: {
             query?: never;
@@ -1085,6 +1153,304 @@ export interface paths {
         put?: never;
         /** Generate sharable sale invoice link (private or public) */
         post: operations["SaleInvoicesController_generateSaleInvoiceSharableLink"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/packing-slips/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Check local scan recognition availability */
+        get: operations["PackingSlipsController_health"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/packing-slips/mail-jobs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PackingSlipsController_mailJob"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/packing-slips/batches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List recent packing scan batches */
+        get: operations["PackingSlipsController_list"];
+        put?: never;
+        /** Create packing scan batch */
+        post: operations["PackingSlipsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/packing-slips/batches/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get packing scan batch progress and matches */
+        get: operations["PackingSlipsController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/packing-slips/batches/{id}/files": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PackingSlipsController_upload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/packing-slips/batches/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PackingSlipsController_cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/packing-slips/files/{id}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PackingSlipsController_retry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/packing-slips/files/{id}/regroup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PackingSlipsController_regroup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/packing-slips/files/{id}/pages/{page}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PackingSlipsController_page"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/packing-slips/candidates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PackingSlipsController_candidates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/packing-slips/slips/{id}/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PackingSlipsController_confirm"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/packing-slips/slips/{id}/detach": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PackingSlipsController_detach"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/packing-slips/slips/{id}/ignore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PackingSlipsController_ignore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/packing-slips/slips/{id}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PackingSlipsController_pdf"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/packing-slips/invoices/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PackingSlipsController_invoice"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all roles */
+        get: operations["RolesController_getRoles"];
+        put?: never;
+        /** Create a new role */
+        post: operations["RolesController_createRole"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/roles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a specific role by ID */
+        get: operations["RolesController_getRole"];
+        /** Edit an existing role */
+        put: operations["RolesController_editRole"];
+        post?: never;
+        /** Delete a role */
+        delete: operations["RolesController_deleteRole"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/roles/permissions/schema": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get role permissions schema */
+        get: operations["RolesController_getRolePermissionsSchema"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2169,6 +2535,224 @@ export interface paths {
         put?: never;
         /** Deletes multiple customers in bulk. */
         post: operations["CustomersController_bulkDeleteCustomers"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/customer-workspace/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["CustomerWorkspaceController_summary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/customer-workspace/customers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["CustomerWorkspaceController_customers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/customer-workspace/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["CustomerWorkspaceController_categories"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/customer-workspace/{id}/attachments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["CustomerWorkspaceController_attachments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/customer-workspace/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["CustomerWorkspaceController_transactions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/customer-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lists customer types, including types already assigned to customers. */
+        get: operations["CustomerTypesController_list"];
+        put?: never;
+        /** Adds a reusable customer type for this company. */
+        post: operations["CustomerTypesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/customer-statements/recipients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieve customer statement recipients */
+        get: operations["CustomerStatementsController_recipients"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/customer-statements/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Preview customer statements without saving */
+        post: operations["CustomerStatementsController_preview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/customer-statements/preview/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Generate customer statement preview PDF without saving */
+        post: operations["CustomerStatementsController_previewPdf"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/customer-statements/saved/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Generate combined PDF from immutable saved statement snapshots */
+        post: operations["CustomerStatementsController_savedPdf"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/customer-statements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Retrieve saved customer statements */
+        get: operations["CustomerStatementsController_list"];
+        put?: never;
+        /** Save immutable customer statement snapshots */
+        post: operations["CustomerStatementsController_save"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/customer-statements/{id}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Generate PDF from a saved statement snapshot */
+        get: operations["CustomerStatementsController_pdf"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/customer-statements/{id}/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send the saved statement PDF to its saved email recipient */
+        post: operations["CustomerStatementsController_send"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4122,6 +4706,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/reports/customer-sales": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get sales or income by customer, using posted ledger amounts */
+        get: operations["CustomerSalesController_report"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/reports/balance-sheet": {
         parameters: {
             query?: never;
@@ -4457,60 +5058,6 @@ export interface paths {
         };
         /** Get dashboard boot metadata */
         get: operations["DashboardController_getBootMeta"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/roles": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get all roles */
-        get: operations["RolesController_getRoles"];
-        put?: never;
-        /** Create a new role */
-        post: operations["RolesController_createRole"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/roles/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get a specific role by ID */
-        get: operations["RolesController_getRole"];
-        /** Edit an existing role */
-        put: operations["RolesController_editRole"];
-        post?: never;
-        /** Delete a role */
-        delete: operations["RolesController_deleteRole"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/roles/permissions/schema": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get role permissions schema */
-        get: operations["RolesController_getRolePermissionsSchema"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5321,40 +5868,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/audit-logs/filter-options": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Distinct subject and action values for audit log filters. */
-        get: operations["AuditLogsController_getAuditLogFilterOptions"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/audit-logs": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List financial audit log entries for the tenant. */
-        get: operations["AuditLogsController_getAuditLogs"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/landed-cost/transactions": {
         parameters: {
             query?: never;
@@ -6006,6 +6519,13 @@ export interface components {
              */
             purchasable: boolean;
             /**
+             * @description Automatically raise selling price when cost increases
+             * @default true
+             */
+            autoIncreaseSellPrice: boolean;
+            /** @description Saved markup percentage */
+            markupPercentage?: number | null;
+            /**
              * @description The selling price of the item
              * @example 399.99
              */
@@ -6117,6 +6637,17 @@ export interface components {
              */
             updatedAt: string;
         };
+        ItemPriceChangeDto: {
+            id: number;
+            /** Format: date-time */
+            changedAt: string;
+            oldCostPrice: number | null;
+            newCostPrice: number | null;
+            oldSellPrice: number | null;
+            newSellPrice: number | null;
+            /** @enum {string} */
+            source: "item_edit" | "purchase";
+        };
         EditItemDto: {
             /**
              * @description Item name
@@ -6145,6 +6676,13 @@ export interface components {
              * @enum {string}
              */
             unit?: "piece" | "dozen" | "pair" | "set" | "pack" | "box" | "kg" | "g" | "lb" | "oz" | "l" | "ml" | "m" | "cm" | "m2" | "m3" | "hour" | "day";
+            /**
+             * @description Automatically raise selling price when cost increases
+             * @default true
+             */
+            autoIncreaseSellPrice: boolean;
+            /** @description Saved markup percentage used for future cost increases */
+            markupPercentage?: number | null;
             /**
              * @description Whether the item can be purchased
              * @example true
@@ -6271,6 +6809,13 @@ export interface components {
              */
             unit?: "piece" | "dozen" | "pair" | "set" | "pack" | "box" | "kg" | "g" | "lb" | "oz" | "l" | "ml" | "m" | "cm" | "m2" | "m3" | "hour" | "day";
             /**
+             * @description Automatically raise selling price when cost increases
+             * @default true
+             */
+            autoIncreaseSellPrice: boolean;
+            /** @description Saved markup percentage used for future cost increases */
+            markupPercentage?: number | null;
+            /**
              * @description Whether the item can be purchased
              * @example true
              */
@@ -6350,6 +6895,58 @@ export interface components {
              *     ]
              */
             mediaIds?: number[];
+        };
+        AuditLogFilterOptionDto: {
+            /** @example SaleInvoice */
+            key: string;
+            /** @example Sale Invoice */
+            label: string;
+        };
+        GetAuditLogFilterOptionsResponseDto: {
+            subjects: components["schemas"]["AuditLogFilterOptionDto"][];
+            actions: components["schemas"]["AuditLogFilterOptionDto"][];
+        };
+        AuditLogListItemDto: {
+            /** @example 1 */
+            id: number;
+            /** @example 5 */
+            userId?: number | null;
+            /** @example John Doe */
+            userName?: string | null;
+            /** @example john@example.com */
+            userEmail?: string | null;
+            /** @example created */
+            action: string;
+            /** @example sale_invoice */
+            subject: string;
+            /** @example 42 */
+            subjectId?: number | null;
+            /**
+             * @example {
+             *       "invoiceNumber": "INV-001"
+             *     }
+             */
+            metadata?: Record<string, never> | null;
+            /** @example Invoice INV-001 was created for $500.00 */
+            summary: string;
+            /** @example 192.168.1.1 */
+            ip?: string | null;
+            /** @example 2025-04-12T18:30:00.000Z */
+            createdAt: string;
+            /** @example Apr 12, 2025 at 06:30 PM */
+            createdAtFormatted: string;
+        };
+        PaginationMetaDto: {
+            /** @example 100 */
+            total: number;
+            /** @example 1 */
+            page: number;
+            /** @example 20 */
+            pageSize: number;
+        };
+        GetAuditLogsResponseDto: {
+            data: components["schemas"]["AuditLogListItemDto"][];
+            pagination: components["schemas"]["PaginationMetaDto"];
         };
         ItemLinkDto: {
             /**
@@ -7503,7 +8100,27 @@ export interface components {
              */
             enable: boolean;
         };
+        CustomerSavedAddressDto: {
+            label: string;
+            address: string;
+        };
+        CustomerCustomFieldDto: {
+            label: string;
+            value: string;
+        };
+        CustomerProfileDto: {
+            paymentTermsDays?: number;
+            paymentMethod?: string;
+            shippingSameAsBilling?: boolean;
+            categories?: string[];
+            addresses?: components["schemas"]["CustomerSavedAddressDto"][];
+            customFields?: components["schemas"]["CustomerCustomFieldDto"][];
+            attachmentKeys?: string[];
+        };
         CustomerResponseDto: {
+            code?: string;
+            customerType?: string;
+            customerProfile?: components["schemas"]["CustomerProfileDto"];
             /**
              * @description Customer id.
              * @example 1
@@ -7594,6 +8211,19 @@ export interface components {
             closingBalance: number;
         };
         SaleInvoiceResponseDto: {
+            billingAddressText?: string | null;
+            shippingAddressText?: string | null;
+            recipientEmail?: string | null;
+            shippingMethod?: string | null;
+            shippingDate?: string | null;
+            trackingNo?: string | null;
+            paymentTermsDays?: number | null;
+            paymentInstructions?: string | null;
+            internalNotes?: string | null;
+            statementMemo?: string | null;
+            shippingCharge?: number;
+            shippingChargeFormatted?: string;
+            shippingDateFormatted?: string;
             /**
              * @description The unique identifier of the sale invoice
              * @example 1
@@ -7879,6 +8509,28 @@ export interface components {
             remainingDays: number;
         };
         CreateSaleInvoiceDto: {
+            /** @description Invoice billing address; null uses the customer address. */
+            billingAddressText?: string | null;
+            /** @description Invoice shipping address; null uses the customer address. */
+            shippingAddressText?: string | null;
+            /** @description Recipient email for this invoice. */
+            recipientEmail?: string | null;
+            /** @description Carrier or delivery method. */
+            shippingMethod?: string | null;
+            /** @description Shipping date. */
+            shippingDate?: string | null;
+            /** @description Shipment tracking number. */
+            trackingNo?: string | null;
+            /** @description Payment terms in days; null keeps a custom due date. */
+            paymentTermsDays?: number | null;
+            /** @description Payment instructions shown on the invoice. */
+            paymentInstructions?: string | null;
+            /** @description Private notes excluded from customer documents. */
+            internalNotes?: string | null;
+            /** @description Private invoice memo. */
+            statementMemo?: string | null;
+            /** @description Separate shipping charge posted to the Shipping Income account. */
+            shippingCharge?: number;
             /**
              * @description Customer ID
              * @example 1
@@ -7987,6 +8639,28 @@ export interface components {
             attachments: string[];
         };
         EditSaleInvoiceDto: {
+            /** @description Invoice billing address; null uses the customer address. */
+            billingAddressText?: string | null;
+            /** @description Invoice shipping address; null uses the customer address. */
+            shippingAddressText?: string | null;
+            /** @description Recipient email for this invoice. */
+            recipientEmail?: string | null;
+            /** @description Carrier or delivery method. */
+            shippingMethod?: string | null;
+            /** @description Shipping date. */
+            shippingDate?: string | null;
+            /** @description Shipment tracking number. */
+            trackingNo?: string | null;
+            /** @description Payment terms in days; null keeps a custom due date. */
+            paymentTermsDays?: number | null;
+            /** @description Payment instructions shown on the invoice. */
+            paymentInstructions?: string | null;
+            /** @description Private notes excluded from customer documents. */
+            internalNotes?: string | null;
+            /** @description Private invoice memo. */
+            statementMemo?: string | null;
+            /** @description Separate shipping charge posted to the Shipping Income account. */
+            shippingCharge?: number;
             /**
              * @description Customer ID
              * @example 1
@@ -8120,6 +8794,150 @@ export interface components {
              * @example 2026-11-07
              */
             expiryTime?: string;
+        };
+        RegroupPackingSlipsDto: {
+            groups: number[][];
+            versions: Record<string, never>[];
+        };
+        ConfirmPackingSlipDto: {
+            invoiceFingerprint: string;
+            invoiceId: number;
+            version: number;
+        };
+        PackingSlipVersionDto: {
+            version: number;
+        };
+        RolePermissionResponseDto: {
+            /**
+             * @description The permission ID
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description The action/ability of the permission
+             * @example read
+             */
+            ability: string;
+            /**
+             * @description The subject of the permission
+             * @example item
+             */
+            subject: string;
+            /**
+             * @description The value of the permission
+             * @example true
+             */
+            value: boolean;
+        };
+        RoleResponseDto: {
+            /**
+             * @description Unique identifier of the role
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description The slug of the role
+             * @example admin
+             */
+            slug: string;
+            /**
+             * @description The name of the role
+             * @example Administrator
+             */
+            name: string;
+            /**
+             * @description The description of the role
+             * @example Administrator role with all permissions
+             */
+            description: string;
+            /**
+             * @description Indicates if the role is predefined
+             * @example false
+             */
+            predefined: boolean;
+            /**
+             * @description List of permissions associated with the role
+             * @example [
+             *       {
+             *         "ability": "read",
+             *         "subject": "item",
+             *         "value": true
+             *       },
+             *       {
+             *         "ability": "edit",
+             *         "subject": "item",
+             *         "value": false
+             *       }
+             *     ]
+             */
+            permissions: components["schemas"]["RolePermissionResponseDto"][];
+        };
+        CreateRolePermissionDto: {
+            /**
+             * @description The subject of the permission
+             * @example subject
+             */
+            subject: string;
+            /**
+             * @description The action of the permission
+             * @example read
+             */
+            ability: string;
+            /**
+             * @description The value of the permission
+             * @example true
+             */
+            value: boolean;
+        };
+        CreateRoleDto: {
+            /**
+             * @description The name of the role
+             * @example admin
+             */
+            roleName: string;
+            /**
+             * @description The description of the role
+             * @example Administrator
+             */
+            roleDescription: string;
+            /** @description The permissions of the role */
+            permissions: components["schemas"]["CreateRolePermissionDto"][];
+        };
+        EditRolePermissionDto: {
+            /**
+             * @description The subject of the permission
+             * @example subject
+             */
+            subject: string;
+            /**
+             * @description The action of the permission
+             * @example read
+             */
+            ability: string;
+            /**
+             * @description The value of the permission
+             * @example true
+             */
+            value: boolean;
+            /**
+             * @description The permission ID
+             * @example 1
+             */
+            permissionId: number;
+        };
+        EditRoleDto: {
+            /**
+             * @description The name of the role
+             * @example admin
+             */
+            roleName: string;
+            /**
+             * @description The description of the role
+             * @example Administrator
+             */
+            roleDescription: string;
+            /** @description The permissions of the role */
+            permissions: components["schemas"]["EditRolePermissionDto"][];
         };
         CreatePdfTemplateDto: Record<string, never>;
         EditPdfTemplateDto: Record<string, never>;
@@ -10035,6 +10853,7 @@ export interface components {
             shippingAddressPhone?: string;
             /** @description Shipping address state */
             shippingAddressState?: string;
+            customerProfile?: components["schemas"]["CustomerProfileDto"];
             /**
              * @description Customer type
              * @example business
@@ -10153,6 +10972,7 @@ export interface components {
             shippingAddressPhone?: string;
             /** @description Shipping address state */
             shippingAddressState?: string;
+            customerProfile?: components["schemas"]["CustomerProfileDto"];
             /** @description Customer type */
             customerType: string;
             /** @description Salutation */
@@ -10217,6 +11037,29 @@ export interface components {
              * @default false
              */
             skipUndeletable: boolean;
+        };
+        CreateCustomerTypeDto: {
+            /** @example Restaurants */
+            name: string;
+        };
+        StatementRecipientDto: {
+            customerId: number;
+            email?: string;
+        };
+        StatementDraftDto: {
+            /** @enum {string} */
+            statementType: "balance-forward" | "open-item" | "transaction";
+            /** @example 2026-01-31 */
+            statementDate: string;
+            /** @example 2026-01-01 */
+            fromDate: string;
+            /** @example 2026-01-31 */
+            toDate: string;
+            includePaymentLinks: boolean;
+            recipients: components["schemas"]["StatementRecipientDto"][];
+        };
+        SavedStatementPdfDto: {
+            ids: number[];
         };
         VendorResponseDto: {
             /**
@@ -17474,138 +18317,6 @@ export interface components {
              */
             isBigcapitalCloud: boolean;
         };
-        RolePermissionResponseDto: {
-            /**
-             * @description The permission ID
-             * @example 1
-             */
-            id: number;
-            /**
-             * @description The action/ability of the permission
-             * @example read
-             */
-            ability: string;
-            /**
-             * @description The subject of the permission
-             * @example item
-             */
-            subject: string;
-            /**
-             * @description The value of the permission
-             * @example true
-             */
-            value: boolean;
-        };
-        RoleResponseDto: {
-            /**
-             * @description Unique identifier of the role
-             * @example 1
-             */
-            id: number;
-            /**
-             * @description The slug of the role
-             * @example admin
-             */
-            slug: string;
-            /**
-             * @description The name of the role
-             * @example Administrator
-             */
-            name: string;
-            /**
-             * @description The description of the role
-             * @example Administrator role with all permissions
-             */
-            description: string;
-            /**
-             * @description Indicates if the role is predefined
-             * @example false
-             */
-            predefined: boolean;
-            /**
-             * @description List of permissions associated with the role
-             * @example [
-             *       {
-             *         "ability": "read",
-             *         "subject": "item",
-             *         "value": true
-             *       },
-             *       {
-             *         "ability": "edit",
-             *         "subject": "item",
-             *         "value": false
-             *       }
-             *     ]
-             */
-            permissions: components["schemas"]["RolePermissionResponseDto"][];
-        };
-        CreateRolePermissionDto: {
-            /**
-             * @description The subject of the permission
-             * @example subject
-             */
-            subject: string;
-            /**
-             * @description The action of the permission
-             * @example read
-             */
-            ability: string;
-            /**
-             * @description The value of the permission
-             * @example true
-             */
-            value: boolean;
-        };
-        CreateRoleDto: {
-            /**
-             * @description The name of the role
-             * @example admin
-             */
-            roleName: string;
-            /**
-             * @description The description of the role
-             * @example Administrator
-             */
-            roleDescription: string;
-            /** @description The permissions of the role */
-            permissions: components["schemas"]["CreateRolePermissionDto"][];
-        };
-        EditRolePermissionDto: {
-            /**
-             * @description The subject of the permission
-             * @example subject
-             */
-            subject: string;
-            /**
-             * @description The action of the permission
-             * @example read
-             */
-            ability: string;
-            /**
-             * @description The value of the permission
-             * @example true
-             */
-            value: boolean;
-            /**
-             * @description The permission ID
-             * @example 1
-             */
-            permissionId: number;
-        };
-        EditRoleDto: {
-            /**
-             * @description The name of the role
-             * @example admin
-             */
-            roleName: string;
-            /**
-             * @description The description of the role
-             * @example Administrator
-             */
-            roleDescription: string;
-            /** @description The permissions of the role */
-            permissions: components["schemas"]["EditRolePermissionDto"][];
-        };
         SubscriptionResponseDto: {
             /** @example main */
             slug: string;
@@ -18628,58 +19339,6 @@ export interface components {
             /** @example true */
             deleted: boolean;
         };
-        AuditLogFilterOptionDto: {
-            /** @example SaleInvoice */
-            key: string;
-            /** @example Sale Invoice */
-            label: string;
-        };
-        GetAuditLogFilterOptionsResponseDto: {
-            subjects: components["schemas"]["AuditLogFilterOptionDto"][];
-            actions: components["schemas"]["AuditLogFilterOptionDto"][];
-        };
-        AuditLogListItemDto: {
-            /** @example 1 */
-            id: number;
-            /** @example 5 */
-            userId?: number | null;
-            /** @example John Doe */
-            userName?: string | null;
-            /** @example john@example.com */
-            userEmail?: string | null;
-            /** @example created */
-            action: string;
-            /** @example sale_invoice */
-            subject: string;
-            /** @example 42 */
-            subjectId?: number | null;
-            /**
-             * @example {
-             *       "invoiceNumber": "INV-001"
-             *     }
-             */
-            metadata?: Record<string, never> | null;
-            /** @example Invoice INV-001 was created for $500.00 */
-            summary: string;
-            /** @example 192.168.1.1 */
-            ip?: string | null;
-            /** @example 2025-04-12T18:30:00.000Z */
-            createdAt: string;
-            /** @example Apr 12, 2025 at 06:30 PM */
-            createdAtFormatted: string;
-        };
-        PaginationMetaDto: {
-            /** @example 100 */
-            total: number;
-            /** @example 1 */
-            page: number;
-            /** @example 20 */
-            pageSize: number;
-        };
-        GetAuditLogsResponseDto: {
-            data: components["schemas"]["AuditLogListItemDto"][];
-            pagination: components["schemas"]["PaginationMetaDto"];
-        };
         BillLandedCostTransactionDto: {
             /**
              * @description The unique identifier of the landed cost transaction
@@ -19105,6 +19764,34 @@ export interface operations {
             };
         };
     };
+    ItemsController_getPriceHistory: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ItemPriceChangeDto"][];
+                };
+            };
+        };
+    };
     ItemsController_getItems: {
         parameters: {
             query?: {
@@ -19176,7 +19863,12 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        id: number;
+                        message: string;
+                    };
+                };
             };
             /** @description Validation error. Possible error types: ITEM_NAME_EXISTS, ITEM_CATEOGRY_NOT_FOUND, COST_ACCOUNT_NOT_COGS, SELL_ACCOUNT_NOT_INCOME, INVENTORY_ACCOUNT_NOT_INVENTORY, INCOME_ACCOUNT_REQUIRED_WITH_SELLABLE_ITEM, COST_ACCOUNT_REQUIRED_WITH_PURCHASABLE_ITEM, etc. */
             400: {
@@ -19571,6 +20263,67 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    AuditLogsController_getAuditLogFilterOptions: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetAuditLogFilterOptionsResponseDto"];
+                };
+            };
+        };
+    };
+    AuditLogsController_getAuditLogs: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                subject?: Record<string, never>[][];
+                action?: Record<string, never>[][];
+                /** @description Subject record id */
+                subjectId?: number;
+                /** @description System user id */
+                userId?: number;
+                /** @description ISO date (inclusive), start of day */
+                from?: string;
+                /** @description ISO date (inclusive), end of day */
+                to?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetAuditLogsResponseDto"];
+                };
             };
         };
     };
@@ -20611,6 +21364,33 @@ export interface operations {
             };
         };
     };
+    SaleInvoicesController_getPackingSlip: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+                accept: string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+        };
+    };
     SaleInvoicesController_validateBulkDeleteSaleInvoices: {
         parameters: {
             query?: never;
@@ -20736,7 +21516,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        id: number;
+                    };
+                };
             };
         };
     };
@@ -21238,6 +22022,569 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["GenerateSaleInvoiceSharableLinkResponseDto"];
                 };
+            };
+        };
+    };
+    PackingSlipsController_health: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PackingSlipsController_mailJob: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PackingSlipsController_list: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PackingSlipsController_create: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PackingSlipsController_get: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PackingSlipsController_upload: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file?: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PackingSlipsController_cancel: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PackingSlipsController_retry: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PackingSlipsController_regroup: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegroupPackingSlipsDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PackingSlipsController_page: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+                page: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PackingSlipsController_candidates: {
+        parameters: {
+            query: {
+                search: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PackingSlipsController_confirm: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfirmPackingSlipDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PackingSlipsController_detach: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PackingSlipVersionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PackingSlipsController_ignore: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PackingSlipVersionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PackingSlipsController_pdf: {
+        parameters: {
+            query: {
+                version: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PackingSlipsController_invoice: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RolesController_getRoles: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of all roles */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoleResponseDto"][];
+                };
+            };
+        };
+    };
+    RolesController_createRole: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateRoleDto"];
+            };
+        };
+        responses: {
+            /** @description Role created successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RolesController_getRole: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description Role ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Role details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoleResponseDto"];
+                };
+            };
+        };
+    };
+    RolesController_editRole: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description Role ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditRoleDto"];
+            };
+        };
+        responses: {
+            /** @description Role updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RolesController_deleteRole: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                /** @description Role ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Role deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RolesController_getRolePermissionsSchema: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Role permissions schema */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -23706,6 +25053,375 @@ export interface operations {
         };
         responses: {
             /** @description The customers have been successfully deleted. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomerWorkspaceController_summary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomerWorkspaceController_customers: {
+        parameters: {
+            query: {
+                /** @description Page number (1-based) */
+                page?: number;
+                /** @description Page size */
+                pageSize?: number;
+                /** @description Custom view ID */
+                customViewId?: number;
+                /** @description Filter roles */
+                filterRoles?: string[];
+                /** @description Column to sort by */
+                columnSortBy?: string;
+                /** @description Sort order (asc/desc) */
+                sortOrder?: string;
+                /** @description Stringified filter roles */
+                stringifiedFilterRoles?: string;
+                /** @description Search keyword */
+                searchKeyword?: string;
+                /** @description View slug */
+                viewSlug?: string;
+                metric: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomerWorkspaceController_categories: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomerWorkspaceController_attachments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomerWorkspaceController_transactions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomerTypesController_list: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string[];
+                };
+            };
+        };
+    };
+    CustomerTypesController_create: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCustomerTypeDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string[];
+                };
+            };
+            /** @description The customer type already exists. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomerStatementsController_recipients: {
+        parameters: {
+            query?: {
+                /** @description Comma-separated customer ids; omit for active customers */
+                customerIds?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomerStatementsController_preview: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StatementDraftDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomerStatementsController_previewPdf: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StatementDraftDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomerStatementsController_savedPdf: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SavedStatementPdfDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomerStatementsController_list: {
+        parameters: {
+            query?: {
+                customerId?: string;
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomerStatementsController_save: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StatementDraftDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomerStatementsController_pdf: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CustomerStatementsController_send: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -28162,6 +29878,34 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["SmsNotificationSettingResponseDto"];
                 };
+            };
+        };
+    };
+    CustomerSalesController_report: {
+        parameters: {
+            query: {
+                reportType: "summary" | "detail" | "income";
+                fromDate: string;
+                toDate: string;
+                basis: "cash" | "accrual";
+                customerIds?: number[];
+            };
+            header: {
+                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
+                Authorization: string;
+                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
+                "organization-id": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -33450,165 +35194,6 @@ export interface operations {
             };
         };
     };
-    RolesController_getRoles: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of all roles */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RoleResponseDto"][];
-                };
-            };
-        };
-    };
-    RolesController_createRole: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateRoleDto"];
-            };
-        };
-        responses: {
-            /** @description Role created successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RolesController_getRole: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description Role ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Role details */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RoleResponseDto"];
-                };
-            };
-        };
-    };
-    RolesController_editRole: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description Role ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditRoleDto"];
-            };
-        };
-        responses: {
-            /** @description Role updated successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RolesController_deleteRole: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path: {
-                /** @description Role ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Role deleted successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RolesController_getRolePermissionsSchema: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Role permissions schema */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
     SubscriptionsController_getSubscriptions: {
         parameters: {
             query?: never;
@@ -34960,65 +36545,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DeleteNotificationResponseDto"];
-                };
-            };
-        };
-    };
-    AuditLogsController_getAuditLogFilterOptions: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetAuditLogFilterOptionsResponseDto"];
-                };
-            };
-        };
-    };
-    AuditLogsController_getAuditLogs: {
-        parameters: {
-            query?: {
-                page?: number;
-                pageSize?: number;
-                subject?: Record<string, never>[][];
-                action?: Record<string, never>[][];
-                /** @description System user id */
-                userId?: number;
-                /** @description ISO date (inclusive), start of day */
-                from?: string;
-                /** @description ISO date (inclusive), end of day */
-                to?: string;
-            };
-            header: {
-                /** @description Value must be 'Bearer <token>' where <token> is an API key prefixed with 'bc_' or a JWT token. */
-                Authorization: string;
-                /** @description Required if Authorization is a JWT token. The organization ID to operate within. */
-                "organization-id": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetAuditLogsResponseDto"];
                 };
             };
         };

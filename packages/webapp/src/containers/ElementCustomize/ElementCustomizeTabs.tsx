@@ -10,7 +10,7 @@ import {
 import { Box, Stack } from '@/components';
 
 export function ElementCustomizeTabs() {
-  const { setCurrentTabId } = useElementCustomizeTabsController();
+  const { currentTabId, setCurrentTabId } = useElementCustomizeTabsController();
   const { CustomizeTabs } = useElementCustomizeContext();
 
   const tabItems = React.Children.map(CustomizeTabs, (node) => ({
@@ -25,6 +25,7 @@ export function ElementCustomizeTabs() {
 
       <Box className={styles.content}>
         <Tabs
+          selectedTabId={currentTabId}
           vertical
           fill
           large

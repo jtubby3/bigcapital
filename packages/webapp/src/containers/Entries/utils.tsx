@@ -140,8 +140,6 @@ export function useFetchItemRow({
   notifyNewRow,
 }: UseFetchItemRowProps) {
   const [itemRow, setItemRow] = React.useState<ItemRowMeta | null>(null);
-  const [cellsLoading, setCellsLoading] =
-    React.useState<CellLoadingCoords | null>(null);
 
   // Fetches the item details.
   const {
@@ -152,19 +150,16 @@ export function useFetchItemRow({
     enabled: !!(itemRow && itemRow.itemId),
   });
 
-  // Once the item start loading give the table cells loading state.
-  React.useEffect(() => {
-    if (itemRow && isItemFetching) {
-      setCellsLoading([
-        [itemRow.rowIndex, 'rate'],
-        [itemRow.rowIndex, 'description'],
-        [itemRow.rowIndex, 'quantity'],
-        [itemRow.rowIndex, 'discount'],
-      ]);
-    } else {
-      setCellsLoading(null);
-    }
-  }, [isItemFetching, setCellsLoading, itemRow]);
+  // Derive coordinates in the fetching render so other cells never unmount.
+  const cellsLoading: CellLoadingCoords =
+    itemRow && isItemFetching
+      ? [
+          [itemRow.rowIndex, 'rate'],
+          [itemRow.rowIndex, 'description'],
+          [itemRow.rowIndex, 'quantity'],
+          [itemRow.rowIndex, 'discount'],
+        ]
+      : [];
 
   // Once the item selected and fetched set the initial details to the table.
   React.useEffect(() => {

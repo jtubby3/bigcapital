@@ -1,3 +1,4 @@
+import { QuickBooksReportPdfCss } from '../../common/QuickBooksReportPdfCss';
 import { Injectable } from '@nestjs/common';
 import { ARAgingSummaryTableInjectable } from './ARAgingSummaryTableInjectable';
 import { TableSheetPdf } from '../../common/TableSheetPdf';
@@ -22,9 +23,9 @@ export class ARAgingSummaryPdfInjectable {
     return this.tableSheetPdf.convertToPdf(
       table.table,
       table.meta.organizationName,
-      table.meta.sheetName,
+      'Accounts receivable aging summary',
       table.meta.formattedDateRange,
-      HtmlTableCss,
+      [HtmlTableCss, QuickBooksReportPdfCss].join('\n'),
       query.numberFormat?.showInRed,
     );
   }

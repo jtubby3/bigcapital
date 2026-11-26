@@ -50,6 +50,7 @@ import type {
 function commonInvalidateQueries(
   queryClient: ReturnType<typeof useQueryClient>,
 ) {
+  queryClient.invalidateQueries({ queryKey: ['customers-workspace'] });
   queryClient.invalidateQueries({ queryKey: receiptsKeys.all() });
   queryClient.invalidateQueries({ queryKey: itemsKeys.all() });
   queryClient.invalidateQueries({ queryKey: accountsKeys.all() });

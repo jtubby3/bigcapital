@@ -184,6 +184,15 @@ export const SidebarMenu: SidebarMenuItem[] = [
             },
           },
           {
+            text: 'Packing slips',
+            href: '/invoices/packing-slips',
+            type: ISidebarMenuItemType.Link,
+            permission: {
+              subject: AbilitySubject.Invoice,
+              ability: SaleInvoiceAction.View,
+            },
+          },
+          {
             text: <T id={'sidebar.recurring_invoices'} />,
             href: '/recurring-invoices',
             type: ISidebarMenuItemType.Link,
@@ -281,6 +290,15 @@ export const SidebarMenu: SidebarMenuItem[] = [
           {
             text: <T id={'bills'} />,
             href: '/bills',
+            type: ISidebarMenuItemType.Link,
+            permission: {
+              subject: AbilitySubject.Bill,
+              ability: BillAction.View,
+            },
+          },
+          {
+            text: 'Scan vendor invoices',
+            href: '/bills/vendor-invoice-scans',
             type: ISidebarMenuItemType.Link,
             permission: {
               subject: AbilitySubject.Bill,

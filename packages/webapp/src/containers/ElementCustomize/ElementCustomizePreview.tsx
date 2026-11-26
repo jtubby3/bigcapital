@@ -1,4 +1,5 @@
 import * as FF from 'fp-ts/function';
+import styles from './ElementCustomize.module.scss';
 import { ElementCustomizeHeader } from './ElementCustomizeHeader';
 import { ElementCustomizePreviewContent } from './ElementCustomizePreviewContent';
 import type { WithDrawerActionsProps } from '@/containers/Drawer/withDrawerActions';
@@ -15,11 +16,8 @@ function ElementCustomizePreviewRoot({ closeDrawer }: WithDrawerActionsProps) {
   return (
     <Stack
       spacing={0}
-      style={{
-        borderLeft: '1px solid var(--color-element-customize-divider)',
-        height: '100vh',
-        flex: '1 1',
-      }}
+      className={styles.preview}
+      data-testId="customize-preview"
     >
       <ElementCustomizeHeader
         label={'Preview'}

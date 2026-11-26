@@ -1,3 +1,4 @@
+import { InvoiceDesignPresets } from './InvoiceDesignPresets';
 import { Classes, Text } from '@blueprintjs/core';
 import { Link } from 'react-router-dom';
 import { MANAGE_LINK_URL } from './constants';
@@ -45,6 +46,7 @@ export function InvoiceCustomizeGeneralField() {
 
       <Overlay visible={!isTemplateNameFilled}>
         <Stack spacing={0}>
+          <InvoiceDesignPresets />
           <FFormGroup
             name={'primaryColor'}
             label={'Primary Color'}

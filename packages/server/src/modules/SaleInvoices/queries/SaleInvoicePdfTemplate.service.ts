@@ -32,7 +32,7 @@ export class SaleInvoicePdfTemplate {
     if (invoiceTemplateId != null) {
       try {
         template =
-          await this.getPdfTemplateService.getPdfTemplate(invoiceTemplateId);
+          await this.getPdfTemplateService.getPdfTemplate(invoiceTemplateId, undefined, true);
       } catch {
         template = null;
       }

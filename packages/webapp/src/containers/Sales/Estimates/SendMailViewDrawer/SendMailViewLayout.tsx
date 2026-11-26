@@ -1,5 +1,6 @@
 import React from 'react';
-import { Group, Stack } from '@/components';
+import { Stack } from '@/components';
+import styles from './SendMailViewLayout.module.scss';
 import { useIsDarkMode } from '@/hooks/useDarkMode';
 
 interface SendMailViewLayoutProps {
@@ -16,15 +17,13 @@ export function SendMailViewLayout({
   const isDarkMode = useIsDarkMode();
 
   return (
-    <Stack spacing={0} flex={1} overflow="hidden">
+    <Stack spacing={0} flex={1} minHeight={0} overflow="hidden">
       {header}
 
-      <Group flex={1} overflow="auto" spacing={0} alignItems={'stretch'}>
+      <div className={styles.body}>
         <Stack
           bg={isDarkMode ? 'var(--color-dark-gray2)' : 'white'}
-          flex={'1'}
-          maxWidth="720px"
-          maxHeight="100%"
+          className={styles.fields}
           spacing={0}
           borderRightWidth={1}
           borderRightStyle="solid"
@@ -35,13 +34,11 @@ export function SendMailViewLayout({
 
         <Stack
           bg={isDarkMode ? 'var(--color-dark-gray2)' : '#F5F5F5'}
-          flex={'1'}
-          maxHeight={'100%'}
-          minWidth="850px"
+          className={styles.preview}
         >
           {preview}
         </Stack>
-      </Group>
+      </div>
     </Stack>
   );
 }

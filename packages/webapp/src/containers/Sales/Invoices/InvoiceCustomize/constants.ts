@@ -1,6 +1,16 @@
+import {
+  invoiceCustomizationDefaults,
+  newInvoiceTemplateDefaults,
+} from '@bigcapital/pdf-templates';
+
 export const MANAGE_LINK_URL = '/preferences/payment-methods';
 
 export const initialValues = {
+  ...invoiceCustomizationDefaults,
+  ...newInvoiceTemplateDefaults,
+  pageSize: 'letter' as 'a4' | 'letter',
+  layoutMode: 'distribution' as 'standard' | 'designer' | 'distribution',
+  alternateRowColors: true,
   templateName: '',
 
   // Colors

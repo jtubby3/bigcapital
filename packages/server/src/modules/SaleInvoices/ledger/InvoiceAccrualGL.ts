@@ -13,6 +13,7 @@ export class InvoiceAccrualGL {
   private taxPayableAccountId: number;
   private discountAccountId: number;
   private otherChargesAccountId: number;
+  private shippingIncomeAccountId: number;
 
   /**
    * Constructor method.
@@ -52,6 +53,10 @@ export class InvoiceAccrualGL {
    */
   setOtherChargesAccountId(otherChargesAccountId: number) {
     this.otherChargesAccountId = otherChargesAccountId;
+  }
+
+  setShippingIncomeAccountId(shippingIncomeAccountId: number) {
+    this.shippingIncomeAccountId = shippingIncomeAccountId;
   }
 
   /**
@@ -199,6 +204,18 @@ export class InvoiceAccrualGL {
       ...taxEntries,
       this.invoiceDiscountEntry,
       this.adjustmentEntry,
+      ...(this.saleInvoice.shippingChargeLocal > 0
+        ? [
+            {
+              ...this.invoiceGLCommonEntry,
+              credit: this.saleInvoice.shippingChargeLocal,
+              accountId: this.shippingIncomeAccountId,
+              accountNormal: AccountNormal.CREDIT,
+              note: 'Shipping',
+              index: 2,
+            },
+          ]
+        : []),
     ];
   };
 

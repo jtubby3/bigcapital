@@ -1,4 +1,8 @@
+import { ItemPriceHistoryService } from './ItemPriceHistory.service';
 import { Knex } from 'knex';
+import { getItemPricingUpdate, isAutoPricingEnabled } from '@bigcapital/utils';
+import { SETTINGS_PROVIDER } from '../Settings/Settings.types';
+import { SettingsStore } from '../Settings/SettingsStore';
 import { Injectable, Inject } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IItemEventEditedPayload } from '@/interfaces/Item';
@@ -25,6 +29,10 @@ export class EditItemService {
 
     @Inject(Item.name)
     private readonly itemModel: TenantModelProxy<typeof Item>,
+
+    @Inject(SETTINGS_PROVIDER)
+    private readonly settingsStore: () => Promise<SettingsStore>,
+    private readonly priceHistory: ItemPriceHistoryService,
   ) {}
 
   /**
@@ -147,24 +155,28 @@ export class EditItemService {
     itemDTO: EditItemDto,
     trx?: Knex.Transaction,
   ): Promise<number> {
-    // Validates the given item existance on the storage.
-    const oldItem = await this.itemModel()
-      .query()
-      .findById(itemId)
-      .throwIfNotFound();
-
-    // Authorize before editing item.
-    await this.authorize(itemDTO, oldItem);
-
-    // Transform the edit item DTO to model.
-    const itemModel = this.transformEditItemDTOToModel(itemDTO, oldItem);
-
-    // Edits the item with associated transactions under unit-of-work environment.
+    // Calculate prices from the locked row so concurrent purchases cannot use stale costs.
     return this.uow.withTransaction<number>(async (trx: Knex.Transaction) => {
+      const oldItem = await this.itemModel()
+        .query(trx)
+        .findById(itemId)
+        .forUpdate()
+        .throwIfNotFound();
+      await this.authorize(itemDTO, oldItem);
+      const settings = await this.settingsStore();
+      const masterEnabled = isAutoPricingEnabled(
+        settings.get({ group: 'items', key: 'auto_increase_sell_price' }, true),
+      );
+      const itemModel = {
+        ...this.transformEditItemDTOToModel(itemDTO, oldItem),
+        ...getItemPricingUpdate(oldItem, itemDTO, masterEnabled),
+      };
       // Updates the item on the storage and fetches the updated one.
       const newItem = await this.itemModel()
         .query(trx)
         .patchAndFetchById(itemId, itemModel);
+
+      await this.priceHistory.record(oldItem, newItem, 'item_edit', trx);
 
       // Edit event payload.
       const eventPayload: IItemEventEditedPayload = {

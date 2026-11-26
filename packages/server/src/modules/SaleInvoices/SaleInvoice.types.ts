@@ -1,3 +1,7 @@
+import type {
+  InvoiceCustomization,
+  InvoiceAddress,
+} from '@bigcapital/pdf-templates';
 import { Knex } from 'knex';
 import { IItemEntryDTO } from '../TransactionItemEntry/ItemEntry.types';
 import { AttachmentLinkDTO } from '../Attachments/Attachments.types';
@@ -203,6 +207,7 @@ export interface SaleInvoiceMailState extends SaleInvoiceMailOptions {
 }
 
 export interface SendInvoiceMailDTO extends CommonMailOptionsDTO {
+  packingSlips?: { id: number; version: number }[];
   attachInvoice?: boolean;
 }
 
@@ -224,6 +229,7 @@ export interface ISaleInvoiceMailSent {
 
 // Invoice Pdf Document
 export interface InvoicePdfLine {
+  discount?: string;
   item: string;
   description: string;
   rate: string;
@@ -236,7 +242,8 @@ export interface InvoicePdfTax {
   amount: string;
 }
 
-export interface InvoicePdfTemplateAttributes {
+export interface InvoicePdfTemplateAttributes
+  extends Partial<InvoiceCustomization> {
   primaryColor: string;
   secondaryColor: string;
 
@@ -260,6 +267,18 @@ export interface InvoicePdfTemplateAttributes {
   // Customer Address
   showCustomerAddress: boolean;
   customerAddress: string;
+  billingAddress?: InvoiceAddress;
+  shippingAddress?: InvoiceAddress | null;
+  billingAddressText?: string | null;
+  shippingAddressText?: string | null;
+  shippingMethod?: string | null;
+  shippingDate?: string | null;
+  trackingNo?: string | null;
+  referenceNo?: string | null;
+  paymentInstructions?: string | null;
+  paymentTerms?: string;
+  shippingCharge?: string;
+  adjustment?: string;
 
   // Company address
   showCompanyAddress: boolean;

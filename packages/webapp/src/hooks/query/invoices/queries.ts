@@ -16,6 +16,7 @@ import {
   fetchInvoicePayments,
   fetchSaleInvoiceHtml,
   fetchSaleInvoicePdf,
+  fetchSaleInvoicePackingSlipPdf,
   notifySaleInvoiceBySms,
   fetchSaleInvoiceSmsDetails,
 } from '@bigcapital/sdk-ts';
@@ -55,6 +56,7 @@ import type {
 function commonInvalidateQueries(
   queryClient: ReturnType<typeof useQueryClient>,
 ) {
+  queryClient.invalidateQueries({ queryKey: ['customers-workspace'] });
   queryClient.invalidateQueries({ queryKey: invoicesKeys.all() });
   queryClient.invalidateQueries({ queryKey: customersKeys.all() });
   queryClient.invalidateQueries({ queryKey: itemsKeys.all() });
@@ -76,7 +78,7 @@ function commonInvalidateQueries(
 }
 
 export function useCreateInvoice(
-  props?: UseMutationOptions<void, Error, CreateSaleInvoiceBody>,
+  props?: UseMutationOptions<{ id: number }, Error, CreateSaleInvoiceBody>,
 ) {
   const queryClient = useQueryClient();
   const fetcher = useApiFetcher();
@@ -217,9 +219,16 @@ export function useInvoice(
 /**
  * Retrieve the invoice pdf document data.
  */
-export function usePdfInvoice(invoiceId: number) {
+export function usePdfInvoice(
+  invoiceId: number,
+  documentType: 'invoice' | 'packing-slip' = 'invoice',
+) {
   const fetcher = useApiFetcher();
-  return usePdfDocument(() => fetchSaleInvoicePdf(fetcher, invoiceId));
+  return usePdfDocument(() =>
+    documentType === 'packing-slip'
+      ? fetchSaleInvoicePackingSlipPdf(fetcher, invoiceId)
+      : fetchSaleInvoicePdf(fetcher, invoiceId),
+  );
 }
 
 export function useInvoiceHtml(
@@ -349,6 +358,11 @@ export function useInvoicePaymentTransactions(
 }
 
 // # Send sale invoice mail.
+export interface PackingSlipSelection {
+  id: number;
+  version: number;
+}
+
 export interface SendSaleInvoiceMailValues {
   id: number;
   values: {
@@ -358,10 +372,14 @@ export interface SendSaleInvoiceMailValues {
     cc?: Array<string>;
     bcc?: Array<string>;
     attachInvoice?: boolean;
+    packingSlips?: PackingSlipSelection[];
   };
 }
 
-export type SendSaleInvoiceMailResponse = void;
+export interface SendSaleInvoiceMailResponse {
+  status: string;
+  jobId: string;
+}
 
 export function useSendSaleInvoiceMail(
   options?: UseMutationOptions<

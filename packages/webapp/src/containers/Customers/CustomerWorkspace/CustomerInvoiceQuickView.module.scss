@@ -1,0 +1,135 @@
+.drawer {
+  background: #202d40;
+  color: #e9f0f8;
+  :global(.bp4-drawer-header),
+  :global(.bp5-drawer-header) {
+    background: #243b55;
+    box-shadow: 0 1px 0 #41536a;
+    h4 {
+      color: #f4f8ff;
+    }
+  }
+  :global(.bp4-drawer-body),
+  :global(.bp5-drawer-body) {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  label,
+  small,
+  time {
+    color: #afc0d4;
+  }
+  label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+}
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+.summary {
+  > strong {
+    display: block;
+    font-size: 32px;
+    margin-bottom: 22px;
+  }
+  > label {
+    margin-top: 18px;
+  }
+}
+.status {
+  background: #2e5077;
+  border: 1px solid #557da7;
+  border-radius: 4px;
+  padding: 5px 9px;
+  display: inline-block;
+}
+.dates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.section {
+  border-top: 1px solid #40516a;
+  margin-top: 24px;
+  padding-top: 20px;
+  h2,
+  summary {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 18px;
+  }
+  summary {
+    cursor: pointer;
+  }
+  h3 {
+    font-size: 15px;
+  }
+}
+.address {
+  white-space: pre-line;
+  line-height: 1.6;
+}
+.timeline {
+  list-style: none;
+  padding: 0 0 0 8px;
+  margin: 0;
+  li {
+    position: relative;
+    padding: 0 0 22px 24px;
+    border-left: 1px solid #526d8d;
+    &:before {
+      content: '';
+      width: 9px;
+      height: 9px;
+      background: #5eabf4;
+      border-radius: 50%;
+      position: absolute;
+      left: -5px;
+      top: 4px;
+    }
+  }
+  time,
+  small {
+    display: block;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+}
+.item {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 15px 0;
+  border-bottom: 1px solid #394c63;
+  p {
+    margin: 6px 0;
+    white-space: pre-line;
+  }
+  strong {
+    white-space: nowrap;
+  }
+}
+.total {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+.footer {
+  padding: 16px;
+  background: #243b55;
+  border-top: 1px solid #41536a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  > div {
+    display: flex;
+    gap: 8px;
+  }
+}

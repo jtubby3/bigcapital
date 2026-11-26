@@ -9,38 +9,38 @@ import {
   MaxLength,
   Min,
   IsNotEmpty,
-} from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, ToNumber } from '@/common/decorators/Validators';
-import { ITEM_UNITS, ItemUnit } from '../Items.constants';
+} from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsOptional, ToNumber } from "@/common/decorators/Validators";
+import { ITEM_UNITS, ItemUnit } from "../Items.constants";
 
 export class CommandItemDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
   @ApiProperty({
-    description: 'Item name',
-    example: 'Ergonomic Office Chair Model X-2000',
+    description: "Item name",
+    example: "Ergonomic Office Chair Model X-2000",
   })
   name: string;
 
   @IsString()
   @IsNotEmpty()
-  @IsIn(['service', 'non-inventory', 'inventory'])
+  @IsIn(["service", "non-inventory", "inventory"])
   @ApiProperty({
-    description: 'Item type',
-    enum: ['service', 'non-inventory', 'inventory'],
-    example: 'inventory',
+    description: "Item type",
+    enum: ["service", "non-inventory", "inventory"],
+    example: "inventory",
   })
-  type: 'service' | 'non-inventory' | 'inventory';
+  type: "service" | "non-inventory" | "inventory";
 
   @IsOptional()
   @IsString()
   @MaxLength(255)
   @ApiProperty({
-    description: 'Item code/SKU',
+    description: "Item code/SKU",
     required: false,
-    example: 'CHAIR-X2000',
+    example: "CHAIR-X2000",
   })
   code?: string;
 
@@ -50,29 +50,51 @@ export class CommandItemDto {
   @Min(0)
   @ApiProperty({
     description:
-      'Stock level at which the item should be reordered (inventory items only)',
+      "Stock level at which the item should be reordered (inventory items only)",
     required: false,
     minimum: 0,
     example: 10,
   })
   reorderPoint?: number;
 
+  @IsOptional()
   @IsString()
   @IsIn([...ITEM_UNITS])
   @MaxLength(20)
   @ApiProperty({
-    description: 'Unit of measure the item is measured in',
+    description: "Unit of measure the item is measured in",
     enum: [...ITEM_UNITS],
-    example: 'kg',
+    example: "kg",
     required: false,
   })
   unit?: ItemUnit;
+
+  @IsOptional()
+  @IsBoolean()
+  @ApiProperty({
+    description: "Automatically raise selling price when cost increases",
+    required: false,
+    default: true,
+  })
+  autoIncreaseSellPrice?: boolean;
+
+  @IsOptional()
+  @ToNumber()
+  @IsNumber({ maxDecimalPlaces: 8 })
+  @Min(-100)
+  @ApiProperty({
+    description: "Saved markup percentage used for future cost increases",
+    required: false,
+    nullable: true,
+    minimum: -100,
+  })
+  markupPercentage?: number | null;
 
   // Purchase attributes
   @IsOptional()
   @IsBoolean()
   @ApiProperty({
-    description: 'Whether the item can be purchased',
+    description: "Whether the item can be purchased",
     required: false,
     example: true,
   })
@@ -84,7 +106,7 @@ export class CommandItemDto {
   @Min(0)
   @ValidateIf((o) => o.purchasable === true)
   @ApiProperty({
-    description: 'Cost price of the item',
+    description: "Cost price of the item",
     required: false,
     minimum: 0,
     example: 299.99,
@@ -97,7 +119,7 @@ export class CommandItemDto {
   @Min(0)
   @ValidateIf((o) => o.purchasable === true)
   @ApiProperty({
-    description: 'ID of the cost account',
+    description: "ID of the cost account",
     required: false,
     minimum: 0,
     example: 1001,
@@ -108,7 +130,7 @@ export class CommandItemDto {
   @IsOptional()
   @IsBoolean()
   @ApiProperty({
-    description: 'Whether the item can be sold',
+    description: "Whether the item can be sold",
     required: false,
     example: true,
   })
@@ -120,7 +142,7 @@ export class CommandItemDto {
   @Min(0)
   @ValidateIf((o) => o.sellable === true)
   @ApiProperty({
-    description: 'Selling price of the item',
+    description: "Selling price of the item",
     required: false,
     minimum: 0,
     example: 399.99,
@@ -133,7 +155,7 @@ export class CommandItemDto {
   @Min(0)
   @ValidateIf((o) => o.sellable === true)
   @ApiProperty({
-    description: 'ID of the sell account',
+    description: "ID of the sell account",
     required: false,
     minimum: 0,
     example: 2001,
@@ -144,9 +166,9 @@ export class CommandItemDto {
   @ToNumber()
   @IsInt()
   @Min(0)
-  @ValidateIf((o) => o.type === 'inventory')
+  @ValidateIf((o) => o.type === "inventory")
   @ApiProperty({
-    description: 'ID of the inventory account (required for inventory items)',
+    description: "ID of the inventory account (required for inventory items)",
     required: false,
     minimum: 0,
     example: 3001,
@@ -156,19 +178,19 @@ export class CommandItemDto {
   @IsOptional()
   @IsString()
   @ApiProperty({
-    description: 'Description shown on sales documents',
+    description: "Description shown on sales documents",
     required: false,
     example:
-      'Premium ergonomic office chair with adjustable height, lumbar support, and breathable mesh back',
+      "Premium ergonomic office chair with adjustable height, lumbar support, and breathable mesh back",
   })
   sellDescription?: string;
 
   @IsOptional()
   @IsString()
   @ApiProperty({
-    description: 'Description shown on purchase documents',
+    description: "Description shown on purchase documents",
     required: false,
-    example: 'Ergonomic office chair - Model X-2000 with standard features',
+    example: "Ergonomic office chair - Model X-2000 with standard features",
   })
   purchaseDescription?: string;
 
@@ -176,7 +198,7 @@ export class CommandItemDto {
   @ToNumber()
   @IsInt()
   @ApiProperty({
-    description: 'ID of the tax rate applied to sales',
+    description: "ID of the tax rate applied to sales",
     required: false,
     example: 1,
   })
@@ -186,7 +208,7 @@ export class CommandItemDto {
   @ToNumber()
   @IsInt()
   @ApiProperty({
-    description: 'ID of the tax rate applied to purchases',
+    description: "ID of the tax rate applied to purchases",
     required: false,
     example: 1,
   })
@@ -197,7 +219,7 @@ export class CommandItemDto {
   @IsInt()
   @Min(0)
   @ApiProperty({
-    description: 'ID of the item category',
+    description: "ID of the item category",
     required: false,
     minimum: 0,
     example: 5,
@@ -207,17 +229,17 @@ export class CommandItemDto {
   @IsOptional()
   @IsString()
   @ApiProperty({
-    description: 'Additional notes about the item',
+    description: "Additional notes about the item",
     required: false,
     example:
-      'Available in black, gray, and navy colors. 5-year warranty included.',
+      "Available in black, gray, and navy colors. 5-year warranty included.",
   })
   note?: string;
 
   @IsOptional()
   @IsBoolean()
   @ApiProperty({
-    description: 'Whether the item is active',
+    description: "Whether the item is active",
     required: false,
     default: true,
     example: true,
@@ -228,7 +250,7 @@ export class CommandItemDto {
   @IsArray()
   @IsInt({ each: true })
   @ApiProperty({
-    description: 'IDs of media files associated with the item',
+    description: "IDs of media files associated with the item",
     required: false,
     type: [Number],
     example: [1, 2, 3],

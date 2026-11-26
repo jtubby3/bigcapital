@@ -1,3 +1,7 @@
+import {
+  DeploymentEnvironmentBanner,
+  isStaging,
+} from './DeploymentEnvironment';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { createBrowserHistory, History } from 'history';
@@ -40,7 +44,8 @@ const PaymentPortalPage = lazy(() =>
  */
 function AppInsider({ history }: { history: History }) {
   return (
-    <div className="App">
+    <div className={isStaging() ? 'App App--staging' : 'App'}>
+      <DeploymentEnvironmentBanner />
       <DashboardThemeProvider>
         <Suspense fallback={'Loading...'}>
           <Router history={history}>

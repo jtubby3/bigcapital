@@ -1,5 +1,5 @@
 import React from 'react';
-import intl from 'react-intl-universal';
+import moment from 'moment';
 import styled from 'styled-components';
 import { getReportRowTestId } from '../reportTestIds';
 import { useARAgingSummaryContext } from './ARAgingSummaryProvider';
@@ -20,12 +20,21 @@ export function ARAgingSummaryTable({
   const columns = useARAgingSummaryColumns();
   const table = (ARAgingSummary as any)?.table;
   const meta = (ARAgingSummary as any)?.meta;
+  const asDate = (ARAgingSummary as any)?.query?.asDate;
+  const dateText =
+    asDate && moment(asDate).isValid()
+      ? `As of ${moment(asDate).format('MMMM D, YYYY')}`
+      : (meta?.formattedDateRange ?? meta?.formattedAsDate)?.replace(
+          /^As\b(?! of\b)/,
+          'As of',
+        );
 
   return (
     <FinancialSheet
+      className="quickbooks-report-paper"
       companyName={organizationName}
-      sheetType={intl.get('receivable_aging_summary')}
-      dateText={meta?.formattedDateRange ?? meta?.formattedAsDate}
+      sheetType="Accounts receivable aging summary"
+      dateText={dateText}
     >
       <ARAgingSummaryDataTable
         columns={columns}

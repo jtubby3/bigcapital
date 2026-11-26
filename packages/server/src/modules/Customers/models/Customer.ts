@@ -25,6 +25,10 @@ export class CustomerQueryBuilder<
 @InjectModelMeta(CustomerMeta)
 @InjectModelDefaultViews(CustomerDefaultViews)
 export class Customer extends TenantBaseModel {
+  customerProfile?: import('../dtos/CustomerProfile.dto').CustomerProfileDto;
+  static get jsonAttributes() {
+    return ['customerProfile'];
+  }
   contactService: string;
   contactType: string;
 
