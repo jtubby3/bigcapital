@@ -375,7 +375,7 @@ export class VendorInvoiceScanService {
     const term = typeof search === 'string' ? search.trim().slice(0, 100) : '';
     const query = sql(table).orderBy(label).limit(50).select('id', { name: label });
     if (kind === 'item' || kind === 'charge') {
-      query.where({ purchasable: true }).select('description', 'code', { cost: 'costPrice', sellPrice: 'sellPrice' });
+      query.where({ purchasable: true }).select({ description: 'purchaseDescription' }, 'code', { cost: 'costPrice', sellPrice: 'sellPrice' });
       if (kind === 'item') query.where({ type: 'inventory' });
       else query.whereNot({ type: 'inventory' }).whereNotNull('costAccountId');
       if (term) query.where(builder => builder.whereLike(label, `%${term}%`).orWhereLike('code', `%${term}%`));
